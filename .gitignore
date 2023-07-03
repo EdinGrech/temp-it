@@ -1,0 +1,4 @@
+.env
+/venv
+/temp_it/__pycache__
+/TH_sens/__pycache__
