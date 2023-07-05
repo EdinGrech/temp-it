@@ -1,10 +1,18 @@
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
-from .models import Sensor
-from .serializer import SensorSerializer
+from .models import Sensor, SensorDetails
+from .serializer import SensorSerializer, SensorDetailsSerializer
 
-class SensorReading(APIView):
-    def get(self, **kwargs):
+class SensorReadingView(APIView):
+    def post(self, request):
+        serializer = SensorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors)
+    
+    def get(self, request, **kwargs):
         if kwargs.get('pk'):
             #return the last day's data for the sensor only
             sensor_id = kwargs.get('pk')
@@ -13,16 +21,10 @@ class SensorReading(APIView):
             #return the last day's data for all sensors
             sensor = Sensor.objects.all().order_by('-date_time')[:24]
         serializer = SensorSerializer(sensor, many=True)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data)
 
-    def post(self, request):
-        serializer = SensorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors)
 
-class DateRangeSensorReading(APIView):
+class DateRangeSensorReadingView(APIView):
     def get(self, request, **kwargs):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
@@ -31,8 +33,23 @@ class DateRangeSensorReading(APIView):
             sensor = Sensor.objects.filter(date_time__range=[start_date, end_date]).order_by('-date_time')
             serializer = SensorSerializer(sensor, many=True)
             return Response(serializer.data)
-        sensor_ids = sensor_ids.split(',')
+        sensor_ids = [int(x) for x in sensor_ids.split(',')]
         sensor = Sensor.objects.filter(sensor_id__in=sensor_ids, date_time__range=[start_date, end_date]).order_by('-date_time')
         serializer = SensorSerializer(sensor, many=True)
         return Response(serializer.data)
+    
+class RegisterSensorView(generics.CreateAPIView):
+    serializer_class = SensorDetailsSerializer
+    queryset = Sensor.objects.all()
+
+class SensorDetailsView(APIView):
+    def get(self, request, **kwargs):
+        sensor_id = kwargs.get('pk')
+        if sensor_id:
+            sensor = SensorDetails.objects.get(sensor_id=sensor_id)
+            serializer = SensorDetailsSerializer(sensor)
+            return Response(serializer.data)
+        return Response({'message':'No sensor ID provided'})
+
+        
         

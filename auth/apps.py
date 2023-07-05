@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ThSensConfig(AppConfig):
+class AuthConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'th_sens'
+    name = 'auth'

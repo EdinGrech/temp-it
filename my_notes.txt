@@ -1,0 +1,4 @@
+# apps not migrating Error solve:
+https://stackoverflow.com/questions/44387180/django-does-not-migrate-app
+> put a migrate folder wit han init.py file
+
