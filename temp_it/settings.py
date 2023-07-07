@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'th_auth',
     'th_sens',
+    'th_groups',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_USER_MODEL = "th_auth.th_User"
 
 ROOT_URLCONF = 'temp_it.urls'
 

@@ -2,7 +2,7 @@ import random
 import string
 from .models import SensorReading, SensorDetails
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from th_auth.models import th_User
 
 class SensorReadingsSerializer(serializers.ModelSerializer):
     sensor_id = serializers.IntegerField(read_only=True)
@@ -72,8 +72,8 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_email = validated_data.pop('user_email_owner')
         try:
-            user = User.objects.get(email=user_email)
-        except User.DoesNotExist:
+            user = th_User.objects.get(email=user_email)
+        except th_User.DoesNotExist:
             raise serializers.ValidationError(
                 {"user_email_owner": "User with email " + user_email + " does not exist."}
             )

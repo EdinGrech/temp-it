@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .models import SensorReading, SensorDetails
 from .serializer import SensorReadingsSerializer, SensorDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
-from th_auth.models import GroupLinkedSensors, GroupMembers, th_User
+from th_auth.models import th_User
+from th_groups.serializer import GroupLinkedSensors, GroupMembers
 
 class SensorReadingView(APIView):
     def post(self, request, **kwargs):
@@ -69,7 +70,6 @@ class RegisterSensorView(generics.CreateAPIView):
             user:th_User = th_User.objects.get(add_sensor_pin=add_sensor_pin)
             # check if pin expired
             if user.is_pin_expired():
-                # clear the pin
                 user.set_pin(None)
                 return Response({'message':'PIN expired'})
         except th_User.DoesNotExist:

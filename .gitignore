@@ -1,4 +1,6 @@
 .env
 /venv
 /temp_it/__pycache__
-/TH_sens/__pycache__
+/th_sens/__pycache__
+/th_auth/__pycache__
+/th_groups/__pycache__
