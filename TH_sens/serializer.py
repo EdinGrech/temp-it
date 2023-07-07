@@ -35,7 +35,6 @@ class SensorReadingsSerializer(serializers.ModelSerializer):
         return instance
 
 class SensorDetailsSerializer(serializers.ModelSerializer):
-    sensor_id = serializers.IntegerField(read_only=True)
     date_created = serializers.DateTimeField(read_only=True)
     access_token = serializers.CharField(max_length=50)
     user_email_owner = serializers.EmailField()
@@ -57,8 +56,8 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
 
     def generate_token(self, instance):
         # Get the user_id and sensor_id
-        user_id = instance.user_id_owner_id
-        sensor_id = instance.sensor_id
+        user_id = str(instance.user_id_owner_id)
+        sensor_id = str(instance.id)
         # Calculate the maximum length of the random portion
         max_length = 50 - len(user_id) - len(sensor_id)
         # Generate a random token
