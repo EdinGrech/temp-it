@@ -12,6 +12,7 @@ class SensorReading(models.Model):
     access_token = models.CharField(max_length=50)
     date_recorded_to_server = models.DateTimeField(auto_now_add=True)
     sensor_id = models.ForeignKey( SensorDetails, on_delete=models.CASCADE)
+    allow_group_admins_to_edit = models.BooleanField(default=False)
     date_time = models.DateTimeField()
     temperature = models.FloatField()
     humidity = models.FloatField()

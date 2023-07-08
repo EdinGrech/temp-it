@@ -6,10 +6,12 @@ urlpatterns = [
     path('sensor/<int:pk>', SensorReadingView.as_view()),
     path('sensor/<str:start_date>/<str:end_date>/<int:pk>', DateRangeSensorReadingView.as_view()),
     path('create-sensor', RegisterSensorView.as_view()),
-        # {"add_sensor_pin": "123456", 
-        #  "name": "test", 
-        #  "location": "test", 
-        #  "description": "test", 
-        #  "active": true}
+        # {"add_sensor_pin": "123456"}
     path('sensor-details/<int:pk>', SensorDetailsView.as_view()),
+    path('sensor-details/<int:pk>/update', EditSensorDetailsView.as_view()),
+        # {"sensor_name": "new name",
+        # "location": "new location",
+        # "description": "new description",
+        # "active": "True/False",
+        # "allow_group_admins_to_edit": "True/False"}
 ]

@@ -183,3 +183,51 @@ def remove_sensor_from_group(request, group_id, sensor_id):
     else:
         return Response({'error': 'You are not an admin of this group or the owner of the sensor'}, status=status.HTTP_401_UNAUTHORIZED)
     
+# view for user to see list of groups they are a member of
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_groups(request):
+    # get the user
+    user = request.user
+    # get the groups the user is a member of
+    groups = GroupMembers.objects.filter(member_id=user)
+    # return the groups
+    serializer = GroupMembersSerializer(groups, many=True)
+    return Response(serializer.data)
+
+# view list of admins of a group a user is in
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_group_admins(request, group_id):
+    # get the group
+    group = GroupDetails.objects.get(group_id=group_id)
+    # get the admins of the group
+    admins = GroupAdmins.objects.get(group_id=group)
+    # return the admins
+    serializer = GroupAdminsSerializer(admins)
+    return Response(serializer.data)
+
+# view with a check to see if user is admin of a group
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def is_user_admin_of_group(request, group_id):
+    # get the group
+    group = GroupAdmins.objects.get(group_id=group_id)
+    # check if the user is an admin of the group
+    if request.user in group.admins_id.all():
+        return Response({'admin': True})
+    else:
+        return Response({'admin': False})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_group_members(request, group_id):
+    # check if requestor is in group
+    user = request.user
+    group = GroupDetails.objects.get(group_id=group_id)
+    if user not in group.groupmembers.member_id.all():
+        return Response({'error': 'You are not a member of this group'}, status=status.HTTP_401_UNAUTHORIZED)
+    members = GroupMembers.objects.get(group_id=group)
+    # return the members
+    serializer = GroupMembersSerializer(members)
+    return Response(serializer.data)

@@ -12,5 +12,10 @@ urlpatterns = [
     path('add-member/<int:group_id>/', add_member_to_group_with_username, name='add-member'),
     path('remove-member/<int:group_id>/', remove_member_from_group_with_username, name='remove-member'),
     path('add-sensor/<int:group_id>/<int:sensor_id>/', add_sensor_to_group, name='add-sensor'),
-    path('remove-sensor/<int:group_id>/<int:sensor_id>/', remove_sensor_from_group, name='remove-sensor')
+    path('remove-sensor/<int:group_id>/<int:sensor_id>/', remove_sensor_from_group, name='remove-sensor'),
+
+    path('get-groups/', get_user_groups, name='get-user-groups'),
+    path('get-group-admins/<int:group_id>/', get_group_admins, name='get-group-admins'),
+    path('get-group-members/<int:group_id>/', get_group_members, name='get-group-members'),
+    path('is-admin/<int:group_id>/', is_user_admin_of_group, name='is-user-admin-of-group'),
 ]

@@ -1,6 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
+from temp_it.settings import SENSOR_READINGS_PER_HOUR
+
+from th_groups.models import GroupAdmins
 from .models import SensorReading, SensorDetails
 from .serializer import SensorReadingsSerializer, SensorDetailsSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -8,17 +11,33 @@ from th_auth.models import th_User
 from th_groups.serializer import GroupLinkedSensors, GroupMembers
 
 class SensorReadingView(APIView):
-    def post(self, request, **kwargs):
+    def post(self, request):
+        # check if sensor is authorized to post data
+        access_token = request.data.get('access_token')
+        sensor_id = request.data.get('sensor_id')
+        try:
+            SensorDetails.objects.get(sensor_id=sensor_id, access_token=access_token)
+        except SensorDetails.DoesNotExist:
+            return Response({'message':'Sensor does not exist or access token is invalid'})
         serializer = SensorReadingsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
+            return Response({'Success':'Data saved'}, status=201)
         return Response(serializer.errors)
-    
+
+class SensorRefreshTokenView(APIView):
+    def post(self, request, **kwargs):
+        sensor_id = kwargs.get('pk')
+        try:
+            sensor = SensorDetails.objects.get(sensor_id=sensor_id, access_token=request.data.get('access_token'))
+        except SensorDetails.DoesNotExist:
+            return Response({'message':'Sensor does not exist or access token is invalid'})
+        serializer = SensorDetailsSerializer.generate_token(self, sensor)
+        return Response({'access_token':f'{serializer.access_token}'}, status=201)
+
 class LastDaySensorReadingView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, **kwargs):
-        
         sensor_id = kwargs.get('pk')
         user = request.user
         sensor_owner = SensorDetails.objects.filter(sensor_id=sensor_id, user_id_owner=user.id)
@@ -32,7 +51,7 @@ class LastDaySensorReadingView(APIView):
                 else:
                     return Response({'message':'You are not allowed to view this sensor data'})
         elif sensor_owner:
-            sensor = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:24]
+            sensor = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:24*SENSOR_READINGS_PER_HOUR]
             serializer = SensorReadingsSerializer(sensor, many=True)
             return Response(serializer.data)
         else:
@@ -79,7 +98,34 @@ class RegisterSensorView(generics.CreateAPIView):
         sensor = SensorDetails.objects.create(user_id_owner=user)
         # generate access token withing the sirealizer
         serializer = SensorDetailsSerializer.generate_token(self, sensor)
-        return Response(serializer.access_token, status=201)
+        return Response({
+            'sensor_id':f'{serializer.id}',
+            'access_token':f'{serializer.access_token}'
+            }, status=201)
+    
+class UpdateSensorDetailsView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request, **kwargs):
+        sensor_id = kwargs.get('pk')
+        sensor = SensorDetails.objects.get(sensor_id=sensor_id)
+        if not sensor:
+            return Response({'message':'Sensor does not exist'})
+        user = request.user
+        sensor_owner = SensorDetails.objects.filter(sensor_id=sensor_id, user_id_owner=user.id)
+        if not sensor_owner and not sensor.allow_group_admins_to_edit:
+            # check if user is a member of the group where the sensor is shared
+            sensor_group_ids = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+            for group_id in sensor_group_ids:
+                group_admins = GroupAdmins.objects.filter(group_id=group_id.group_id)
+                if user.id in group_admins.admins_id.all(): # <-- to check
+                    break  
+                else:
+                    return Response({'message':'You are not allowed to edit this sensor'}) 
+        elif sensor_owner:
+            serializer = SensorDetailsSerializer(sensor)
+            return Response(serializer.data)
+        else:
+            return Response({'message':'You are not allowed to edit this sensor'})
     
 class SensorDetailsView(APIView):
     permission_classes = [IsAuthenticated]

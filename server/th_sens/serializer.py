@@ -37,7 +37,6 @@ class SensorReadingsSerializer(serializers.ModelSerializer):
 class SensorDetailsSerializer(serializers.ModelSerializer):
     date_created = serializers.DateTimeField(read_only=True)
     access_token = serializers.CharField(max_length=50)
-    user_email_owner = serializers.EmailField()
     name = serializers.CharField(max_length=50)
     location = serializers.CharField(max_length=50)
     description = serializers.CharField(max_length=200)
@@ -45,11 +44,10 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SensorDetails
-        fields = ['sensor_id', 'access_token', 'user_email_owner', 'date_created', 'name', 'location', 'description', 'active']
+        fields = ['sensor_id', 'access_token', 'allow_group_admins_to_edit', 'date_created', 'name', 'location', 'description', 'active']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},
-            'user_email_owner': {'required': True, 'help_text': 'Email of the user who owns the sensor'},
             'description': {'required': True, 'help_text': 'Description of the sensor'},
             'active': {'required': True, 'help_text': 'Is the sensor active?'},
         }
@@ -86,6 +84,7 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
         instance.location = validated_data.get('location', instance.location)
         instance.description = validated_data.get('description', instance.description)
         instance.active = validated_data.get('active', instance.active)
+        instance.allow_group_admins_to_edit = validated_data.get('allow_group_admins_to_edit', instance.allow_group_admins_to_edit)
         instance.save()
         return instance
 
