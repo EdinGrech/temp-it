@@ -1,0 +1,140 @@
+<ion-content [fullscreen]="true">
+  <br />
+  <br />
+  <!-- Login Page -->
+  <div class="container" *ngIf="screen == 'signin'">
+    <ion-list-header class="heading">
+      <div>
+        Login to <span class="gradient1">Temp-it</span>
+        <ion-icon class="headding-icon" name="cloud-done"></ion-icon>
+      </div>
+    </ion-list-header>
+    <ion-note class="para">Login In or Sign Up to continue!</ion-note>
+    <form [formGroup]="formData">
+      <ion-item fill="outline">
+        <ion-label
+          position="floating"
+          style="font-size: 22px !important; margin-top: -3px !important"
+          >Email</ion-label
+        >
+        <ion-input
+          formControlName="email"
+          type="email"
+          placeholder="name@domain.com"
+        ></ion-input>
+      </ion-item>
+      <ion-item fill="outline">
+        <ion-label
+          position="floating"
+          style="font-size: 22px !important; margin-top: -3px !important"
+          >Password</ion-label
+        >
+        <ion-input
+          formControlName="password"
+          type="password"
+          placeholder="super secret password"
+        ></ion-input>
+      </ion-item>
+      <p class="forget-text">
+        <a (click)="change('forget')">Forgot Password?</a>
+      </p>
+      <p class="signup-text">
+        I'm a new user&nbsp;<a (click)="change('signup')">Sign Up?</a>
+      </p>
+      <ion-button
+        color="warning"
+        class="login-button"
+        (click)="login()"
+        expand="block"
+        >Login</ion-button
+      >
+    </form>
+  </div>
+
+  <!-- Sign up page -->
+  <div class="container" *ngIf="screen == 'signup'">
+    <ion-list-header class="heading">
+      <div>Create an <span class="gradient2">Account</span></div>
+    </ion-list-header>
+    <ion-note class="para">Sign up to get started!</ion-note>
+    <ion-alert
+      [isOpen]="isAlertOpen"
+      header="{{alertHeader}}"
+      message="{{alertMessage}}"
+      [buttons]="alertButtons"
+      (didDismiss)="setAlertOpen(false)"
+    ></ion-alert>
+    <form [formGroup]="formData">
+      <ion-item fill="outline">
+        <ion-label
+          position="floating"
+          style="font-size: 22px !important; margin-top: -3px !important"
+          >Username</ion-label
+        >
+        <ion-input
+          formControlName="name"
+          type="text"
+          placeholder="Max"
+        ></ion-input>
+      </ion-item>
+      <ion-item fill="outline">
+        <ion-label
+          position="floating"
+          style="font-size: 22px !important; margin-top: -3px !important"
+          >Email</ion-label
+        >
+        <ion-input
+          formControlName="email"
+          type="email"
+          placeholder="name@domain.com"
+        ></ion-input>
+      </ion-item>
+      <ion-item fill="outline">
+        <ion-label
+          position="floating"
+          style="font-size: 22px !important; margin-top: -3px !important"
+          >Password</ion-label
+        >
+        <ion-input
+          formControlName="password"
+          type="password"
+          placeholder="super secret password"
+        ></ion-input>
+      </ion-item>
+      <p class="signup-text">
+        I'm already a member&nbsp;<a (click)="change('signin')">Sign In?</a>
+      </p>
+      <ion-button
+        color="warning"
+        class="login-button"
+        (click)="register()"
+        expand="block"
+        >Sign Up</ion-button
+      >
+    </form>
+  </div>
+
+  <!-- Forget password page -->
+  <div class="container" *ngIf="screen == 'forget'">
+    <ion-list-header class="heading">
+      <div>Forgot Password?</div>
+    </ion-list-header>
+    <ion-note class="para">Enter Email to reset password</ion-note>
+    <ion-item fill="outline">
+      <ion-label
+        position="floating"
+        style="font-size: 22px !important; margin-top: -3px !important"
+        >Email</ion-label
+      >
+      <ion-input
+        formControlName="email"
+        type="email"
+        placeholder="name@domain.com"
+      ></ion-input>
+    </ion-item>
+    <p class="signup-text">
+      Rememberd Password&nbsp;<a (click)="change('signin')">Sign In?</a>
+    </p>
+    <ion-button class="login-button" expand="block">Reset Password</ion-button>
+  </div>
+</ion-content>

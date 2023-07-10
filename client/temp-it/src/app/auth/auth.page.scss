@@ -1,0 +1,144 @@
+.heading {
+  font-size: 30px;
+  font-weight: 600;
+  padding-left: 20px;
+  margin-top: 70px;
+  margin-bottom: -5px;
+}
+
+.gradient2 {
+  //gold gradient for text
+  background: linear-gradient(70deg, #f9d423 0%, #cce058 50%, #dacc8b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient1 {
+  //purple gradient for text
+  background: linear-gradient(70deg, #7272da 0%, #9393c9 50%, #8d9ada 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.headding-icon {
+  margin: -5px;
+  padding-left: 8px;
+  //animate play once
+  transform: translateX(0px);
+  animation: moveIcon 0.55s cubic-bezier(0.56, 0.16, 0.34, 0.94) 1;
+}
+
+//keyframes for animation
+@keyframes moveIcon {
+  //translate icon to left
+  0% {
+    opacity: 20;
+    transform: translateX(-1px);
+  }
+  78% {
+    opacity: 100;
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(1px);
+  }
+}
+
+.para {
+  font-size: 21px;
+  font-weight: 500;
+  padding-left: 20px;
+  margin-bottom: 70px;
+}
+
+form {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.item-native {
+  background: transparent !important;
+}
+.item-has-focus .label-floating.sc-ion-label-md-h:not(.ion-color) {
+  color: gray !important;
+}
+ion-item {
+  padding-top: 21px;
+  padding-left: 20px;
+  padding-right: 20px;
+  --background: #ffffff00;
+  --color: #fff;
+
+  --ripple-color: rgb(255, 255, 255);
+
+  --detail-icon-color: white;
+  --detail-icon-opacity: 1;
+  --detail-icon-font-size: 20px;
+}
+
+ion-label {
+  --background: #ffffff00;
+  --color: #fff;
+}
+
+.forget-text {
+  a {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--ion-color-primary);
+  }
+
+  text-align: end;
+  margin-bottom: -10px;
+  padding-right: 20px;
+}
+
+.login-button {
+  font-size: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 50px;
+  --border-radius: 12px;
+  margin-top: 60px;
+  --box-shadow: none;
+}
+
+.signup-text {
+  a {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--ion-color-primary);
+  }
+
+  padding-right: 20px;
+  text-align: end;
+}
+
+//desctop view content max width 768px
+@media only screen and (min-width: 675px) {
+  .container {
+    margin: auto !important;
+    max-width: 450px;
+  }
+
+  .heading {
+    font-size: 37px;
+    font-weight: 600;
+  }
+
+  .para {
+    font-size: 23px;
+  }
+}
+
+//mobile view under 375
+@media only screen and (max-width: 375px) {
+  .heading {
+    font-size: 27px;
+    font-weight: 600;
+  }
+
+  .para {
+    font-size: 19px;
+  }
+}

@@ -1,11 +1,11 @@
 version: '3'
 services:
   nginx:
-    build: ./nginx # Specify the path to your Nginx Dockerfile
+    build: ./client
     depends_on:
-      - server
+      - backend
 
 # Extend the services from the server-compose.yml file
 extends:
   file: /server/docker-compose.yml
-  service: server
+  service: backend
