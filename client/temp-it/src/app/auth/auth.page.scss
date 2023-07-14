@@ -28,6 +28,11 @@
   animation: moveIcon 0.55s cubic-bezier(0.56, 0.16, 0.34, 0.94) 1;
 }
 
+.label-font-fix- {
+  font-size: 22px !important; 
+  margin-top: -3px !important;
+}
+
 //keyframes for animation
 @keyframes moveIcon {
   //translate icon to left
@@ -117,7 +122,7 @@ ion-label {
 //desctop view content max width 768px
 @media only screen and (min-width: 675px) {
   .container {
-    margin: auto !important;
+    margin: 0 !important;
     max-width: 450px;
   }
 

@@ -1,6 +1,14 @@
 <ion-content [fullscreen]="true">
-  <br />
-  <br />
+  <ion-alert
+      [isOpen]="isAlertOpen"
+      header="{{alertHeader}}"
+      message="{{alertMessage}}"
+      [buttons]="alertButtons"
+      (didDismiss)="setAlertOpen(false)"
+    ></ion-alert>
+  <div>
+    <app-theme-setting></app-theme-setting>
+  </div>
   <!-- Login Page -->
   <div class="container" *ngIf="screen == 'signin'">
     <ion-list-header class="heading">
@@ -14,7 +22,7 @@
       <ion-item fill="outline">
         <ion-label
           position="floating"
-          style="font-size: 22px !important; margin-top: -3px !important"
+          class="label-font-fix"
           >Email</ion-label
         >
         <ion-input
@@ -26,7 +34,7 @@
       <ion-item fill="outline">
         <ion-label
           position="floating"
-          style="font-size: 22px !important; margin-top: -3px !important"
+          class="label-font-fix"
           >Password</ion-label
         >
         <ion-input
@@ -57,18 +65,11 @@
       <div>Create an <span class="gradient2">Account</span></div>
     </ion-list-header>
     <ion-note class="para">Sign up to get started!</ion-note>
-    <ion-alert
-      [isOpen]="isAlertOpen"
-      header="{{alertHeader}}"
-      message="{{alertMessage}}"
-      [buttons]="alertButtons"
-      (didDismiss)="setAlertOpen(false)"
-    ></ion-alert>
     <form [formGroup]="formData">
       <ion-item fill="outline">
         <ion-label
           position="floating"
-          style="font-size: 22px !important; margin-top: -3px !important"
+          class="label-font-fix"
           >Username</ion-label
         >
         <ion-input
@@ -80,7 +81,7 @@
       <ion-item fill="outline">
         <ion-label
           position="floating"
-          style="font-size: 22px !important; margin-top: -3px !important"
+          class="label-font-fix"
           >Email</ion-label
         >
         <ion-input
@@ -92,7 +93,7 @@
       <ion-item fill="outline">
         <ion-label
           position="floating"
-          style="font-size: 22px !important; margin-top: -3px !important"
+          class="label-font-fix"
           >Password</ion-label
         >
         <ion-input
@@ -102,7 +103,7 @@
         ></ion-input>
       </ion-item>
       <p class="signup-text">
-        I'm already a member&nbsp;<a (click)="change('signin')">Sign In?</a>
+        I'm already a member <a (click)="change('signin')">Sign In?</a>
       </p>
       <ion-button
         color="warning"
@@ -123,7 +124,7 @@
     <ion-item fill="outline">
       <ion-label
         position="floating"
-        style="font-size: 22px !important; margin-top: -3px !important"
+        class="label-font-fix"
         >Email</ion-label
       >
       <ion-input

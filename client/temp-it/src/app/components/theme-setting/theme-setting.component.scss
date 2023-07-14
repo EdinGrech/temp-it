@@ -1,0 +1,11 @@
+.theme-cont-side-by-side{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+ion-icon {
+    padding: 5px;
+    font-size: 50px;
+  }

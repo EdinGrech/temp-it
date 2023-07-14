@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { ColorModeService } from '../services/themer/themer.service';
 import { User } from '../interfaces/user';
+
+import { ThemeSettingComponent } from '../components/theme-setting/theme-setting.component';
 
 import {
   selectUserLoading,
@@ -19,15 +21,17 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+export type Screen = 'signin'|'signup'| 'forget';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, ThemeSettingComponent],
 })
+
 export class AuthPage implements OnInit {
-  screen: any = 'signin';
+  screen: Screen = 'signin';
   formData: FormGroup;
   isLoading: boolean = false;
 
@@ -37,11 +41,27 @@ export class AuthPage implements OnInit {
   errorDescription: string = '';
   loggedIn$: Observable<boolean> = this.store.select(selectUserLoggedIn);
 
+  isAlertOpen: boolean = false;
+  alertHeader: string = '';
+  alertMessage: string = '';
+  alertButtons: any;
+  
   constructor(
+    public colorMode: ColorModeService,
     private fb: FormBuilder,
-    public store: Store<{ auth: any; news: any; post:any }>,
+    public store: Store<{ auth: any;}>,
     private router: Router
   ) {
+    colorMode.darkMode$.subscribe((darkMode) => {
+      //select app root and add/remove dark class
+      if (darkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        //document.body.classList.remove('light');
+      } else {
+        //document.body.classList.add('light');
+        document.documentElement.removeAttribute('data-theme');
+      }
+    });
     this.formData = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -49,7 +69,6 @@ export class AuthPage implements OnInit {
     });
     this.user$.subscribe((user$: User) => {
       this.isLoading = false;
-      console.log(user$, this.error$);
       if(user$ && this.error$ == null){
         this.alertHeader = 'Success';
         this.alertMessage = 'You have successfully registered!';
@@ -66,7 +85,6 @@ export class AuthPage implements OnInit {
       }
     });
     this.loggedIn$.subscribe((loggedIn: boolean) => {
-      console.log(loggedIn, this.isLoading);
       if (loggedIn == true && this.isLoading == false) {
         this.isLoading = false;
         this.router.navigate(['/news']);
@@ -95,7 +113,7 @@ export class AuthPage implements OnInit {
 
   ngOnInit() {}
 
-  change(event: any) {
+  change(event: Screen) {
     this.screen = event;
   }
 
@@ -129,11 +147,6 @@ export class AuthPage implements OnInit {
       );
     }
   }
-
-  isAlertOpen: boolean = false;
-  alertHeader: string = '';
-  alertMessage: string = '';
-  alertButtons: any;
 
   setAlertOpen(value: boolean) {
     this.isAlertOpen = value;
