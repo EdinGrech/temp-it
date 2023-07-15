@@ -16,11 +16,18 @@ export class ThemeSettingComponent  implements OnInit {
 
   public colorModes: ColorMode[] = ['auto', 'dark', 'light'];
   public currentColorMode: ColorMode = this.colorMode.getMode();
-  public themeIcon: string = 'moon-outline';
+  public themeIcon?: string;
   public optionsOpen: boolean = false;
   constructor(
     private colorMode: ColorModeService
-    ) { }
+    ) { 
+      if (this.currentColorMode === 'dark') {
+        this.themeIcon = 'moon-outline';
+      }
+      else{
+        this.themeIcon = 'sunny-outline';
+      }
+     }
 
   async changeColorScheme(event: any) {
     const colorMode = event.detail.value;

@@ -1,0 +1,11 @@
+Backend
+1. To have view for editing alert system
+2. To have websocket for alerts and live info streaming from sensors
+3. Group invite system (user needs to be accepted beeing added to group)
+
+Frontend
+1. Set up login page both redux and styling
+2. Home page - card system (Graph machannics and animation) - alert system (with notifications)
+3. Groups page - Join group system
+4. Analytics page (bonous feature)
+5. Settings menu with profile page and sensor detailed view
