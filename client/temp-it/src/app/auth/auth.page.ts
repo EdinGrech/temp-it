@@ -52,13 +52,10 @@ export class AuthPage implements OnInit {
     public store: Store<{ auth: any;}>,
     private router: Router
   ) {
-    colorMode.darkMode$.subscribe((darkMode) => {
-      //select app root and add/remove dark class
+    this.colorMode.darkMode$.subscribe((darkMode) => {
       if (darkMode) {
         document.documentElement.setAttribute('data-theme', 'dark');
-        //document.body.classList.remove('light');
       } else {
-        //document.body.classList.add('light');
         document.documentElement.removeAttribute('data-theme');
       }
     });

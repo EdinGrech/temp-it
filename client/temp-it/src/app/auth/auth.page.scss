@@ -68,26 +68,14 @@ form {
 .item-native {
   background: transparent !important;
 }
-.item-has-focus .label-floating.sc-ion-label-md-h:not(.ion-color) {
-  //color: gray !important;
-}
+
 ion-item {
   padding-top: 21px;
   padding-left: 20px;
   padding-right: 20px;
-  //--background: #ffffff00;
-  //--color: #fff;
 
-  //--ripple-color: rgb(255, 255, 255);
-
-  //--detail-icon-color: white;
   --detail-icon-opacity: 1;
   --detail-icon-font-size: 20px;
-}
-
-ion-label {
-  //--background: #ffffff00;
-  //--color: #fff;
 }
 
 .forget-text {
