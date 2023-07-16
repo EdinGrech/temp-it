@@ -5,12 +5,10 @@
     align-items: center;
   }
 
-.hide-options {
-    opacity: 0;
-    visibility: hidden;
-    overflow: hidden;
-    transition: opacity 0.3s ease-out, width 0.3s ease-out;
-  }
+ion-segment-button{
+  opacity: 0;
+  visibility: hidden;
+}
 
 ion-icon {
     padding: 5px;

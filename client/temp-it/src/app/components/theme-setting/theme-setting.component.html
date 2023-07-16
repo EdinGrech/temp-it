@@ -1,6 +1,6 @@
 <div class="theme-cont-side-by-side">
   <ion-icon name="{{themeIcon}}" (click)="toggleThemeOptions($event)"></ion-icon>
-  <ion-segment [class.hide-options]="!optionsOpen" (ionChange)="changeColorScheme($event)" value="{{currentColorMode}}">
+  <ion-segment (ionChange)="changeColorScheme($event)" value="{{currentColorMode}}">
     <ion-segment-button *ngFor="let colorMode of colorModes" value="{{colorMode}}">
       <ion-label>{{colorMode}}</ion-label>
     </ion-segment-button>

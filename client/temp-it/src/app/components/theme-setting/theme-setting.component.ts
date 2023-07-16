@@ -18,12 +18,13 @@ import { CommonModule } from '@angular/common';
 })
 export class ThemeSettingComponent  implements AfterViewInit {
   @ViewChildren(IonSegmentButton, { read: ElementRef }) segmentButtonElements!: QueryList<ElementRef<HTMLIonSegmentButtonElement>>;
-  private animation!: Animation;
+  private animationOpen!: Animation;
+  private animationClose!: Animation;
 
   public colorModes: ColorMode[] = ['auto', 'dark', 'light'];
   public currentColorMode: ColorMode = this.colorMode.getMode();
   public themeIcon?: string;
-  public optionsOpen: boolean = false;
+  public optionsOpen: boolean = true;
   constructor(
     private animationCtrl: AnimationController,
     private colorMode: ColorModeService
@@ -37,52 +38,73 @@ export class ThemeSettingComponent  implements AfterViewInit {
      }
 
      ngAfterViewInit() {
-      let animationArray: Animation[] = [];
       const delay = 150;
       const initialOpacity = 0;
-  
-      // Convert the QueryList to an array
       const segmentButtonArray = this.segmentButtonElements.toArray();
       console.log(segmentButtonArray.length);
-  
+    
+      let leftToRightAnimationArray: Animation[] = [];
+      let rightToLeftAnimationArray: Animation[] = [];
+    
       for (let i = 0; i < segmentButtonArray.length; i++) {
         const segmentButton = segmentButtonArray[i];
-        const animation = this.animationCtrl
+    
+        const leftToRightAnimation = this.animationCtrl
           .create()
           .addElement(segmentButton.nativeElement)
           .duration(600 * (i * 0.75))
-          .beforeStyles({ 'opacity': initialOpacity, 'display': 'flex', 'overflow': 'hidden' })
           .fromTo('opacity', initialOpacity, 1)
-          .afterClearStyles(['width'])
-          .afterStyles({ 'overflow': 'visible' });
-  
-        animation.delay(i * delay);
-  
-        animationArray.push(animation);
+          .fromTo('visibility', 'hidden', 'visible')
+          .afterStyles({ 'overflow': 'visible', });
+    
+        leftToRightAnimation.delay(i * delay);
+    
+        leftToRightAnimationArray.push(leftToRightAnimation);
+    
+        const rightToLeftAnimation = this.animationCtrl
+          .create()
+          .addElement(segmentButton.nativeElement)
+          .duration(600 * ((segmentButtonArray.length - 1 - i) * 0.75))
+          .fromTo('opacity', 1, initialOpacity)
+          .afterStyles({ 'overflow': 'hidden', 'visibility': 'hidden'});
+    
+        rightToLeftAnimation.delay((segmentButtonArray.length - 1 - i) * delay);
+    
+        rightToLeftAnimationArray.push(rightToLeftAnimation);
       }
-  
-      this.animation = this.animationCtrl
-        .create()
+    
+      this.animationOpen = this.animationCtrl
+        .create('open-animation')
         .duration(600 + ((segmentButtonArray.length - 1) * delay))
         .easing('ease-out')
-        .addAnimation(animationArray);
+        .addAnimation(leftToRightAnimationArray);
+    
+      this.animationClose = this.animationCtrl
+        .create('close-animation')
+        .duration(600 + ((segmentButtonArray.length - 1) * delay))
+        .easing('ease-out')
+        .addAnimation(rightToLeftAnimationArray);
     }
-
-  async openColorOptions() {
-    this.animation.play();
-  }
-
-  async toggleThemeOptions(event: any) {
-    console.log(this.optionsOpen, 1);
-    this.optionsOpen = !this.optionsOpen;
-    if (this.optionsOpen) {
-      console.log("open?");
-     this.openColorOptions();
-    } else {
-     this.openColorOptions();
+    
+    public disableToggle: boolean = false;
+    async toggleThemeOptions(event: any) {
+      if (this.disableToggle) {
+        return;
+      }
+      this.disableToggle = true;
+      this.optionsOpen = !this.optionsOpen;
+      if (!this.optionsOpen) {
+        this.animationOpen.stop(); // Stop the animation to reset it
+        this.animationOpen.play();
+      } else {
+        this.animationClose.stop(); // Stop the animation to reset it
+        this.animationClose.play();
+      }
+      //wait for animation to finish
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      this.disableToggle = false;
     }
-  }
-  
+       
 
   async changeColorScheme(event: any) {
     const colorMode = event.detail.value;
