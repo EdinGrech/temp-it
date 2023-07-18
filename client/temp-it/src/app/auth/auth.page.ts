@@ -8,6 +8,7 @@ import { ColorModeService } from '../services/themer/themer.service';
 import { User } from '../interfaces/user';
 
 import { ThemeSettingComponent } from '../components/theme-setting/theme-setting.component';
+import { LoaderOverlayComponent } from '../components/loader-overlay/loader-overlay.component';
 
 import {
   selectUserLoading,
@@ -27,7 +28,7 @@ export type Screen = 'signin'|'signup'| 'forget';
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, ThemeSettingComponent],
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, ThemeSettingComponent, LoaderOverlayComponent],
 })
 
 export class AuthPage implements OnInit {

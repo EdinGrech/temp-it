@@ -108,8 +108,6 @@ export class AuthService {
     const body = {
       username: user.username,
       email: user.email,
-      profile_pic: null,
-      news_tollerance: user.news_tollerance,
     };
     return this.http.put<User>(
       environment.motherShipUrl +

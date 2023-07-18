@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
+
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import {
   catchError,
-  exhaustMap,
   map,
   mergeMap,
   of,
-  switchMap,
-  tap,
 } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import {
@@ -29,15 +25,12 @@ import {
   logoutUserSuccess,
   logoutUserFailure,
 } from './user.actions';
-import { Store } from '@ngrx/store';
-import { User } from 'src/app/interfaces/user';
 
 @Injectable()
 export class UserEffects {
   constructor(
     private actions$: Actions,
     private authService: AuthService,
-    private router: Router
   ) {}
 
   loadUser$ = createEffect(() =>
