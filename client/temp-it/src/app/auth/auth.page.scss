@@ -114,7 +114,8 @@ ion-item {
 //desctop view content max width 768px
 @media only screen and (min-width: 675px) {
   .container {
-    margin: 0 !important;
+    //center of screen
+    margin: 0 auto;
     max-width: 450px;
   }
 
