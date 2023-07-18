@@ -31,7 +31,7 @@ export class AuthService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/users/register/',
+        '/api/auth/register/',
       body,
       httpOptions
     );
@@ -52,7 +52,7 @@ export class AuthService {
         environment.motherShipUrl +
           ':' +
           environment.apiPort +
-          '/api/users/login/',
+          '/api/auth/login/',
         body,
         httpOptions
       )
