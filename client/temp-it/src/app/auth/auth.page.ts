@@ -19,22 +19,27 @@ import {
 import { loginUser, registerUser } from '../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, first } from 'rxjs';
 import { Router } from '@angular/router';
 
-export type Screen = 'signin'|'signup'| 'forget';
+export type Screen = 'signin' | 'signup' | 'forget';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, ThemeSettingComponent, LoaderOverlayComponent],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ThemeSettingComponent,
+    LoaderOverlayComponent,
+  ],
 })
-
 export class AuthPage implements OnInit {
   screen: Screen = 'signin';
   formData: FormGroup;
-  isLoading: boolean = false;
 
   user$: Observable<User> = this.store.select(selectUserUser);
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
@@ -46,11 +51,11 @@ export class AuthPage implements OnInit {
   alertHeader: string = '';
   alertMessage: string = '';
   alertButtons: any;
-  
+
   constructor(
     public colorMode: ColorModeService,
     private fb: FormBuilder,
-    public store: Store<{ auth: any;}>,
+    public store: Store<{ auth: any }>,
     private router: Router
   ) {
     this.colorMode.darkMode$.subscribe((darkMode) => {
@@ -66,8 +71,7 @@ export class AuthPage implements OnInit {
       password: ['', [Validators.required]],
     });
     this.user$.subscribe((user$: User) => {
-      this.isLoading = false;
-      if(user$ && this.error$ == null){
+      if (user$ && this.error$ == null) {
         this.alertHeader = 'Success';
         this.alertMessage = 'You have successfully registered!';
         this.alertButtons = [
@@ -82,27 +86,28 @@ export class AuthPage implements OnInit {
         this.setAlertOpen(true);
       }
     });
-    this.loggedIn$.subscribe((loggedIn: boolean) => {
-      if (loggedIn == true && this.isLoading == false) {
-        this.isLoading = false;
-        this.router.navigate(['/news']);
-      }
-    });
+    // this.loggedIn$.subscribe(async (loggedIn: boolean) => {
+    //   if (loggedIn == true && await loading === false) {
+    //     this.router.navigate(['/news']);
+    //   }
+    // });
     this.error$.subscribe((error: any) => {
-      this.isLoading = false;
-      if(error){
+      if (error) {
         for (const [key, value] of Object.entries(error.error)) {
           this.errorDescription = this.errorDescription + value + ' ';
         }
         this.alertHeader = 'Error';
-        this.alertMessage = 'Something went wrong! ' + this.errorDescription + 'Please try again!';
+        this.alertMessage =
+          'Something went wrong! ' +
+          this.errorDescription +
+          'Please try again!';
         this.alertButtons = [
           {
             text: 'Ok',
             handler: () => {
               this.setAlertOpen(false);
-            }
-          }
+            },
+          },
         ];
         this.setAlertOpen(true);
       }
@@ -117,7 +122,6 @@ export class AuthPage implements OnInit {
 
   login() {
     let formData_: any = new FormData();
-    this.isLoading = true;
     formData_.append('email', this.formData.get('email')!.value);
     formData_.append('password', this.formData.get('password')!.value);
     this.store.dispatch(
@@ -131,7 +135,6 @@ export class AuthPage implements OnInit {
   register() {
     var formData: any = new FormData();
     if (this.formData.valid) {
-      this.isLoading = true;
       formData.append('name', this.formData.get('name')!.value);
       formData.append('email', this.formData.get('email')!.value);
       formData.append('password', this.formData.get('password')!.value);
