@@ -20,7 +20,7 @@ export class LoaderOverlayComponent implements OnInit {
   isLoading: boolean = false;
   constructor(
     public store: Store<{ auth: any }>,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
   ) {
     this.loading$.subscribe((loading) => {
       console.log('loading', loading);

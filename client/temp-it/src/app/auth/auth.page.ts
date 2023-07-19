@@ -56,7 +56,7 @@ export class AuthPage implements OnInit {
     public colorMode: ColorModeService,
     private fb: FormBuilder,
     public store: Store<{ auth: any }>,
-    private router: Router
+    private router: Router,
   ) {
     this.colorMode.darkMode$.subscribe((darkMode) => {
       if (darkMode) {
@@ -128,7 +128,7 @@ export class AuthPage implements OnInit {
       loginUser({
         email: formData_.get('email'),
         password: formData_.get('password'),
-      })
+      }),
     );
   }
 
@@ -144,7 +144,7 @@ export class AuthPage implements OnInit {
           username: formData.get('name'),
           email: formData.get('email'),
           password: formData.get('password'),
-        })
+        }),
       );
     }
   }

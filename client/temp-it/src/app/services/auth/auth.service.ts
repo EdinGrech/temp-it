@@ -10,12 +10,15 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+  ) {}
 
   signUp(
     username: string,
     email: string,
-    password: string
+    password: string,
   ): Observable<UserSignUpResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -33,7 +36,7 @@ export class AuthService {
         environment.apiPort +
         '/api/auth/register/',
       body,
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -54,14 +57,14 @@ export class AuthService {
           environment.apiPort +
           '/api/auth/login/',
         body,
-        httpOptions
+        httpOptions,
       )
       .pipe(
         map((response: any) => {
           console.log(response['jwt token']);
           this.cookieService.set('jwt', response['jwt token']);
           return response;
-        })
+        }),
       );
   }
 
@@ -78,7 +81,7 @@ export class AuthService {
         environment.apiPort +
         '/api/users/logout/',
       {},
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -94,7 +97,7 @@ export class AuthService {
         ':' +
         environment.apiPort +
         '/api/users/profile/',
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -115,7 +118,7 @@ export class AuthService {
         environment.apiPort +
         '/api/users/update/',
       body,
-      httpOptions
+      httpOptions,
     );
   }
 }

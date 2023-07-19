@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
-import {
-  catchError,
-  map,
-  mergeMap,
-  of,
-} from 'rxjs';
+import { catchError, map, mergeMap, of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import {
   loadUser,
@@ -39,10 +34,10 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.getUser().pipe(
           map((user: any) => loadUserSuccess({ user: user })),
-          catchError((error) => of(loadUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error) => of(loadUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   loginUser$ = createEffect(() =>
@@ -51,10 +46,10 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.signInWithEmail(action.email, action.password).pipe(
           map((user: any) => loginUserSuccess({ user })),
-          catchError((error: any) => of(loginUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(loginUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   registerUser$ = createEffect(() =>
@@ -65,10 +60,10 @@ export class UserEffects {
           .signUp(action.username, action.email, action.password)
           .pipe(
             map((user: any) => registerUserSuccess({ user })),
-            catchError((error: any) => of(registerUserFailure({ error })))
-          )
-      )
-    )
+            catchError((error: any) => of(registerUserFailure({ error }))),
+          ),
+      ),
+    ),
   );
 
   updateUser$ = createEffect(() =>
@@ -77,10 +72,10 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.updateUser(action.user).pipe(
           map((user: any) => updateUserSuccess({ user })),
-          catchError((error: any) => of(updateUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(updateUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   logoutUser$ = createEffect(() =>
@@ -89,9 +84,9 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.logout().pipe(
           map(() => logoutUserSuccess()),
-          catchError((error: any) => of(logoutUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(logoutUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 }

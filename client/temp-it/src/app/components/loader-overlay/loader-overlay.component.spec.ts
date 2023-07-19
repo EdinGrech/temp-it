@@ -9,8 +9,8 @@ describe('LoaderOverlayComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoaderOverlayComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [LoaderOverlayComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoaderOverlayComponent);

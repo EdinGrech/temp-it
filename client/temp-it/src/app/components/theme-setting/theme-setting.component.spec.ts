@@ -9,8 +9,8 @@ describe('ThemeSettingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThemeSettingComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ThemeSettingComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ThemeSettingComponent);

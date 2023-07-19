@@ -1,6 +1,11 @@
 <ion-content [fullscreen]="true">
-  <ion-alert [isOpen]="isAlertOpen" header="{{alertHeader}}" message="{{alertMessage}}" [buttons]="alertButtons"
-    (didDismiss)="setAlertOpen(false)"></ion-alert>
+  <ion-alert
+    [isOpen]="isAlertOpen"
+    header="{{alertHeader}}"
+    message="{{alertMessage}}"
+    [buttons]="alertButtons"
+    (didDismiss)="setAlertOpen(false)"
+  ></ion-alert>
   <div>
     <app-theme-setting></app-theme-setting>
     <app-loader-overlay></app-loader-overlay>
@@ -17,11 +22,21 @@
     <form [formGroup]="formData">
       <ion-item fill="outline">
         <ion-label position="floating" class="label-font-fix">Email</ion-label>
-        <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
+        <ion-input
+          formControlName="email"
+          type="email"
+          placeholder="name@domain.com"
+        ></ion-input>
       </ion-item>
       <ion-item fill="outline">
-        <ion-label position="floating" class="label-font-fix">Password</ion-label>
-        <ion-input formControlName="password" type="password" placeholder="super secret password"></ion-input>
+        <ion-label position="floating" class="label-font-fix"
+          >Password</ion-label
+        >
+        <ion-input
+          formControlName="password"
+          type="password"
+          placeholder="super secret password"
+        ></ion-input>
       </ion-item>
       <p class="forget-text">
         <a (click)="change('forget')">Forgot Password?</a>
@@ -29,7 +44,13 @@
       <p class="signup-text">
         I'm a new user&nbsp;<a (click)="change('signup')">Sign Up?</a>
       </p>
-      <ion-button color="primary" class="login-button" (click)="login()" expand="block">Login</ion-button>
+      <ion-button
+        color="primary"
+        class="login-button"
+        (click)="login()"
+        expand="block"
+        >Login</ion-button
+      >
     </form>
   </div>
 
@@ -41,21 +62,43 @@
     <ion-note class="para">Sign up to get started!</ion-note>
     <form [formGroup]="formData">
       <ion-item fill="outline">
-        <ion-label position="floating" class="label-font-fix">Username</ion-label>
-        <ion-input formControlName="name" type="text" placeholder="Max"></ion-input>
+        <ion-label position="floating" class="label-font-fix"
+          >Username</ion-label
+        >
+        <ion-input
+          formControlName="name"
+          type="text"
+          placeholder="Max"
+        ></ion-input>
       </ion-item>
       <ion-item fill="outline">
         <ion-label position="floating" class="label-font-fix">Email</ion-label>
-        <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
+        <ion-input
+          formControlName="email"
+          type="email"
+          placeholder="name@domain.com"
+        ></ion-input>
       </ion-item>
       <ion-item fill="outline">
-        <ion-label position="floating" class="label-font-fix">Password</ion-label>
-        <ion-input formControlName="password" type="password" placeholder="super secret password"></ion-input>
+        <ion-label position="floating" class="label-font-fix"
+          >Password</ion-label
+        >
+        <ion-input
+          formControlName="password"
+          type="password"
+          placeholder="super secret password"
+        ></ion-input>
       </ion-item>
       <p class="signup-text">
         I'm already a member <a (click)="change('signin')">Sign In?</a>
       </p>
-      <ion-button color="primary" class="login-button" (click)="register()" expand="block">Sign Up</ion-button>
+      <ion-button
+        color="primary"
+        class="login-button"
+        (click)="register()"
+        expand="block"
+        >Sign Up</ion-button
+      >
     </form>
   </div>
 
@@ -67,11 +110,17 @@
     <ion-note class="para">Enter Email to reset password</ion-note>
     <ion-item fill="outline">
       <ion-label position="floating" class="label-font-fix">Email</ion-label>
-      <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
+      <ion-input
+        formControlName="email"
+        type="email"
+        placeholder="name@domain.com"
+      ></ion-input>
     </ion-item>
     <p class="signup-text">
       Rememberd Password&nbsp;<a (click)="change('signin')">Sign In?</a>
     </p>
-    <ion-button color="secondary" class="login-button" expand="block">Reset Password</ion-button>
+    <ion-button color="secondary" class="login-button" expand="block"
+      >Reset Password</ion-button
+    >
   </div>
 </ion-content>

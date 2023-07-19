@@ -19,7 +19,11 @@ ion-icon {
 
 .gradient1 {
   //purple gradient for text
-  background: linear-gradient(70deg, var(--ion-color-tertiary, #28b4d7) 60%,var(--ion-color-primary, #2cd8a5) 100%);
+  background: linear-gradient(
+    70deg,
+    var(--ion-color-tertiary, #28b4d7) 60%,
+    var(--ion-color-primary, #2cd8a5) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -33,7 +37,7 @@ ion-icon {
 }
 
 .label-font-fix- {
-  font-size: 22px !important; 
+  font-size: 22px !important;
   margin-top: -3px !important;
 }
 
