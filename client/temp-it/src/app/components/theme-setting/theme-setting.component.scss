@@ -1,16 +1,16 @@
-.theme-cont-side-by-side{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
+.theme-cont-side-by-side {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
 
-ion-segment-button{
+ion-segment-button {
   opacity: 0;
   visibility: hidden;
 }
 
 ion-icon {
-    padding: 5px;
-    font-size: 45px;
-  }
+  padding: 5px;
+  font-size: 45px;
+}

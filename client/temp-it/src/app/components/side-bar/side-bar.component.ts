@@ -23,10 +23,12 @@ import { Router } from '@angular/router';
 export class SideBarComponent implements OnInit {
   constructor(
     private store: Store<{ auth: any; news: any }>,
-    private router: Router
+    private router: Router,
   ) {}
   //user$: Observable<User> = this.store.select((state) => state.auth.user);
-  loggedIn$: Observable<boolean> = this.store.select((state) => state.auth.loggedIn);
+  loggedIn$: Observable<boolean> = this.store.select(
+    (state) => state.auth.loggedIn,
+  );
   email: string = '';
   username: string = '';
   tollerance!: number;

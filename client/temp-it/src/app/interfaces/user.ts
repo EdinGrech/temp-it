@@ -1,7 +1,6 @@
 export interface User {
   username: string;
   email: string;
-  news_tollerance: number | 0;
 }
 
 export interface UserLoginInterface {

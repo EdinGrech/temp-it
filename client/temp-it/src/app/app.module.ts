@@ -28,14 +28,15 @@ import { UserEffects } from './state/user/user.effects';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    StoreModule.forRoot({ auth: userAuthReducer,}),
-    EffectsModule.forRoot([UserEffects,]),
+    StoreModule.forRoot({ auth: userAuthReducer }),
+    EffectsModule.forRoot([UserEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    AuthService,ColorModeService,
+    AuthService,
+    ColorModeService,
   ],
   bootstrap: [AppComponent],
 })

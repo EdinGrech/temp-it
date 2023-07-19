@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ThemeSettingComponent } from './theme-setting.component';
+import { LoaderOverlayComponent } from './loader-overlay.component';
 
-describe('ThemeSettingComponent', () => {
-  let component: ThemeSettingComponent;
-  let fixture: ComponentFixture<ThemeSettingComponent>;
+describe('LoaderOverlayComponent', () => {
+  let component: LoaderOverlayComponent;
+  let fixture: ComponentFixture<LoaderOverlayComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ThemeSettingComponent],
+      declarations: [LoaderOverlayComponent],
       imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ThemeSettingComponent);
+    fixture = TestBed.createComponent(LoaderOverlayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

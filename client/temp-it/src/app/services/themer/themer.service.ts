@@ -28,7 +28,7 @@ export class ColorModeService {
 
   private applyColorModeChanges = (event: any) => {
     this.darkMode$.next(event.matches);
-  }
+  };
 
   private listenToColorModeChanges() {
     this.prefDark.addEventListener('change', this.applyColorModeChanges);
@@ -70,6 +70,6 @@ export class ColorModeService {
    */
   getMode = (): ColorMode => {
     // Get user preferred mode from localStorage and if not set return default
-    return localStorage.getItem('mode') as ColorMode ?? 'auto';
-  }
+    return (localStorage.getItem('mode') as ColorMode) ?? 'auto';
+  };
 }
