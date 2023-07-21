@@ -16,6 +16,8 @@ import {
   selectUserError,
   selectUserLoggedIn,
 } from '../state/user/user.selectors';
+
+import { selectGlobalError } from '../state/global/global.selectors';
 import { loginUser, registerUser } from '../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
@@ -39,7 +41,10 @@ export type Screen = 'signin' | 'signup' | 'forget';
 })
 export class AuthPage implements OnInit {
   screen: Screen = 'signin';
-  formData: FormGroup;
+  loginFormData: FormGroup;
+  signUpFormData: FormGroup;
+
+  globalError$: Observable<any> = this.store.select(selectGlobalError);
 
   user$: Observable<User> = this.store.select(selectUserUser);
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
@@ -55,8 +60,8 @@ export class AuthPage implements OnInit {
   constructor(
     public colorMode: ColorModeService,
     private fb: FormBuilder,
-    public store: Store<{ auth: any }>,
-    private router: Router,
+    public store: Store<{ auth: any; global: any }>,
+    private router: Router
   ) {
     this.colorMode.darkMode$.subscribe((darkMode) => {
       if (darkMode) {
@@ -65,8 +70,27 @@ export class AuthPage implements OnInit {
         document.documentElement.removeAttribute('data-theme');
       }
     });
-    this.formData = this.fb.group({
+    this.globalError$.subscribe((error: any) => {
+      if (error) {
+        this.alertHeader = 'Error';
+        this.alertMessage = 'No connection so server!';
+        this.alertButtons = [
+          {
+            text: 'Ok',
+            handler: () => {
+              this.setAlertOpen(false);
+            },
+          },
+        ];
+        this.setAlertOpen(true);
+      }
+    });
+    this.signUpFormData = this.fb.group({
       name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
+    this.loginFormData = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
@@ -94,6 +118,7 @@ export class AuthPage implements OnInit {
     this.error$.subscribe((error: any) => {
       if (error) {
         for (const [key, value] of Object.entries(error.error)) {
+          console.log(`${key}: ${value}`);
           this.errorDescription = this.errorDescription + value + ' ';
         }
         this.alertHeader = 'Error';
@@ -122,33 +147,38 @@ export class AuthPage implements OnInit {
 
   login() {
     let formData_: any = new FormData();
-    formData_.append('email', this.formData.get('email')!.value);
-    formData_.append('password', this.formData.get('password')!.value);
-    this.store.dispatch(
-      loginUser({
-        email: formData_.get('email'),
-        password: formData_.get('password'),
-      }),
-    );
+    if (this.loginFormData.valid) {
+      formData_.append('email', this.loginFormData.get('email')!.value);
+      formData_.append('password', this.loginFormData.get('password')!.value);
+      this.store.dispatch(
+        loginUser({
+          email: formData_.get('email'),
+          password: formData_.get('password'),
+        })
+      );
+    } else {
+      this.loginFormData.markAllAsTouched();
+    }
   }
 
   register() {
-    var formData: any = new FormData();
-    if (this.formData.valid) {
-      formData.append('name', this.formData.get('name')!.value);
-      formData.append('email', this.formData.get('email')!.value);
-      formData.append('password', this.formData.get('password')!.value);
+    let formData: any = new FormData();
+    if (this.signUpFormData.valid) {
+      formData.append('name', this.signUpFormData.get('name')!.value);
+      formData.append('email', this.signUpFormData.get('email')!.value);
+      formData.append('password', this.signUpFormData.get('password')!.value);
 
       this.store.dispatch(
         registerUser({
           username: formData.get('name'),
           email: formData.get('email'),
           password: formData.get('password'),
-        }),
+        })
       );
+    } else {
+      this.signUpFormData.markAllAsTouched();
     }
   }
-
   setAlertOpen(value: boolean) {
     this.isAlertOpen = value;
   }
