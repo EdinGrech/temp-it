@@ -62,8 +62,6 @@ MIDDLEWARE = [
 
 AUTH_USER_MODEL = "th_auth.th_User"
 
-AUTHENTICATION_BACKENDS = ['backend.EmailBackend.EmailOrUsernameBackend']
-
 ROOT_URLCONF = 'temp_it.urls'
 
 TEMPLATES = [

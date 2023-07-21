@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
-
 from temp_it.settings import DEFAULT_FROM_EMAIL
 
 from .serializer import *
@@ -37,7 +36,11 @@ def login_view(request):
     email_or_username = request.data.get('emailOrUsername')
     password = request.data.get('password')
 
-    user = authenticate(request, username=email_or_username, password=password)
+    if "@" in email_or_username:
+        user_obj = th_User.objects.filter(email = email_or_username).first()
+    else:
+        user_obj = th_User.objects.filter(username = email_or_username).first()
+    user = authenticate(username = user_obj.username, password = password )
 
     if user is not None:
         login(request, user)
