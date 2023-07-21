@@ -34,9 +34,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(['POST'])
 def login_view(request):
-    username = request.data.get('username')
+    email_or_username = request.data.get('emailOrUsername')
     password = request.data.get('password')
-    user = authenticate(request, username=username, password=password)
+
+    user = authenticate(request, username=email_or_username, password=password)
+
     if user is not None:
         login(request, user)
         refresh = RefreshToken.for_user(user)

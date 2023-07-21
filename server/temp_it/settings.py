@@ -57,9 +57,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'temp_it.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 AUTH_USER_MODEL = "th_auth.th_User"
+
+AUTHENTICATION_BACKENDS = ['backend.EmailBackend.EmailOrUsernameBackend']
 
 ROOT_URLCONF = 'temp_it.urls'
 
