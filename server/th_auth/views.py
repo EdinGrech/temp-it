@@ -36,11 +36,14 @@ def login_view(request):
     email_or_username = request.data.get('emailOrUsername')
     password = request.data.get('password')
 
-    if "@" in email_or_username:
-        user_obj = th_User.objects.filter(email = email_or_username).first()
-    else:
-        user_obj = th_User.objects.filter(username = email_or_username).first()
-    user = authenticate(username = user_obj.username, password = password )
+    try:
+        if "@" in email_or_username:
+            user_obj = th_User.objects.filter(email = email_or_username).first()
+        else:
+            user_obj = th_User.objects.filter(username = email_or_username).first()
+        user = authenticate(username = user_obj.username, password = password )
+    except:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
     if user is not None:
         login(request, user)

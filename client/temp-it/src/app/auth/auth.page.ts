@@ -66,13 +66,6 @@ export class AuthPage implements OnInit {
     public store: Store<{ auth: any; global: any }>,
     private router: Router
   ) {
-    this.colorMode.darkMode$.subscribe((darkMode) => {
-      if (darkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
-    });
     this.globalError$.subscribe((error: any) => {
       if (error) {
         this.alertHeader = 'Error';
@@ -154,6 +147,7 @@ export class AuthPage implements OnInit {
     });
     this.error$.subscribe((error: any) => {
       if (error) {
+        console.log(error);
         for (const [key, value] of Object.entries(error.error)) {
           this.errorDescription = value + '. ';
         }

@@ -41,11 +41,15 @@ export class ThemeSettingComponent implements AfterViewInit {
     private animationCtrl: AnimationController,
     private colorMode: ColorModeService,
   ) {
-    if (this.currentColorMode === 'dark') {
-      this.themeIcon = 'moon-outline';
-    } else {
-      this.themeIcon = 'sunny-outline';
-    }
+    this.colorMode.darkMode$.subscribe((darkMode) => {
+      if (darkMode) {
+        this.themeIcon = 'sunny-outline';
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        this.themeIcon = 'moon-outline';
+        document.documentElement.removeAttribute('data-theme');
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -119,11 +123,5 @@ export class ThemeSettingComponent implements AfterViewInit {
   async changeColorScheme(event: any) {
     const colorMode = event.detail.value;
     this.colorMode.setMode(colorMode);
-    // moon-outline sunny-outline
-    if (colorMode === 'dark') {
-      this.themeIcon = 'moon-outline';
-    } else {
-      this.themeIcon = 'sunny-outline';
-    }
   }
 }

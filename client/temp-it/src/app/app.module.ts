@@ -25,6 +25,7 @@ import { globeReduer } from './state/global/global.reducer';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorsInterceptor } from './interceptors/http-errors.interceptor';
+import { HttpHeaddersInterceptor } from './interceptors/http-headders.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +42,7 @@ import { HttpErrorsInterceptor } from './interceptors/http-errors.interceptor';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorsInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpHeaddersInterceptor, multi: true},
     AuthService,
     ColorModeService,
   ],
