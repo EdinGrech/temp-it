@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-//import loading spinner component
 import { IonicModule, LoadingController } from '@ionic/angular';
-//import store
 import { Store } from '@ngrx/store';
-//import user state
 import { selectUserLoading } from 'src/app/state/user/user.selectors';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -19,8 +16,8 @@ export class LoaderOverlayComponent implements OnInit {
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
   isLoading: boolean = false;
   constructor(
-    public store: Store<{ auth: any }>,
-    private loadingController: LoadingController,
+    public store: Store<{ auth: any; global: any }>,
+    private loadingController: LoadingController
   ) {
     this.loading$.subscribe((loading) => {
       console.log('loading', loading);
