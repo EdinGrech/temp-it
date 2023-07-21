@@ -47,7 +47,7 @@ export class AuthService {
       }),
     };
     const body = {
-      email: email,
+      emailOrUsername: email,
       password: password,
     };
     return this.http
@@ -66,6 +66,18 @@ export class AuthService {
           return response;
         }),
       );
+  }
+
+  forgotPassword(email: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+    const body = {
+      email: email,
+    };
+    return this.http.post<any>(environment.motherShipUrl + ':' + environment.apiPort + '/api/auth/forgot-password/', body, httpOptions);
   }
 
   logout() {

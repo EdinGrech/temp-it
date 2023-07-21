@@ -16,11 +16,15 @@ import {
   updateUser,
   updateUserSuccess,
   updateUserFailure,
+  forgotUserPassword,
+  forgotUserPasswordSuccess,
+  forgotUserPasswordFailure,
 } from './user.actions';
 
 export interface UserState {
   user: User;
   error: any;
+  forgotPskProcess: any;
   loading: boolean;
   loggedIn: boolean;
 }
@@ -30,6 +34,7 @@ export const initialState: UserState = {
     username: '',
     email: '',
   },
+  forgotPskProcess: null,
   error: null,
   loading: false,
   loggedIn: false,
@@ -118,4 +123,22 @@ export const userAuthReducer = createReducer(
     error,
     loading: false,
   })),
+  on(forgotUserPassword, (state) => ({
+    ...state,
+    forgotPskProcess: null,
+    error: null,
+    loading: true,
+  })),
+  on(forgotUserPasswordSuccess, (state, { forgotPskState }) => ({
+    ...state,
+    forgotPskProcess: forgotPskState,
+    error: null,
+    loading: false,
+  })),
+  on(forgotUserPasswordFailure, (state, { error }) => ({
+    ...state,
+    forgotPskProcess: null,
+    error,
+    loading: false,
+  }))
 );

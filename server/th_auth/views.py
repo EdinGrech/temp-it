@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
-
 from temp_it.settings import DEFAULT_FROM_EMAIL
 
 from .serializer import *
@@ -34,9 +33,18 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(['POST'])
 def login_view(request):
-    username = request.data.get('username')
+    email_or_username = request.data.get('emailOrUsername')
     password = request.data.get('password')
-    user = authenticate(request, username=username, password=password)
+
+    try:
+        if "@" in email_or_username:
+            user_obj = th_User.objects.filter(email = email_or_username).first()
+        else:
+            user_obj = th_User.objects.filter(username = email_or_username).first()
+        user = authenticate(username = user_obj.username, password = password )
+    except:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
     if user is not None:
         login(request, user)
         refresh = RefreshToken.for_user(user)

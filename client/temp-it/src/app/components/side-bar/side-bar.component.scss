@@ -117,3 +117,56 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+.radio-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 24px;
+  height: 48px;
+}
+
+.radio-icon ion-radio {
+  margin: 0;
+  padding: 0;
+}
+
+ion-icon.selected {
+  color: var(--ion-color-primary);
+  transition: all 0.3s ease-in-out;
+}
+
+ion-radio {
+  width: 0 !important;
+  height: 0 !important;
+  --color:transparent;
+  --color-checked: transparent;
+}
+
+.radio-icon-cont{
+  padding: 15px 2px;
+  width: 92%;
+  height: 56px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.setting-lable{
+  font-size: 20px; 
+  padding-left: 24px; 
+  padding-bottom: 9px
+}
+
+.setting-title{
+  font-size: 24px; 
+  font-weight: 550;
+  padding-bottom: 12px
+}
+
+.main-header{
+  font-size: 27px;
+  font-weight: 600;
+}

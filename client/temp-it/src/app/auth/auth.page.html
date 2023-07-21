@@ -64,14 +64,17 @@
     <ion-list-header class="heading">
       <div>Forgot Password?</div>
     </ion-list-header>
-    <ion-note class="para">Enter Email to reset password</ion-note>
-    <ion-item fill="outline">
-      <ion-label position="floating" class="label-font-fix">Email</ion-label>
-      <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
-    </ion-item>
-    <p class="signup-text">
-      Rememberd Password&nbsp;<a (click)="change('signin')">Sign In?</a>
-    </p>
-    <ion-button color="secondary" class="login-button" expand="block">Reset Password</ion-button>
+    <form [formGroup]="forgotPasswordFormData">
+      <ion-note class="para">Enter Email to reset password</ion-note>
+      <ion-item fill="outline">
+        <ion-label position="floating" class="label-font-fix">Email</ion-label>
+        <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
+      </ion-item>
+      <p class="signup-text">
+        Rememberd Password&nbsp;<a (click)="change('signin')">Sign In?</a>
+      </p>
+      <ion-button color="secondary" (click)="forgotPassword()" class="login-button" expand="block">Reset
+        Password</ion-button>
+    </form>
   </div>
 </ion-content>
