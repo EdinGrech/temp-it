@@ -15,10 +15,11 @@ import {
   selectUserUser,
   selectUserError,
   selectUserLoggedIn,
+  forgotUserPasswordStatus,
 } from '../state/user/user.selectors';
 
 import { selectGlobalError } from '../state/global/global.selectors';
-import { loginUser, registerUser } from '../state/user/user.actions';
+import { forgotUserPassword, loginUser, registerUser } from '../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
 import { Observable, first } from 'rxjs';
@@ -43,6 +44,7 @@ export class AuthPage implements OnInit {
   screen: Screen = 'signin';
   loginFormData: FormGroup;
   signUpFormData: FormGroup;
+  forgotPasswordFormData: FormGroup;
 
   globalError$: Observable<any> = this.store.select(selectGlobalError);
 
@@ -51,6 +53,7 @@ export class AuthPage implements OnInit {
   error$: any = this.store.select(selectUserError);
   errorDescription: string = '';
   loggedIn$: Observable<boolean> = this.store.select(selectUserLoggedIn);
+  forgotPskProcess$: Observable<any> = this.store.select(forgotUserPasswordStatus);
 
   isAlertOpen: boolean = false;
   alertHeader: string = '';
@@ -94,10 +97,13 @@ export class AuthPage implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+    this.forgotPasswordFormData = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
     this.user$.subscribe((user$: User) => {
-      if (user$ && this.error$ == null) {
+      if (user$.username && user$.email) {
         this.alertHeader = 'Success';
-        this.alertMessage = 'You have successfully registered!';
+        this.alertMessage = 'You have successfully registered! Login to continue';
         this.alertButtons = [
           {
             text: 'Ok',
@@ -110,16 +116,46 @@ export class AuthPage implements OnInit {
         this.setAlertOpen(true);
       }
     });
-    // this.loggedIn$.subscribe(async (loggedIn: boolean) => {
-    //   if (loggedIn == true && await loading === false) {
-    //     this.router.navigate(['/news']);
-    //   }
-    // });
+    this.forgotPskProcess$.subscribe((forgotPskProcess$: any) => {
+      if (forgotPskProcess$) {
+        if (forgotPskProcess$.error) {
+          this.alertHeader = 'Error';
+          this.alertMessage = forgotPskProcess$.error;
+          this.alertButtons = [
+            {
+              text: 'Ok',
+              handler: () => {
+                this.setAlertOpen(false);
+              },
+            },
+          ];
+          this.setAlertOpen(true);
+        }
+        else if (forgotPskProcess$.success) {
+          this.alertHeader = 'Success';
+          this.alertMessage = forgotPskProcess$.success;
+          this.alertButtons = [
+            {
+              text: 'Ok',
+              handler: () => {
+                this.screen = 'signin';
+                this.setAlertOpen(false);
+              },
+            },
+          ];
+          this.setAlertOpen(true);
+        }
+      }
+    });
+    this.loggedIn$.subscribe(async (loggedIn: boolean) => {
+      if (loggedIn) {
+        this.router.navigate(['/tabs']);
+      }
+    });
     this.error$.subscribe((error: any) => {
       if (error) {
         for (const [key, value] of Object.entries(error.error)) {
-          console.log(`${key}: ${value}`);
-          this.errorDescription = this.errorDescription + value + ' ';
+          this.errorDescription = value + '. ';
         }
         this.alertHeader = 'Error';
         this.alertMessage =
@@ -177,6 +213,18 @@ export class AuthPage implements OnInit {
       );
     } else {
       this.signUpFormData.markAllAsTouched();
+    }
+  }
+
+  forgotPassword() {
+    if (this.forgotPasswordFormData.valid) {
+      this.store.dispatch(
+        forgotUserPassword({
+          email: this.forgotPasswordFormData.get('email')!.value,
+        })
+      );
+    } else {
+      this.forgotPasswordFormData.markAllAsTouched();
     }
   }
   setAlertOpen(value: boolean) {

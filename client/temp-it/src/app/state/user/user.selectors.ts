@@ -23,3 +23,8 @@ export const selectUserUser = createSelector(
   selectUser,
   (state: UserState) => state.user,
 );
+
+export const forgotUserPasswordStatus = createSelector(
+  selectUser,
+  (state: UserState) => state.forgotPskProcess,
+);

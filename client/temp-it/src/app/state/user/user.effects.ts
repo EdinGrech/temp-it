@@ -19,14 +19,14 @@ import {
   logoutUser,
   logoutUserSuccess,
   logoutUserFailure,
+  forgotUserPassword,
+  forgotUserPasswordSuccess,
+  forgotUserPasswordFailure,
 } from './user.actions';
 
 @Injectable()
 export class UserEffects {
-  constructor(
-    private actions$: Actions,
-    private authService: AuthService,
-  ) {}
+  constructor(private actions$: Actions, private authService: AuthService) {}
 
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -34,10 +34,10 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.getUser().pipe(
           map((user: any) => loadUserSuccess({ user: user })),
-          catchError((error) => of(loadUserFailure({ error }))),
-        ),
-      ),
-    ),
+          catchError((error) => of(loadUserFailure({ error })))
+        )
+      )
+    )
   );
 
   loginUser$ = createEffect(() =>
@@ -46,10 +46,10 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.signInWithEmail(action.email, action.password).pipe(
           map((user: any) => loginUserSuccess({ user })),
-          catchError((error: any) => of(loginUserFailure({ error }))),
-        ),
-      ),
-    ),
+          catchError((error: any) => of(loginUserFailure({ error })))
+        )
+      )
+    )
   );
 
   registerUser$ = createEffect(() =>
@@ -60,10 +60,10 @@ export class UserEffects {
           .signUp(action.username, action.email, action.password)
           .pipe(
             map((user: any) => registerUserSuccess({ user })),
-            catchError((error: any) => of(registerUserFailure({ error }))),
-          ),
-      ),
-    ),
+            catchError((error: any) => of(registerUserFailure({ error })))
+          )
+      )
+    )
   );
 
   updateUser$ = createEffect(() =>
@@ -72,10 +72,10 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.updateUser(action.user).pipe(
           map((user: any) => updateUserSuccess({ user })),
-          catchError((error: any) => of(updateUserFailure({ error }))),
-        ),
-      ),
-    ),
+          catchError((error: any) => of(updateUserFailure({ error })))
+        )
+      )
+    )
   );
 
   logoutUser$ = createEffect(() =>
@@ -84,9 +84,21 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.logout().pipe(
           map(() => logoutUserSuccess()),
-          catchError((error: any) => of(logoutUserFailure({ error }))),
-        ),
-      ),
-    ),
+          catchError((error: any) => of(logoutUserFailure({ error })))
+        )
+      )
+    )
+  );
+
+  forgotUserPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(forgotUserPassword),
+      mergeMap((action) =>
+        this.authService.forgotPassword(action.email).pipe(
+          map((forgotPskState: any) => forgotUserPasswordSuccess({ forgotPskState })),
+          catchError((error: any) => of(forgotUserPasswordFailure({ error })))
+        )
+      )
+    )
   );
 }

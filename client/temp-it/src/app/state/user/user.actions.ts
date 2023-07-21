@@ -66,3 +66,18 @@ export const updateUserFailure = createAction(
   '[User] Update User Failure',
   props<{ error: any }>(),
 );
+
+export const forgotUserPassword = createAction(
+  '[User] Forgot User Password',
+  props<{ email: string }>(),
+);
+
+export const forgotUserPasswordSuccess = createAction(
+  '[User] Forgot User Password Success',
+  props<{ forgotPskState: any }>(),
+);
+
+export const forgotUserPasswordFailure = createAction(
+  '[User] Forgot User Password Failure',
+  props<{ error: any }>(),
+);
