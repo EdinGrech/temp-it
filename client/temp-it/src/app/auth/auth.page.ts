@@ -147,10 +147,8 @@ export class AuthPage implements OnInit {
     });
     this.error$.subscribe((error: any) => {
       if (error) {
-        console.log(error);
-        for (const [key, value] of Object.entries(error.error)) {
-          this.errorDescription = value + '. ';
-        }
+        this.errorDescription = error.error.detail;
+        this.errorDescription = this.errorDescription ? this.errorDescription+'. ' : '';
         this.alertHeader = 'Error';
         this.alertMessage =
           'Something went wrong! ' +
