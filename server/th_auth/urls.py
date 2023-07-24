@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
 
     path('gen-pin/', generate_new_pin, name='generate-new-pin'),
+
+    path('profile/', get_user_details, name='profile'),
     
     path('locked-test/', locked_endpoint, name='locked-test'),
 ]
