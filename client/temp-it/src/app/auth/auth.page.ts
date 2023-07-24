@@ -146,9 +146,14 @@ export class AuthPage implements OnInit {
       }
     });
     this.error$.subscribe((error: any) => {
-      if (error) {
+      if (error.error.detail) {
         this.errorDescription = error.error.detail;
-        this.errorDescription = this.errorDescription ? this.errorDescription+'. ' : '';
+      }
+      else{
+        for (const [key, value] of Object.entries(error.error)) {
+          this.errorDescription = value +' ';
+        }
+      }
         this.alertHeader = 'Error';
         this.alertMessage =
           'Something went wrong! ' +
@@ -163,7 +168,7 @@ export class AuthPage implements OnInit {
           },
         ];
         this.setAlertOpen(true);
-      }
+      
     });
   }
 
