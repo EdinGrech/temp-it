@@ -2,14 +2,14 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab1Page } from './tab1.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { HomePage } from './home.page';
+import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
-import { Tab1PageRoutingModule } from './tab1-routing.module';
-import { ThemeSettingComponent } from "../components/theme-setting/theme-setting.component";
+import { Tab1PageRoutingModule } from './home-routing.module';
+import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
 
 @NgModule({
-    declarations: [Tab1Page],
+    declarations: [HomePage],
     imports: [
         IonicModule,
         CommonModule,
@@ -19,4 +19,4 @@ import { ThemeSettingComponent } from "../components/theme-setting/theme-setting
         ThemeSettingComponent
     ]
 })
-export class Tab1PageModule {}
+export class HomePageModule {}

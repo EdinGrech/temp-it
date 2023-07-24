@@ -4,10 +4,10 @@ export const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
+      import('./Pages/tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   {
     path: 'auth',
-    loadComponent: () => import('./auth/auth.page').then((m) => m.AuthPage),
+    loadComponent: () => import('./Pages/auth/auth.page').then((m) => m.AuthPage),
   },
 ];
