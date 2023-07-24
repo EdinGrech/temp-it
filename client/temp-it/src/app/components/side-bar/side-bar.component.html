@@ -31,17 +31,17 @@
         <ion-label class="setting-label">Theme</ion-label>
         <ion-radio-group (ionChange)="onThemeChange($event)" value="{{ currentColorMode }}">
           <div class="radio-icon-cont">
-            <div>
+            <div class="overlap-positioner">
               <ion-icon class="radio-icon" [ngClass]="{ selected: currentColorMode === 'auto' }"
                 name="refresh-outline"></ion-icon>
               <ion-radio value="auto"></ion-radio>
             </div>
-            <div>
+            <div class="overlap-positioner">
               <ion-icon class="radio-icon" [ngClass]="{ selected: currentColorMode === 'dark' }"
                 name="moon-outline"></ion-icon>
               <ion-radio value="dark"></ion-radio>
             </div>
-            <div>
+            <div class="overlap-positioner">
               <ion-icon class="radio-icon" [ngClass]="{ selected: currentColorMode === 'light' }"
                 name="sunny-outline"></ion-icon>
               <ion-radio value="light"></ion-radio>

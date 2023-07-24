@@ -14,13 +14,13 @@ export class HttpHeaddersInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const jwtToken = this.cookieService.get('jwt');
-    // if (jwtToken !== undefined) {
-    //   request = request.clone({
-    //     setHeaders: {
-    //       'Authorization': `Bearer ${jwtToken}`,
-    //     }
-    //   });
-    // }
+    if (jwtToken) {
+      request = request.clone({
+        setHeaders: {
+          'Authorization': `Bearer ${jwtToken}`,
+        }
+      });
+    }
     return next.handle(request);
   }
 }
