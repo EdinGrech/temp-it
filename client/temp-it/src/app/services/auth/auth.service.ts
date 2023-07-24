@@ -61,8 +61,7 @@ export class AuthService {
       )
       .pipe(
         map((response: any) => {
-          console.log(response['jwt token']);
-          this.cookieService.set('jwt', response['jwt token']);
+          this.cookieService.set('jwt', response['token']);
           return response;
         }),
       );
