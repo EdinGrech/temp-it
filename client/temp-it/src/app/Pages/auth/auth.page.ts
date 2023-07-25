@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ColorModeService } from '../services/themer/themer.service';
-import { User } from '../interfaces/user';
+import { ColorModeService } from '../../services/themer/themer.service';
+import { User } from '../../interfaces/user';
 
-import { ThemeSettingComponent } from '../components/theme-setting/theme-setting.component';
-import { LoaderOverlayComponent } from '../components/loader-overlay/loader-overlay.component';
+import { ThemeSettingComponent } from '../../components/theme-setting/theme-setting.component';
+import { LoaderOverlayComponent } from '../../components/loader-overlay/loader-overlay.component';
 
 import {
   selectUserLoading,
@@ -16,10 +16,10 @@ import {
   selectUserError,
   selectUserLoggedIn,
   forgotUserPasswordStatus,
-} from '../state/user/user.selectors';
+} from '../../state/user/user.selectors';
 
-import { selectGlobalError } from '../state/global/global.selectors';
-import { forgotUserPassword, loginUser, registerUser } from '../state/user/user.actions';
+import { selectGlobalError } from '../../state/global/global.selectors';
+import { forgotUserPassword, loginUser, registerUser } from '../../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
 import { Observable, first } from 'rxjs';
@@ -146,11 +146,14 @@ export class AuthPage implements OnInit {
       }
     });
     this.error$.subscribe((error: any) => {
-      if (error) {
-        console.log(error);
+      if (error.error.detail) {
+        this.errorDescription = error.error.detail;
+      }
+      else{
         for (const [key, value] of Object.entries(error.error)) {
-          this.errorDescription = value + '. ';
+          this.errorDescription = value +' ';
         }
+      }
         this.alertHeader = 'Error';
         this.alertMessage =
           'Something went wrong! ' +
@@ -165,7 +168,7 @@ export class AuthPage implements OnInit {
           },
         ];
         this.setAlertOpen(true);
-      }
+      
     });
   }
 

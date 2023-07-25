@@ -30,6 +30,7 @@ export class AuthService {
       email: email,
       password: password,
     };
+    this.cookieService.delete('jwt');
     return this.http.post<UserSignUpResponse>(
       environment.motherShipUrl +
         ':' +
@@ -50,6 +51,7 @@ export class AuthService {
       emailOrUsername: email,
       password: password,
     };
+    this.cookieService.delete('jwt');
     return this.http
       .post<any>(
         environment.motherShipUrl +
@@ -90,7 +92,7 @@ export class AuthService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/users/logout/',
+        '/api/auth/logout/',
       {},
       httpOptions,
     );
@@ -107,11 +109,12 @@ export class AuthService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/users/profile/',
+        '/api/auth/profile/',
       httpOptions,
     );
   }
 
+  //not implimented on server yet
   updateUser(user: User) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -127,7 +130,7 @@ export class AuthService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/users/update/',
+        '/api/auth/update/',
       body,
       httpOptions,
     );

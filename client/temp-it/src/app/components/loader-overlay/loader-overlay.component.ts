@@ -20,13 +20,11 @@ export class LoaderOverlayComponent implements OnInit {
     private loadingController: LoadingController
   ) {
     this.loading$.subscribe((loading) => {
-      setTimeout(() => {
-        if (loading) {
-          this.presentLoading();
-        } else {
-          this.dismissLoading();
-        }
-      }, 0);
+      if (loading) {
+        this.presentLoading();
+      } else {
+        this.dismissLoading();
+      }
     });
   }
 
@@ -48,7 +46,7 @@ export class LoaderOverlayComponent implements OnInit {
   async dismissLoading() {
     this.isLoading = false;
     this.loadingController
-      .dismiss()
+      .dismiss().catch((error) => {});
   }
 
   ngOnInit() {}

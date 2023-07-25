@@ -130,6 +130,14 @@ def generate_new_pin(request):
     user.set_pin(pin)
     # return the pin
     return Response({'pin': pin})
+
+# get user details from token
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_details(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
     
 
     
