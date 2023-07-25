@@ -8,6 +8,9 @@ import { ExploreContainerComponentModule } from '../../explore-container/explore
 import { Tab1PageRoutingModule } from './home-routing.module';
 import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
 
+//components
+import { SensorSummeryCardComponent } from 'src/app/components/sensor-summery-card/sensor-summery-card.component';
+
 @NgModule({
     declarations: [HomePage],
     imports: [
@@ -16,7 +19,8 @@ import { ThemeSettingComponent } from "../../components/theme-setting/theme-sett
         FormsModule,
         ExploreContainerComponentModule,
         Tab1PageRoutingModule,
-        ThemeSettingComponent
+        ThemeSettingComponent,
+        SensorSummeryCardComponent
     ]
 })
 export class HomePageModule {}

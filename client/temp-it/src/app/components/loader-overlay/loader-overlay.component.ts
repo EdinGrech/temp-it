@@ -46,7 +46,7 @@ export class LoaderOverlayComponent implements OnInit {
   async dismissLoading() {
     this.isLoading = false;
     this.loadingController
-      .dismiss()
+      .dismiss().catch((error) => {});
   }
 
   ngOnInit() {}

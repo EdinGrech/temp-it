@@ -9,8 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HttpClientModule } from '@angular/common/http';
 
+//services
 import { AuthService } from './services/auth/auth.service';
-
 import { ColorModeService } from './services/themer/themer.service';
 
 import { StoreModule } from '@ngrx/store';
