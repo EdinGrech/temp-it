@@ -1,5 +1,5 @@
 import { createReducer, on, createFeature } from '@ngrx/store';
-import { connectionRefuse } from './global.actions';
+import { globalError } from './global.actions';
 
 export interface GlobalState {
   error: any;
@@ -11,7 +11,7 @@ export const initialState: GlobalState = {
 
 export const globeReduer = createReducer(
   initialState,
-  on(connectionRefuse, (state, { error }) => ({
+  on(globalError, (state, { error }) => ({
     ...state,
     error,
   })),

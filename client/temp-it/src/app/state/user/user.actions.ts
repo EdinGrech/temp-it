@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../interfaces/user';
 import { createAction, props } from '@ngrx/store';
 
@@ -25,7 +26,7 @@ export const loginUserSuccess = createAction(
 
 export const loginUserFailure = createAction(
   '[User] Login User Failure',
-  props<{ error: any }>(),
+  props<{ error: HttpErrorResponse }>(),
 );
 
 export const registerUser = createAction(

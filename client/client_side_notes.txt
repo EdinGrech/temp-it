@@ -1,0 +1,11 @@
+Graph docs:
+https://valor-software.com/ng2-charts/#LineChart
+
+using node version: 
+v19.6.0
+
+using npm version:
+9.6.2
+
+using yarn version:
+v1.22.19

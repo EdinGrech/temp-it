@@ -27,6 +27,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorsInterceptor } from './interceptors/http-errors.interceptor';
 import { HttpHeaddersInterceptor } from './interceptors/http-headders.interceptor';
 
+import { LoaderOverlayComponent } from './components/loader-overlay/loader-overlay.component';
+import { AlertHandlerComponent } from './components/alert-handler/alert-handler.component';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -38,6 +41,8 @@ import { HttpHeaddersInterceptor } from './interceptors/http-headders.intercepto
     EffectsModule.forRoot([UserEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
+    LoaderOverlayComponent, 
+    AlertHandlerComponent
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

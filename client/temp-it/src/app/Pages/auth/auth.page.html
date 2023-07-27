@@ -1,9 +1,6 @@
 <ion-content [fullscreen]="true">
-  <ion-alert [isOpen]="isAlertOpen" header="{{alertHeader}}" message="{{alertMessage}}" [buttons]="alertButtons"
-    (didDismiss)="setAlertOpen(false)"></ion-alert>
   <div>
     <app-theme-setting></app-theme-setting>
-    <app-loader-overlay></app-loader-overlay>
   </div>
   <!-- Login Page -->
   <div class="container" *ngIf="screen == 'signin'">

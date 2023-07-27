@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 export class LoaderOverlayComponent implements OnInit {
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
   isLoading: boolean = false;
+  loadingTimeout: number = 5000; // Adjust the timeout duration (in milliseconds) as needed.
+
   constructor(
     public store: Store<{ auth: any; global: any }>,
     private loadingController: LoadingController
@@ -30,23 +32,42 @@ export class LoaderOverlayComponent implements OnInit {
 
   async presentLoading() {
     this.isLoading = true;
-    this.loadingController
-      .create({
-        message: 'Please wait...',
-      })
-      .then((res) => {
-        res.present().then(() => {
-          if (!this.isLoading) {
-            res.dismiss();
-          }
-        });
-      });
+    const loading = await this.loadingController.create({
+      message: 'Please wait...',
+    });
+
+    // Show the loading controller
+    await loading.present();
+
+    // Set a timeout to dismiss the loading controller automatically
+    const timeoutPromise = new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, this.loadingTimeout);
+    });
+
+    // Wait for either the timeout to be reached or isLoading to become false
+    await Promise.race([timeoutPromise, this.dismissManualLoading(loading)]);
   }
 
   async dismissLoading() {
     this.isLoading = false;
-    this.loadingController
-      .dismiss().catch((error) => {});
+    if (this.loadingController) {
+      await this.loadingController.dismiss().catch((error) => {});
+    }
+  }
+
+  async dismissManualLoading(loading: HTMLIonLoadingElement): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (!this.isLoading) {
+          loading.dismiss().then(() => {
+            clearInterval(interval);
+            resolve();
+          });
+        }
+      }, 100);
+    });
   }
 
   ngOnInit() {}

@@ -1585,11 +1585,6 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@kurkle/color@^0.3.0":
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/@kurkle/color/-/color-0.3.2.tgz"
-  integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
-
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
@@ -2926,12 +2921,15 @@ chardet@^0.7.0:
   resolved "https://registry.npmjs.org/chardet/-/chardet-0.7.0.tgz"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-"chart.js@^3.4.0 || ^4.0.0":
-  version "4.3.1"
-  resolved "https://registry.npmjs.org/chart.js/-/chart.js-4.3.1.tgz"
-  integrity sha512-QHuISG3hTJ0ftq0I0f5jqH9mNVO9bqG8P+zvMOVslgKajQVvFEX7QAhYNJ+QEmw+uYTwo8XpTimaB82oeTWjxw==
-  dependencies:
-    "@kurkle/color" "^0.3.0"
+"chart.js@^3.4.0 || ^4.0.0", chart.js@^4.0.0-release, chart.js@>=4.0.0:
+  version "4.0.0-release"
+  resolved "https://registry.npmjs.org/chart.js/-/chart.js-4.0.0-release.tgz"
+  integrity sha512-RqiYlvc/DN38pqJdmGoQnBqvHtWNLF0wlC8k+/5vZtL50Td2JhifsQVKxGf9XcuY9HpnEoNYxM9D4+86w70nkA==
+
+chartjs-plugin-annotation@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/chartjs-plugin-annotation/-/chartjs-plugin-annotation-3.0.1.tgz"
+  integrity sha512-hlIrXXKqSDgb+ZjVYHefmlZUXK8KbkCPiynSVrTb/HjTMkT62cOInaT1NTQCKtxKKOm9oHp958DY3RTAFKtkHg==
 
 chokidar@^3.0.0, chokidar@^3.5.1, chokidar@^3.5.2, chokidar@^3.5.3, "chokidar@>=3.0.0 <4.0.0", chokidar@3.5.3:
   version "3.5.3"
