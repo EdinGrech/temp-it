@@ -8,23 +8,19 @@ import { ColorModeService } from '../../services/themer/themer.service';
 import { User } from '../../interfaces/user';
 
 import { ThemeSettingComponent } from '../../components/theme-setting/theme-setting.component';
-import { LoaderOverlayComponent } from '../../components/loader-overlay/loader-overlay.component';
 
 import {
   selectUserLoading,
   selectUserUser,
-  selectUserError,
   selectUserLoggedIn,
   forgotUserPasswordStatus,
 } from '../../state/user/user.selectors';
 
-import { selectGlobalError } from '../../state/global/global.selectors';
 import { forgotUserPassword, loginUser, registerUser } from '../../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
-import { Observable, first } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 
 export type Screen = 'signin' | 'signup' | 'forget';
 @Component({
@@ -38,7 +34,6 @@ export type Screen = 'signin' | 'signup' | 'forget';
     FormsModule,
     ReactiveFormsModule,
     ThemeSettingComponent,
-    LoaderOverlayComponent,
   ],
 })
 export class AuthPage implements OnInit {
@@ -47,19 +42,10 @@ export class AuthPage implements OnInit {
   signUpFormData: FormGroup;
   forgotPasswordFormData: FormGroup;
 
-  globalError$: Observable<HttpErrorResponse> = this.store.select(selectGlobalError);
-
   user$: Observable<User> = this.store.select(selectUserUser);
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
-  error$: any = this.store.select(selectUserError);
-  errorDescription: string = '';
   loggedIn$: Observable<boolean> = this.store.select(selectUserLoggedIn);
   forgotPskProcess$: Observable<any> = this.store.select(forgotUserPasswordStatus);
-
-  isAlertOpen: boolean = false;
-  alertHeader: string = '';
-  alertMessage: string = '';
-  alertButtons: any;
 
   constructor(
     public colorMode: ColorModeService,
@@ -67,58 +53,6 @@ export class AuthPage implements OnInit {
     public store: Store<{ auth: any; global: any }>,
     private router: Router
   ) {
-    this.globalError$.subscribe((error: HttpErrorResponse) => {
-      if (error) {
-        let errorText: string = '';
-        if (error.error.detail) {
-          error.error.detail.forEach((errorObj: { value: string; }) => {
-            errorText = errorText + ' ' + errorObj.value;
-          }); 
-        } else if (error.error) {
-          errorText = error.error.error;
-        } else {
-          errorText = 'Something went wrong! Please try again!';
-        }
-        this.alertHeader = 'Error';
-        this.alertMessage = errorText;
-        this.alertButtons = [
-          {
-            text: 'Ok',
-            handler: () => {
-              this.setAlertOpen(false);
-            },
-          },
-        ];
-        this.setAlertOpen(true);
-      }
-    });
-    this.error$.subscribe((error: HttpErrorResponse) => {
-      let errorText: string = '';
-        if (error.error.detail) {
-          error.error.detail.forEach((errorObj: { value: string; }) => {
-            errorText = errorText + ' ' + errorObj.value;
-          }); 
-        } else if (error.error) {
-          errorText = error.error.error;
-        } else {
-          errorText = 'Something went wrong! Please try again!';
-        }
-        this.alertHeader = 'Error';
-        this.alertMessage =
-          'Something went wrong! ' +
-          errorText +
-          'Please try again!';
-        this.alertButtons = [
-          {
-            text: 'Ok',
-            handler: () => {
-              this.setAlertOpen(false);
-            },
-          },
-        ];
-        this.setAlertOpen(true);
-      
-    });
     this.signUpFormData = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -130,53 +64,6 @@ export class AuthPage implements OnInit {
     });
     this.forgotPasswordFormData = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-    });
-    this.user$.subscribe((user$: User) => {
-      if (user$.username && user$.email) {
-        this.alertHeader = 'Success';
-        this.alertMessage = 'You have successfully registered! Login to continue';
-        this.alertButtons = [
-          {
-            text: 'Ok',
-            handler: () => {
-              this.screen = 'signin';
-              this.setAlertOpen(false);
-            },
-          },
-        ];
-        this.setAlertOpen(true);
-      }
-    });
-    this.forgotPskProcess$.subscribe((forgotPskProcess$: any) => {
-      if (forgotPskProcess$) {
-        if (forgotPskProcess$.error) {
-          this.alertHeader = 'Error';
-          this.alertMessage = forgotPskProcess$.error;
-          this.alertButtons = [
-            {
-              text: 'Ok',
-              handler: () => {
-                this.setAlertOpen(false);
-              },
-            },
-          ];
-          this.setAlertOpen(true);
-        }
-        else if (forgotPskProcess$.success) {
-          this.alertHeader = 'Success';
-          this.alertMessage = forgotPskProcess$.success;
-          this.alertButtons = [
-            {
-              text: 'Ok',
-              handler: () => {
-                this.screen = 'signin';
-                this.setAlertOpen(false);
-              },
-            },
-          ];
-          this.setAlertOpen(true);
-        }
-      }
     });
     this.loggedIn$.subscribe(async (loggedIn: boolean) => {
       if (loggedIn) {
@@ -236,8 +123,5 @@ export class AuthPage implements OnInit {
     } else {
       this.forgotPasswordFormData.markAllAsTouched();
     }
-  }
-  setAlertOpen(value: boolean) {
-    this.isAlertOpen = value;
   }
 }

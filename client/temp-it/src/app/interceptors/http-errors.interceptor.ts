@@ -12,25 +12,24 @@ import { Store } from '@ngrx/store';
 import { globalError } from '../state/global/global.actions';
 
 import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {
 
   constructor(
     public store: Store<{global: any}>,
-    private cookieService: CookieService,) {}
+    private cookieService: CookieService,
+    private router: Router) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(request: HttpRequest<HttpErrorResponse>, next: HttpHandler): Observable<HttpEvent<HttpErrorResponse>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         // Handle connection refused error
-        if (error.status === 0) {
-          this.store.dispatch(globalError({ error }));
-          return throwError('Connection refused. Please check your internet connection.');
+        if (error.status == 0) {
+          error.error.error = 'No connection to server.';
         } else if (error.status === 401) {
-          // Handle 401 error
-          this.store.dispatch(globalError({ error }));
           this.cookieService.delete('jwt');
-          return throwError('Unauthorized');
+          this.router.navigate(['/auth']);
         }
         return throwError(error);
       })
