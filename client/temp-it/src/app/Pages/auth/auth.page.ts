@@ -24,6 +24,7 @@ import { forgotUserPassword, loginUser, registerUser } from '../../state/user/us
 import { Store } from '@ngrx/store';
 import { Observable, first } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export type Screen = 'signin' | 'signup' | 'forget';
 @Component({
@@ -46,7 +47,7 @@ export class AuthPage implements OnInit {
   signUpFormData: FormGroup;
   forgotPasswordFormData: FormGroup;
 
-  globalError$: Observable<any> = this.store.select(selectGlobalError);
+  globalError$: Observable<HttpErrorResponse> = this.store.select(selectGlobalError);
 
   user$: Observable<User> = this.store.select(selectUserUser);
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
@@ -66,10 +67,20 @@ export class AuthPage implements OnInit {
     public store: Store<{ auth: any; global: any }>,
     private router: Router
   ) {
-    this.globalError$.subscribe((error: any) => {
+    this.globalError$.subscribe((error: HttpErrorResponse) => {
       if (error) {
+        let errorText: string = '';
+        if (error.error.detail) {
+          error.error.detail.forEach((errorObj: { value: string; }) => {
+            errorText = errorText + ' ' + errorObj.value;
+          }); 
+        } else if (error.error) {
+          errorText = error.error.error;
+        } else {
+          errorText = 'Something went wrong! Please try again!';
+        }
         this.alertHeader = 'Error';
-        this.alertMessage = 'No connection so server!';
+        this.alertMessage = errorText;
         this.alertButtons = [
           {
             text: 'Ok',
@@ -80,6 +91,33 @@ export class AuthPage implements OnInit {
         ];
         this.setAlertOpen(true);
       }
+    });
+    this.error$.subscribe((error: HttpErrorResponse) => {
+      let errorText: string = '';
+        if (error.error.detail) {
+          error.error.detail.forEach((errorObj: { value: string; }) => {
+            errorText = errorText + ' ' + errorObj.value;
+          }); 
+        } else if (error.error) {
+          errorText = error.error.error;
+        } else {
+          errorText = 'Something went wrong! Please try again!';
+        }
+        this.alertHeader = 'Error';
+        this.alertMessage =
+          'Something went wrong! ' +
+          errorText +
+          'Please try again!';
+        this.alertButtons = [
+          {
+            text: 'Ok',
+            handler: () => {
+              this.setAlertOpen(false);
+            },
+          },
+        ];
+        this.setAlertOpen(true);
+      
     });
     this.signUpFormData = this.fb.group({
       name: ['', [Validators.required]],
@@ -144,31 +182,6 @@ export class AuthPage implements OnInit {
       if (loggedIn) {
         this.router.navigate(['/tabs']);
       }
-    });
-    this.error$.subscribe((error: any) => {
-      if (error.error.detail) {
-        this.errorDescription = error.error.detail;
-      }
-      else{
-        for (const [key, value] of Object.entries(error.error)) {
-          this.errorDescription = value +' ';
-        }
-      }
-        this.alertHeader = 'Error';
-        this.alertMessage =
-          'Something went wrong! ' +
-          this.errorDescription +
-          'Please try again!';
-        this.alertButtons = [
-          {
-            text: 'Ok',
-            handler: () => {
-              this.setAlertOpen(false);
-            },
-          },
-        ];
-        this.setAlertOpen(true);
-      
     });
   }
 

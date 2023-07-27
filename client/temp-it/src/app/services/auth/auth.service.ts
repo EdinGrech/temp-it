@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { User, UserSignUpResponse } from 'src/app/interfaces/user';
 
 import { CookieService } from 'ngx-cookie-service';
 
+import { Store } from '@ngrx/store';
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(
-    private http: HttpClient,
-    private cookieService: CookieService,
-  ) {}
+  constructor(private http: HttpClient, private cookieService: CookieService, public store: Store<{global: any}>,) {}
 
   signUp(
     username: string,
     email: string,
-    password: string,
+    password: string
   ): Observable<UserSignUpResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -37,8 +36,11 @@ export class AuthService {
         environment.apiPort +
         '/api/auth/register/',
       body,
-      httpOptions,
-    );
+      httpOptions
+    ).pipe(
+      catchError((error: any) => {
+      return throwError(error);
+    }));
   }
 
   signInWithEmail(email: string, password: string) {
@@ -59,13 +61,16 @@ export class AuthService {
           environment.apiPort +
           '/api/auth/login/',
         body,
-        httpOptions,
+        httpOptions
       )
       .pipe(
         map((response: any) => {
           this.cookieService.set('jwt', response['token']);
           return response;
         }),
+        catchError((error: any) => {
+          return throwError(error);
+        })
       );
   }
 
@@ -78,7 +83,17 @@ export class AuthService {
     const body = {
       email: email,
     };
-    return this.http.post<any>(environment.motherShipUrl + ':' + environment.apiPort + '/api/auth/forgot-password/', body, httpOptions);
+    return this.http.post<any>(
+      environment.motherShipUrl +
+        ':' +
+        environment.apiPort +
+        '/api/auth/forgot-password/',
+      body,
+      httpOptions
+    ).pipe(
+      catchError((error: any) => {
+      return throwError(error);
+    }));
   }
 
   logout() {
@@ -94,7 +109,7 @@ export class AuthService {
         environment.apiPort +
         '/api/auth/logout/',
       {},
-      httpOptions,
+      httpOptions
     );
   }
 
@@ -102,7 +117,6 @@ export class AuthService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.cookieService.get('jwt'),
       }),
     };
     return this.http.get<User>(
@@ -110,16 +124,17 @@ export class AuthService {
         ':' +
         environment.apiPort +
         '/api/auth/profile/',
-      httpOptions,
-    );
+      httpOptions
+    ).pipe(
+      catchError((error: any) => {
+      return throwError(error);
+    }));
   }
 
-  //not implimented on server yet
   updateUser(user: User) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + this.cookieService.get('jwt'),
       }),
     };
     const body = {
@@ -132,7 +147,10 @@ export class AuthService {
         environment.apiPort +
         '/api/auth/update/',
       body,
-      httpOptions,
-    );
+      httpOptions
+    ).pipe(
+      catchError((error: any) => {
+      return throwError(error);
+    }));
   }
 }

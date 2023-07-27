@@ -23,6 +23,7 @@ import {
   forgotUserPasswordSuccess,
   forgotUserPasswordFailure,
 } from './user.actions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class UserEffects {
@@ -46,7 +47,7 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.signInWithEmail(action.email, action.password).pipe(
           map((user: any) => loginUserSuccess({ user })),
-          catchError((error: any) => of(loginUserFailure({ error })))
+          catchError((error: HttpErrorResponse) => of(loginUserFailure({ error })))
         )
       )
     )
