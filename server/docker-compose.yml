@@ -12,7 +12,7 @@ services:
       - postgres
       - redis
     volumes:
-      ${STORE_MODE:-local_data}:/app/data
+      - ${DATA_VOLUME}:/app/data
 
   postgres:
     image: postgres:latest
@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     volumes:
-      ${STORE_MODE:-local_data}:/var/lib/postgresql/data
+      - ${DATA_VOLUME}:/var/lib/postgresql/data
 
   redis:
     image: redis:latest
@@ -30,6 +30,7 @@ services:
 
 volumes:
   local_data:  # Local volume for data when SMB is not configured
+    driver: local
   smb_data:
     driver_opts:
       type: cifs

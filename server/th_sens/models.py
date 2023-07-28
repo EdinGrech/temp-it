@@ -1,10 +1,11 @@
 from django.db import models
 from th_auth.models import th_User
 class SensorDetails(models.Model):
-    high_temp_alert = models.FloatField()
-    low_temp_alert = models.FloatField()
-    high_humidity_alert = models.FloatField()
-    low_humidity_alert = models.FloatField()
+    high_temp_alert = models.FloatField(null=True)
+    low_temp_alert = models.FloatField(null=True)
+    high_humidity_alert = models.FloatField(null=True)
+    low_humidity_alert = models.FloatField(null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     date_created = models.DateTimeField(auto_now_add=True)
     user_id_owner = models.ForeignKey( th_User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
