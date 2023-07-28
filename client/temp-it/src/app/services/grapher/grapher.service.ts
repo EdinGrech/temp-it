@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -10,4 +10,16 @@ import { environment } from 'src/environments/environment';
 export class GrapherService {
 
   constructor(private http: HttpClient) { }
+
+    get24HoursTempHumData(): Observable<any> {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      };
+      return this.http.get<any>(`${environment.motherShipUrl}/temp-hum/24-hours`,httpOptions).pipe(
+        catchError((error: HttpErrorResponse) => {
+        return throwError(error);
+      }));
+  }
 }
