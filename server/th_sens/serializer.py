@@ -2,13 +2,11 @@ import random
 import string
 from .models import SensorReading, SensorDetails
 from rest_framework import serializers
-from th_auth.models import th_User
 
 class SensorReadingsSerializer(serializers.ModelSerializer):
-    sensor_id = serializers.IntegerField(read_only=True)
-    date_time = serializers.DateTimeField(read_only=True)
-    temperature = serializers.FloatField(read_only=True)
-    humidity = serializers.FloatField(read_only=True)
+    date_time = serializers.DateTimeField()
+    temperature = serializers.FloatField()
+    humidity = serializers.FloatField()
 
     class Meta:
         model = SensorReading
@@ -20,19 +18,21 @@ class SensorReadingsSerializer(serializers.ModelSerializer):
             'temperature': {'required':True, 'help_text':'Temperature in Celsius'},
             'humidity': {'required':True, 'help_text':'Humidity in %'},
         }
-    
-    def create(self, validated_data):
-        sensor_id = validated_data.pop('sensor_id')
-        try:
-            sensor = SensorDetails.objects.get(sensor_id=sensor_id)
-        except SensorDetails.DoesNotExist:
-            raise serializers.ValidationError(
-                {"sensor_id": "Sensor with ID " + sensor_id + " does not exist."}
-            )
-        validated_data['sensor_id_id'] = sensor.sensor_id
-        instance = SensorReading.objects.create(**validated_data)
-        instance.save()
-        return instance
+
+class SensorReadingsSerializerWithoutID(serializers.ModelSerializer):
+    date_time = serializers.DateTimeField()
+    temperature = serializers.FloatField()
+    humidity = serializers.FloatField()
+
+    class Meta:
+        model = SensorReading
+        fields = ['date_time', 'temperature', 'humidity']
+
+        extra_kwargs = {
+            'date_time': {'required': True, 'help_text': 'Date and time of measurement'},
+            'temperature': {'required': True, 'help_text': 'Temperature in Celsius'},
+            'humidity': {'required': True, 'help_text': 'Humidity in %'},
+        }
 
 class SensorDetailsSerializer(serializers.ModelSerializer):
     date_created = serializers.DateTimeField(read_only=True)
@@ -44,7 +44,7 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SensorDetails
-        fields = ['sensor_id', 'access_token', 'allow_group_admins_to_edit', 'date_created', 'name', 'location', 'description', 'active']
+        fields = ['access_token', 'date_created', 'name', 'location', 'description', 'active']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},
@@ -64,19 +64,6 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
         token = f"{user_id}{random_token}{sensor_id}"
         instance.access_token = token
         instance.save()
-        return instance
-
-    def create(self, validated_data):
-        user_email = validated_data.pop('user_email_owner')
-        try:
-            user = th_User.objects.get(email=user_email)
-        except th_User.DoesNotExist:
-            raise serializers.ValidationError(
-                {"user_email_owner": "User with email " + user_email + " does not exist."}
-            )
-        validated_data['user_id_owner_id'] = user.id
-
-        instance = SensorDetails.objects.create(**validated_data)
         return instance
     
     def update(self, instance, validated_data):
