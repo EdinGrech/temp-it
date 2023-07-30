@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Modal Title</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="wifiForm" (ngSubmit)="submitForm()">
+    <ion-item>
+      <ion-label floating>Pin</ion-label>
+      <ion-input type="text" formControlName="pin"></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label floating>Wifi Name</ion-label>
+      <ion-input type="text" formControlName="wifiName"></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label floating>Wifi Password</ion-label>
+      <ion-input type="password" formControlName="wifiPassword"></ion-input>
+    </ion-item>
+  
+    <ion-button expand="full" type="submit" [disabled]="!wifiForm.valid">Submit</ion-button>
+  </form>
+</ion-content>
