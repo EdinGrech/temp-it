@@ -41,7 +41,7 @@ def login_view(request):
             user_obj = th_User.objects.filter(email = email_or_username).first()
         else:
             user_obj = th_User.objects.filter(username = email_or_username).first()
-        user = authenticate(username = user_obj.username, password = password )
+        user = authenticate(username=user_obj, password=password)
     except:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -122,8 +122,6 @@ def logout_view(request):
 def generate_new_pin(request):
     # create a randome pin, save it to the user and return it
     user:th_User = request.user
-    # print user object type 
-    print(type(user))
     # create a new pin
     pin = random.randint(100000, 999999)
     # save the pin to the user

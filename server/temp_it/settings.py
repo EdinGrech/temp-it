@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -62,6 +63,10 @@ MIDDLEWARE = [
 
 AUTH_USER_MODEL = "th_auth.th_User"
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+]
+
 ROOT_URLCONF = 'temp_it.urls'
 
 TEMPLATES = [
@@ -86,6 +91,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set the desired lifetime for the access token
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=7),  # Set the sliding token refresh lifetime (optional)
+    'SLIDING_TOKEN_REFRESH_LIFETIME_GRACE_PERIOD': timedelta(days=7),  # Set the sliding token grace period (optional)
+    'ROTATE_REFRESH_TOKENS': False,  # Set to True if you want to rotate refresh tokens on each request (optional)
 }
 
 # Database
