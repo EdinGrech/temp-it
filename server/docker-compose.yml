@@ -4,6 +4,14 @@ services:
   django:
     build:
       context: .
+      args:
+        SUPERUSER_USERNAME: ${SUPERUSER_USERNAME}
+        SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
+        SUPERUSER_EMAIL: ${SUPERUSER_EMAIL}
+    environment:
+      - SUPERUSER_USERNAME=${SUPERUSER_USERNAME}
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
+      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
     ports:
       - 8000:8000
     env_file:

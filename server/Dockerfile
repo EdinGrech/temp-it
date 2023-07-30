@@ -19,7 +19,15 @@ COPY . /app
 # Expose the port on which Django runs
 EXPOSE 8000
 
-# Create and run a shell script for migrations and server start
-RUN echo "#!/bin/sh\npython manage.py makemigrations\npython manage.py migrate\npython manage.py runserver 0.0.0.0:8000" > /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
+ARG SUPERUSER_USERNAME=admin
+ARG SUPERUSER_PASSWORD=admin
+ARG SUPERUSER_EMAIL=cheese@mail.com
+
+# Copy the setup.sh file into the container
+COPY setup.sh /setup.sh
+
+# Make the script executable
+RUN chmod +x /setup.sh
+
+# Execute the setup.sh script as the entrypoint
+ENTRYPOINT ["/setup.sh"]
