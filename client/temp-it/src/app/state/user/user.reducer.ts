@@ -19,11 +19,16 @@ import {
   forgotUserPassword,
   forgotUserPasswordSuccess,
   forgotUserPasswordFailure,
+  requestUserPin,
+  requestUserPinFailure,
+  requestUserPinSuccess,
 } from './user.actions';
 
 export interface UserState {
   user: User;
   error: any;
+  pin?: number;
+  pinDateAdded?: Date;
   forgotPskProcess: any;
   loading: boolean;
   loggedIn: boolean;
@@ -140,5 +145,17 @@ export const userAuthReducer = createReducer(
     forgotPskProcess: null,
     error,
     loading: false,
-  }))
+  })),
+  on(requestUserPin, (state) => ({
+    ...state,
+  })),
+  on(requestUserPinSuccess, (state, { pin }) => ({
+    ...state,
+    pin: pin,
+    pinDateAdded: new Date(),
+  })),
+  on(requestUserPinFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
 );

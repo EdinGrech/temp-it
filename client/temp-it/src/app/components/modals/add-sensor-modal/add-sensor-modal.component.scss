@@ -1,0 +1,26 @@
+.connection-test-results{
+    display: flex;
+    align-items: center;
+    height: 50px;
+
+    ion-text{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 18px;
+        ion-icon{
+            font-size: 24px;
+            margin-right: 3px;
+        }
+    }
+
+    ion-spinner{
+        margin-right: 3px;
+    }
+}
+
+.formButton{
+    margin-top: 23px;
+}

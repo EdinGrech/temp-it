@@ -1,29 +1,76 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Modal Title</ion-title>
+    <ion-title>Add Sensor</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="wifiForm" (ngSubmit)="submitForm()">
-    <ion-item>
-      <ion-label floating>Pin</ion-label>
-      <ion-input type="text" formControlName="pin"></ion-input>
-    </ion-item>
-  
-    <ion-item>
-      <ion-label floating>Wifi Name</ion-label>
-      <ion-input type="text" formControlName="wifiName"></ion-input>
-    </ion-item>
-  
-    <ion-item>
-      <ion-label floating>Wifi Password</ion-label>
-      <ion-input type="password" formControlName="wifiPassword"></ion-input>
-    </ion-item>
-  
-    <ion-button expand="full" type="submit" [disabled]="!wifiForm.valid">Submit</ion-button>
-  </form>
+  <!-- connection test section, test button/refresh and text with icon -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Connection Test</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="connection-test-results">
+        <!-- spinner while loading -->
+        <ion-text
+        color="danger"
+        *ngIf="!connectionTested && connectionTested !== null"
+        >
+        <ion-icon name="close-circle-outline"></ion-icon>
+        Connection Failed
+      </ion-text>
+      <ion-text color="success" *ngIf="connectionTested">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        Connection Successful
+      </ion-text>
+      <ion-spinner
+        *ngIf="testLoading"
+        name="crescent"
+        color="primary"
+      ></ion-spinner>
+    </div>
+      <ion-button expand="full" shape="round" (click)="testConnection()"
+        >Test Connection</ion-button
+      >
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Sensor Connection Details</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- spinner with text 'generating pin' -->
+      <div class="connection-test-results" *ngIf="!wifiForm">
+        <ion-spinner
+          name="crescent"
+          color="primary"
+        ></ion-spinner>
+        <ion-text>Generating Pin</ion-text>
+      </div>
+      <form [@formAnimation] *ngIf="wifiForm" [formGroup]="wifiForm" (ngSubmit)="submitForm()">
+        <ion-item>
+          <ion-label floating>Pin:</ion-label>
+          <ion-input type="text" formControlName="pin"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label floating>Wifi Name:</ion-label>
+          <ion-input type="text" formControlName="wifiName"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label floating>Wifi Password:</ion-label>
+          <ion-input type="password" formControlName="wifiPassword"></ion-input>
+        </ion-item>
+
+        <ion-button class="formButton" expand="full" shape="round" type="submit" [disabled]="!wifiForm.valid">Submit</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

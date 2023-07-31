@@ -82,3 +82,14 @@ export const forgotUserPasswordFailure = createAction(
   '[User] Forgot User Password Failure',
   props<{ error: any }>(),
 );
+export const requestUserPin = createAction(
+  '[User] Request User Pin',
+);
+export const requestUserPinSuccess = createAction(
+  '[User] Request User Pin Success',
+  props<{ pin: number }>(),
+);
+export const requestUserPinFailure = createAction(
+  '[User] Request User Pin Failure',
+  props<{ error: any }>(),
+);

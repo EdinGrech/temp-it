@@ -28,3 +28,13 @@ export const forgotUserPasswordStatus = createSelector(
   selectUser,
   (state: UserState) => state.forgotPskProcess,
 );
+
+export const userAddSensorPin = createSelector(
+  selectUser,
+  (state: UserState) => state.pin
+);
+
+export const userAddSensorPinDateAdded = createSelector(
+  selectUser,
+  (state: UserState) => state.pinDateAdded
+);

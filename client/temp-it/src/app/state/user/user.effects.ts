@@ -22,12 +22,16 @@ import {
   forgotUserPassword,
   forgotUserPasswordSuccess,
   forgotUserPasswordFailure,
+  requestUserPin,
+  requestUserPinFailure,
+  requestUserPinSuccess,
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PinService } from 'src/app/services/user/pin.service';
 
 @Injectable()
 export class UserEffects {
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  constructor(private actions$: Actions, private authService: AuthService, private pinService: PinService) {}
 
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -98,6 +102,18 @@ export class UserEffects {
         this.authService.forgotPassword(action.email).pipe(
           map((forgotPskState: any) => forgotUserPasswordSuccess({ forgotPskState })),
           catchError((error: any) => of(forgotUserPasswordFailure({ error })))
+        )
+      )
+    )
+  );
+
+  requestUserPin$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestUserPin),
+      mergeMap(() =>
+        this.pinService.getUserPin().pipe(
+          map((pin: number) => requestUserPinSuccess({ pin })),
+          catchError((error: any) => of(requestUserPinFailure({ error })))
         )
       )
     )
