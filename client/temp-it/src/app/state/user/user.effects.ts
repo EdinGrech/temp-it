@@ -25,13 +25,25 @@ import {
   requestUserPin,
   requestUserPinFailure,
   requestUserPinSuccess,
+  requestUserSensors,
+  requestUserSensorsSuccess,
+  requestUserSensorsFailure,
+  requestUserSensorLen,
+  requestUserSensorLenSuccess,
+  requestUserSensorLenFailure,
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PinService } from 'src/app/services/user/pin/pin.service';
+import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
 @Injectable()
 export class UserEffects {
-  constructor(private actions$: Actions, private authService: AuthService, private pinService: PinService) {}
+  constructor(
+    private actions$: Actions, 
+    private authService: AuthService, 
+    private pinService: PinService,
+    private sensorService: SensorService,) {}
 
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -114,6 +126,30 @@ export class UserEffects {
         this.pinService.getUserPin().pipe(
           map((pin: number) => requestUserPinSuccess({ pin })),
           catchError((error: any) => of(requestUserPinFailure({ error })))
+        )
+      )
+    )
+  );
+
+  requestUserSensors$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestUserSensors),
+      mergeMap(() =>
+        this.sensorService.getUserSensors().pipe(
+          map((sensors: any) => requestUserSensorsSuccess({ sensors })),
+          catchError((error: any) => of(requestUserSensorsFailure({ error })))
+        )
+      )
+    )
+  );
+
+  requestUserSensorLen$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestUserSensorLen),
+      mergeMap(() =>
+        this.sensorService.getUserSensorsCount().pipe(
+          map((sensorLen: number) => requestUserSensorLenSuccess({ sensorLen })),
+          catchError((error: any) => of(requestUserSensorLenFailure({ error })))
         )
       )
     )

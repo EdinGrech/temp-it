@@ -47,4 +47,13 @@ export class SensorService {
         '/api/temp/sensors'
     )
   }
+
+  getUserSensorsCount():Observable<number>{
+    return this.http.get<number>(
+      environment.motherShipUrl +
+        ':' +
+        environment.apiPort +
+        '/api/temp/my-sensors-count'
+    )
+  }
 }

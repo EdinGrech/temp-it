@@ -38,3 +38,23 @@ export const userAddSensorPinDateAdded = createSelector(
   selectUser,
   (state: UserState) => state.pinDateAdded
 );
+
+export const selectUserSensors = createSelector(
+  selectUser,
+  (state: UserState) => state.sensors
+);
+
+export const selectUserSensorsLoading = createSelector(
+  selectUser,
+  (state: UserState) => state.loadingSensors
+);
+
+export const selectUserSensorsError = createSelector(
+  selectUser,
+  (state: UserState) => state.sensorError
+);
+
+export const selectUserSensorsLen = createSelector(
+  selectUser,
+  (state: UserState) => state.sensorLen
+);

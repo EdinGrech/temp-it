@@ -22,7 +22,13 @@ import {
   requestUserPin,
   requestUserPinFailure,
   requestUserPinSuccess,
+  requestUserSensors,
+  requestUserSensorsSuccess,
+  requestUserSensorsFailure,
+  requestUserSensorLen,
+  requestUserSensorLenSuccess,
 } from './user.actions';
+import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 
 export interface UserState {
   user: User;
@@ -32,6 +38,10 @@ export interface UserState {
   forgotPskProcess: any;
   loading: boolean;
   loggedIn: boolean;
+  sensors: SensorDetails[];
+  loadingSensors: boolean;
+  sensorError: any;
+  sensorLen?: number;
 }
 
 export const initialState: UserState = {
@@ -43,6 +53,9 @@ export const initialState: UserState = {
   error: null,
   loading: false,
   loggedIn: false,
+  sensors: [],
+  loadingSensors: false,
+  sensorError: null,
 };
 
 export const userAuthReducer = createReducer(
@@ -158,4 +171,32 @@ export const userAuthReducer = createReducer(
     ...state,
     error,
   })),
+  on(requestUserSensors, (state) => ({
+    ...state,
+    loadingSensors: true,
+  })),
+  on(requestUserSensorsSuccess, (state, { sensors }) => ({
+    ...state,
+    sensors: sensors,
+    loadingSensors: false,
+  })),
+  on(requestUserSensorsFailure, (state, { error }) => ({
+    ...state,
+    sensorError: error,
+    loadingSensors: false,
+  })),
+  on(requestUserSensorLen, (state) => ({
+    ...state,
+    loadingSensors: true,
+  })),
+  on(requestUserSensorLenSuccess, (state, { sensorLen }) => ({
+    ...state,
+    sensorLen: sensorLen,
+    loadingSensors: false,
+  })),
+  on(requestUserSensorsFailure, (state, { error }) => ({
+    ...state,
+    sensorError: error,
+    loadingSensors: false,
+  }))
 );

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../interfaces/user';
 import { createAction, props } from '@ngrx/store';
+import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 
 export const loadUser = createAction('[User] User Offers');
 
@@ -91,5 +92,27 @@ export const requestUserPinSuccess = createAction(
 );
 export const requestUserPinFailure = createAction(
   '[User] Request User Pin Failure',
+  props<{ error: any }>(),
+);
+export const requestUserSensors = createAction(
+  '[User] Request User Sensors',
+);
+export const requestUserSensorsSuccess = createAction(
+  '[User] Request User Sensors Success',
+  props<{ sensors: SensorDetails[] }>(),
+);
+export const requestUserSensorsFailure = createAction(
+  '[User] Request User Sensors Failure',
+  props<{ error: any }>(),
+);
+export const requestUserSensorLen = createAction(
+  '[User] Request User Sensor Len',
+);
+export const requestUserSensorLenSuccess = createAction(
+  '[User] Request User Sensor Len Success',
+  props<{ sensorLen: number }>(),
+);
+export const requestUserSensorLenFailure = createAction(
+  '[User] Request User Sensor Len Failure',
   props<{ error: any }>(),
 );

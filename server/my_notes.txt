@@ -8,3 +8,6 @@ pip install -r requirements.txt
 https://stackoverflow.com/questions/44387180/django-does-not-migrate-app
 > put a migrate folder wit han init.py file
 
+403 -> no permission's to view
+444 -> no item found
+404 -> no page found
