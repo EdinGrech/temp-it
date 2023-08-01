@@ -1,31 +1,68 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
+import { SensorService } from 'src/app/services/user/sensor/sensor.service';
+import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-temp-hum-summery-graph',
   templateUrl: './temp-hum-summery-graph.component.html',
   styleUrls: ['./temp-hum-summery-graph.component.scss'],
-  imports: [NgChartsModule],
+  imports: [NgChartsModule, CommonModule],
   providers: [
     { provide: NgChartsConfiguration, useValue: { generateColors: false }}
   ],
   standalone: true,
 })
-export class TempHumSummeryGraphComponent {
+export class TempHumSummeryGraphComponent implements OnInit{
   private newLabel? = 'New label';
+  private userSensorId = 3; //<- to get be given by parent and parent to get from state
+  height!:number;
 
-  constructor() {
+  constructor(
+    private sensorService: SensorService,
+  ) {
     Chart.register(Annotation);
+  }
+
+  isMobile(): boolean {
+    const screenWidth = window.innerWidth;
+    return screenWidth < 600 ? true : false;
+  }
+
+  ngOnInit():void{
+    if(this.isMobile()){
+      this.height = 300;
+    } else {
+      this.height = 100;
+    }
+    this.sensorService.getSensorLast24Hours(this.userSensorId).subscribe((_data:singleSensorData[]) => {
+      this.rawToGraphData(_data);
+      this.chart?.update();
+    });
+  }
+
+  rawToGraphData(rawData: singleSensorData[]): void {
+    //if mobile pick every 2nd data point
+    if(this.isMobile()){
+      this.lineChartData.datasets[0].data = (rawData.map((data:singleSensorData) => data.temperature)).filter((_data, index) => index % 2 === 0)
+      this.lineChartData.datasets[1].data = (rawData.map((data:singleSensorData) => data.humidity)).filter((_data, index) => index % 2 === 0)
+      this.lineChartData.labels = (rawData.map((data:singleSensorData) => new Date(data.date_time).getHours() + ':' + new Date(data.date_time).getMinutes())).filter((_data, index) => index % 2 === 0) as string[]
+    } else {
+      this.lineChartData.datasets[0].data = (rawData.map((data:singleSensorData) => data.temperature))
+      this.lineChartData.datasets[1].data = (rawData.map((data:singleSensorData) => data.humidity))
+      this.lineChartData.labels = (rawData.map((data:singleSensorData) => new Date(data.date_time).getHours() + ':' + new Date(data.date_time).getMinutes())) as string[]
+    }
   }
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
-        data: [65, 59, 80, 81, 56, 55, 40],
-        label: 'Series A',
+        data: [],
+        label: 'Temperature',
         backgroundColor: 'rgba(148,159,177,0.2)',
         borderColor: 'rgba(148,159,177,1)',
         pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -34,20 +71,20 @@ export class TempHumSummeryGraphComponent {
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
         fill: 'origin',
       },
+      // {
+      //   data: [],
+      //   label: 'Humidity',
+      //   backgroundColor: 'rgba(77,83,96,0.2)',
+      //   borderColor: 'rgba(77,83,96,1)',
+      //   pointBackgroundColor: 'rgba(77,83,96,1)',
+      //   pointBorderColor: '#fff',
+      //   pointHoverBackgroundColor: '#fff',
+      //   pointHoverBorderColor: 'rgba(77,83,96,1)',
+      //   fill: 'origin',
+      // },
       {
-        data: [28, 48, 40, 19, 86, 27, 90],
-        label: 'Series B',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
-        fill: 'origin',
-      },
-      {
-        data: [180, 480, 770, 90, 1000, 270, 400],
-        label: 'Series C',
+        data: [],
+        label: 'Humidity',
         yAxisID: 'y1',
         backgroundColor: 'rgba(255,0,0,0.3)',
         borderColor: 'red',
@@ -58,7 +95,7 @@ export class TempHumSummeryGraphComponent {
         fill: 'origin',
       },
     ],
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: [],
   };
 
   public lineChartOptions: ChartConfiguration['options'] = {
@@ -111,10 +148,6 @@ export class TempHumSummeryGraphComponent {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  private static generateNumber(i: number): number {
-    return Math.floor(Math.random() * (i < 2 ? 100 : 1000) + 1);
-  }
 
   // events
   public chartClicked({

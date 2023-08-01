@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 //impoer ion card
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
 import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum-summery-graph/temp-hum-summery-graph.component';
+import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 
 @Component({
   selector: 'app-sensor-summery-card',
@@ -13,7 +14,8 @@ import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum
   standalone: true
 })
 export class SensorSummeryCardComponent  implements OnInit {
-
+  @Input() sensorDetails!: SensorDetails;
+  
   constructor() { }
 
   ngOnInit() {}
