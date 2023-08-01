@@ -65,13 +65,41 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
         instance.access_token = token
         instance.save()
         return instance
+
+class UserInteractionSensorDetails(serializers.ModelSerializer):
+    date_created = serializers.DateTimeField(read_only=True)
+    name = serializers.CharField(max_length=50)
+    location = serializers.CharField(max_length=50)
+    description = serializers.CharField(max_length=200)
+    active = serializers.BooleanField(default=False)
+    high_temp_alert = serializers.FloatField()
+    low_temp_alert = serializers.FloatField()
+    high_humidity_alert = serializers.FloatField()
+    low_humidity_alert = serializers.FloatField()
+
+    class Meta:
+        model = SensorDetails
+        fields = ['date_created', 'name', 'location', 'description', 'active', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
+        extra_kwargs = {
+            'name': {'required': True, 'help_text': 'Name of the sensor'},
+            'location': {'required': True, 'help_text': 'Location of the sensor'},
+            'description': {'required': True, 'help_text': 'Description of the sensor'},
+            'active': {'required': True, 'help_text': 'Is the sensor active?'},
+            'high_temp_alert': {'required': True, 'help_text': 'High temperature alert'},
+            'low_temp_alert': {'required': True, 'help_text': 'Low temperature alert'},
+            'high_humidity_alert': {'required': True, 'help_text': 'High humidity alert'},
+            'low_humidity_alert': {'required': True, 'help_text': 'Low humidity alert'},
+        }
     
-    def update(self, instance, validated_data):
+    def update(instance: SensorDetails, validated_data: dict) -> SensorDetails:
         instance.name = validated_data.get('name', instance.name)
         instance.location = validated_data.get('location', instance.location)
         instance.description = validated_data.get('description', instance.description)
         instance.active = validated_data.get('active', instance.active)
         instance.allow_group_admins_to_edit = validated_data.get('allow_group_admins_to_edit', instance.allow_group_admins_to_edit)
+        instance.high_temp_alert = validated_data.get('high_temp_alert', instance.high_temp_alert)
+        instance.low_temp_alert = validated_data.get('low_temp_alert', instance.low_temp_alert)
+        instance.high_humidity_alert = validated_data.get('high_humidity_alert', instance.high_humidity_alert)
+        instance.low_humidity_alert = validated_data.get('low_humidity_alert', instance.low_humidity_alert)
         instance.save()
         return instance
-
