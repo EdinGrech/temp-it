@@ -9,7 +9,6 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <app-sensor-summery-card></app-sensor-summery-card>
-
+<ion-content class="scroll-content" *ngFor="let sensorDetails of sensorDetailsList">
+  <app-sensor-summery-card (sensorDetails)="sensorDetails"></app-sensor-summery-card>
 </ion-content>
