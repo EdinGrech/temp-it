@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.db import models
 from th_auth.models import th_User
 class SensorDetails(models.Model):
