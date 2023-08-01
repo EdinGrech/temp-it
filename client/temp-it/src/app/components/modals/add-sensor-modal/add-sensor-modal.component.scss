@@ -24,3 +24,30 @@
 .formButton{
     margin-top: 23px;
 }
+
+div.done{
+    //in the middle of the modals height
+    margin-top: calc(50% - 150px);
+    display: flex;
+    justify-content: center;
+}
+
+ion-text.help-tip{
+    font-size: 18px;
+    color: var(--ion-color-medium, #e8eff1);
+}
+
+ion-card-title{
+    font-size: 24px;
+    color: var(--ion-text-color, #e8eff1);
+}
+
+.flex-colum{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.spinner-div{
+    width: 10%;
+}

@@ -23,6 +23,7 @@ import {
 } from 'src/app/state/user/user.selectors';
 import { requestUserPin } from 'src/app/state/user/user.actions';
 
+type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
   selector: 'app-add-sensor-modal',
   templateUrl: './add-sensor-modal.component.html',
@@ -49,10 +50,15 @@ import { requestUserPin } from 'src/app/state/user/user.actions';
   ],
 })
 export class AddSensorModalComponent implements OnInit {
+  sensorDetailsForm!: FormGroup;
+  showAlertDetails: boolean = false;
+  
   wifiForm!: FormGroup;
-
   connectionTested?: boolean;
   testLoading: boolean = false;
+  sensorDetailsFormSub!: Subscription;
+
+  currentStep: currentStep = 'config';
 
   pinObs: Observable<number | undefined> = this.store.select(userAddSensorPin);
   datePinAddedObs: Observable<Date | undefined> = this.store.select(
@@ -85,6 +91,21 @@ export class AddSensorModalComponent implements OnInit {
         });
       }
     });
+    this.sensorDetailsForm = this.formBuilder.group({
+      sensorName: ['', [Validators.required]],
+      sensorLocation: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      active: [true, [Validators.required]],
+      allowAdminsToEdit: [true, [Validators.required]],
+      allowNotifications: [false, [Validators.required]],
+      maxTempAllowed: [30],
+      minTempAllowed: [10],
+      maxHumAllowed: [80],
+      minHumAllowed: [40],
+    });
+    this.sensorDetailsForm.valueChanges.subscribe((val) => {
+      this.showAlertDetails = val.allowNotifications;
+    });
   }
 
   creteWifiForm(pin: number) {
@@ -102,19 +123,31 @@ export class AddSensorModalComponent implements OnInit {
     if (this.pinSub) {
       this.pinSub.unsubscribe();
     }
+    this.sensorDetailsFormSub.unsubscribe();
   }
 
   getUserPin() {}
 
   submitForm(): void {
-    if (this.wifiForm.valid && this.connectionTested) {
-      // Send form data to backend
+    if (this.wifiForm.valid) {
+      // Send form data to esp32
       console.log(this.wifiForm.value);
-      this.modalController.dismiss(this.wifiForm.value);
+      this.dispatchBeacon4ESP()
+      // wait for esp32 to respond
+      this.currentStep = 'waiting';
     } else {
       // Handle form validation errors if needed
       console.log('Invalid form data');
+      this.wifiForm.markAllAsTouched();
     }
+  }
+
+  dispatchBeacon4ESP(){
+    //have a dispatch here that will get the sensor id
+    setTimeout(() => {
+      this.currentStep = 'details';
+    }
+    , 13000);
   }
 
   close() {
@@ -128,5 +161,33 @@ export class AddSensorModalComponent implements OnInit {
       this.connectionTested = true;
     }, 2000);
     console.log('Testing connection');
+  }
+
+  submitDetailsForm() {
+    let formValue;
+    if (this.sensorDetailsForm.valid) {
+      if(this.sensorDetailsForm.value.allowNotifications){
+        formValue = this.sensorDetailsForm.value;
+      }else{
+        formValue = {
+          // all of the form values except allowNotifications
+          sensorName: this.sensorDetailsForm.value.sensorName,
+          sensorLocation: this.sensorDetailsForm.value.sensorLocation,
+          description: this.sensorDetailsForm.value.description,
+          active: this.sensorDetailsForm.value.active,
+          allowAdminsToEdit: this.sensorDetailsForm.value.allowAdminsToEdit,
+        }
+      }
+      this.currentStep = 'done';
+      console.log(formValue);
+    } else {
+      this.sensorDetailsForm.markAllAsTouched();
+      //print what fields are invalid
+      console.log(this.sensorDetailsForm);
+    }
+  }
+
+  done() {
+    this.modalController.dismiss(this.wifiForm.value);
   }
 }

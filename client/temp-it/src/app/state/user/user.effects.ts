@@ -27,7 +27,7 @@ import {
   requestUserPinSuccess,
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PinService } from 'src/app/services/user/pin.service';
+import { PinService } from 'src/app/services/user/pin/pin.service';
 
 @Injectable()
 export class UserEffects {
