@@ -27,8 +27,11 @@ import {
   requestUserSensorsFailure,
   requestUserSensorLen,
   requestUserSensorLenSuccess,
+  requestUser24HourData,
+  requestUser24HourDataSuccess,
+  requestUser24HourDataFailure,
 } from './user.actions';
-import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
 
 export interface UserState {
   user: User;
@@ -42,6 +45,7 @@ export interface UserState {
   loadingSensors: boolean;
   sensorError: any;
   sensorLen?: number;
+  sensor24HourData?: singleSensorData[];
 }
 
 export const initialState: UserState = {
@@ -195,6 +199,20 @@ export const userAuthReducer = createReducer(
     loadingSensors: false,
   })),
   on(requestUserSensorsFailure, (state, { error }) => ({
+    ...state,
+    sensorError: error,
+    loadingSensors: false,
+  })),
+  on(requestUser24HourData, (state) => ({
+    ...state,
+    loadingSensors: true,
+  })),
+  on(requestUser24HourDataSuccess, (state, { sensorData }) => ({
+    ...state,
+    sensor24HourData: sensorData,
+    loadingSensors: false,
+  })),
+  on(requestUser24HourDataFailure, (state, { error }) => ({
     ...state,
     sensorError: error,
     loadingSensors: false,

@@ -15,9 +15,9 @@ import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 })
 export class SensorSummeryCardComponent  implements OnInit {
   @Input() sensorDetails!: SensorDetails;
-  
+
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
 }

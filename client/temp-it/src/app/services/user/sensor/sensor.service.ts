@@ -44,7 +44,7 @@ export class SensorService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/temp/sensors'
+        '/api/temp/my-sensors'
     )
   }
 

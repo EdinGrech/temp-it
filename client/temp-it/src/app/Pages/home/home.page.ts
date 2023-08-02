@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { AddSensorModalComponent } from 'src/app/components/modals/add-sensor-modal/add-sensor-modal.component';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { requestUserSensors } from 'src/app/state/user/user.actions';
+import { selectUserSensors } from 'src/app/state/user/user.selectors';
 
 @Component({
   selector: 'app-home',
@@ -10,21 +13,25 @@ import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  sensorDetailsList: SensorDetails[] = [
-    {
-      id: 3,
-      name: 'Sensor 1',
-      location: 'Living room',
-      description: 'This is a sensor in the living room',
-      active: true,
-      date_created: new Date(),
-      allow_group_admins_to_edit: true,
-    },
-  ];
+  sensorDetailsList?: SensorDetails[];
+  showUserSensors: boolean = false;
+  sensorSub?:Subscription;
 
-  constructor(private modalController: ModalController, private store: Store) {}
+  constructor(private modalController: ModalController, private store: Store<{auth:any,global:any}>) {}
   ngOnInit(): void {
-    //dispatch action to get user sensors
+    this.store.dispatch(requestUserSensors())
+    this.sensorSub = this.store.select(selectUserSensors).subscribe((sensors) => {
+      if(sensors.length > 0){
+        this.showUserSensors = true;
+        this.sensorDetailsList = sensors;
+      } else {
+        return;
+      }
+    }); 
+  }
+
+  ngOnDestroy(): void {
+    this.sensorSub?.unsubscribe();
   }
 
   async addSensor() {

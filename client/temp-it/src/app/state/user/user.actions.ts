@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../interfaces/user';
 import { createAction, props } from '@ngrx/store';
-import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
 
 export const loadUser = createAction('[User] User Offers');
 
@@ -114,5 +114,17 @@ export const requestUserSensorLenSuccess = createAction(
 );
 export const requestUserSensorLenFailure = createAction(
   '[User] Request User Sensor Len Failure',
+  props<{ error: any }>(),
+);
+export const requestUser24HourData = createAction(
+  '[User] Request User 24 Hour Data',
+  props<{ sensorId: number }>(),
+);
+export const requestUser24HourDataSuccess = createAction(
+  '[User] Request User 24 Hour Data Success',
+  props<{ sensorData: singleSensorData[] }>(),
+);
+export const requestUser24HourDataFailure = createAction(
+  '[User] Request User 24 Hour Data Failure',
   props<{ error: any }>(),
 );

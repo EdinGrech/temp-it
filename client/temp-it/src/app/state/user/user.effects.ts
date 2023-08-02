@@ -31,10 +31,13 @@ import {
   requestUserSensorLen,
   requestUserSensorLenSuccess,
   requestUserSensorLenFailure,
+  requestUser24HourData,
+  requestUser24HourDataSuccess,
+  requestUser24HourDataFailure,
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PinService } from 'src/app/services/user/pin/pin.service';
-import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
 @Injectable()
@@ -150,6 +153,18 @@ export class UserEffects {
         this.sensorService.getUserSensorsCount().pipe(
           map((sensorLen: number) => requestUserSensorLenSuccess({ sensorLen })),
           catchError((error: any) => of(requestUserSensorLenFailure({ error })))
+        )
+      )
+    )
+  );
+
+  requestUser24HourData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestUser24HourData),
+      mergeMap((action) =>
+        this.sensorService.getSensorLast24Hours(action.sensorId).pipe(
+          map((sensorData: singleSensorData[]) => requestUser24HourDataSuccess({ sensorData })),
+          catchError((error: any) => of(requestUser24HourDataFailure({ error })))
         )
       )
     )

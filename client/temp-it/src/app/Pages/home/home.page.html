@@ -9,6 +9,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="scroll-content" *ngFor="let sensorDetails of sensorDetailsList">
-  <app-sensor-summery-card (sensorDetails)="sensorDetails"></app-sensor-summery-card>
+<ion-content class="scroll-content">
+  <div *ngFor="let sensorDetails of sensorDetailsList">
+    <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
+  </div>
 </ion-content>

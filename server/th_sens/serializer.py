@@ -67,6 +67,7 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
         return instance
 
 class UserInteractionSensorDetails(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     date_created = serializers.DateTimeField(read_only=True)
     name = serializers.CharField(max_length=50)
     location = serializers.CharField(max_length=50)
@@ -79,7 +80,7 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
 
     class Meta:
         model = SensorDetails
-        fields = ['date_created', 'name', 'location', 'description', 'active', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
+        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},

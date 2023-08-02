@@ -1,10 +1,10 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
-import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,8 +18,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class TempHumSummeryGraphComponent implements OnInit{
+  @Input() sensorDetails!: SensorDetails;
+  private userSensorId!:number;
   private newLabel? = 'New label';
-  private userSensorId = 3; //<- to get be given by parent and parent to get from state
   height!:number;
 
   constructor(
@@ -39,6 +40,7 @@ export class TempHumSummeryGraphComponent implements OnInit{
     } else {
       this.height = 100;
     }
+    this.userSensorId = 1;
     this.sensorService.getSensorLast24Hours(this.userSensorId).subscribe((_data:singleSensorData[]) => {
       this.rawToGraphData(_data);
       this.chart?.update();

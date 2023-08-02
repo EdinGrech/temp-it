@@ -1,6 +1,6 @@
 <ion-card>
   <ion-card-header>
-    <!-- <ion-card-title>{{sensorDetails.name}}</ion-card-title> -->
+    <ion-card-title>{{sensorDetails.name}}</ion-card-title>
   </ion-card-header>
-  <app-temp-hum-summery-graph></app-temp-hum-summery-graph>
+  <app-temp-hum-summery-graph [sensorDetails]="sensorDetails"></app-temp-hum-summery-graph>
 </ion-card>
