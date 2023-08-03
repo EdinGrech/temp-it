@@ -20,4 +20,5 @@ export class SensorSummeryCardComponent  implements OnInit {
 
   ngOnInit() { }
 
+  editSensor(){}
 }

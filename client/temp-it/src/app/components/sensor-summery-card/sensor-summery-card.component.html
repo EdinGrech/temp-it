@@ -1,6 +1,34 @@
 <ion-card>
-  <ion-card-header>
-    <ion-card-title>{{sensorDetails.name}}</ion-card-title>
-  </ion-card-header>
-  <app-temp-hum-summery-graph [sensorDetails]="sensorDetails"></app-temp-hum-summery-graph>
+  <ion-item lines="none">
+    <ion-label>
+      <div class="display-flex">
+        <h1>
+          {{ sensorDetails.name ? sensorDetails.name : "Sensor" }}
+        </h1>
+        <ion-icon
+        class="size-20"
+        [color]="sensorDetails.active ? 'success' : 'danger'"
+        [name]="sensorDetails.active ? 'checkmark-circle' : 'close-circle'"
+        ></ion-icon>
+      </div>
+      <p>
+        {{ sensorDetails.active ? "Active" : "Inactive" }}
+      </p>
+    </ion-label>
+    <ion-button slot="end" (click)="editSensor()">
+      Edit
+      <ion-icon name="create"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <div>
+    <app-temp-hum-summery-graph
+      [sensorDetails]="sensorDetails"
+    ></app-temp-hum-summery-graph>
+  </div>
+  <ion-item lines="none">
+    <ion-icon slot="start" name="pin-outline"></ion-icon>
+    <ion-label>{{
+      sensorDetails.location ? sensorDetails.location : "Not set"
+    }}</ion-label>
+  </ion-item>
 </ion-card>
