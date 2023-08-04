@@ -29,7 +29,7 @@ export class AuthService {
       email: email,
       password: password,
     };
-    this.cookieService.delete('jwt', '/', environment.motherShipUrl);
+    this.cookieService.deleteAll();
     return this.http.post<UserSignUpResponse>(
       environment.motherShipUrl +
         ':' +
@@ -53,7 +53,7 @@ export class AuthService {
       emailOrUsername: email,
       password: password,
     };
-    this.cookieService.delete('jwt', '/', environment.motherShipUrl);
+    this.cookieService.deleteAll();
     return this.http
       .post<any>(
         environment.motherShipUrl +
@@ -102,7 +102,7 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     };
-    this.cookieService.delete('jwt', '/', environment.motherShipUrl);
+    this.cookieService.deleteAll();
     return this.http.post<any>(
       environment.motherShipUrl +
         ':' +

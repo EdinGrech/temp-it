@@ -28,7 +28,7 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
         if (error.status == 0) {
           error.error.error = 'No connection to server.';
         } else if (error.status === 401) {
-          this.cookieService.delete('jwt', '/', environment.motherShipUrl);
+          this.cookieService.deleteAll();
           this.router.navigate(['/auth']);
         }
         return throwError(error);

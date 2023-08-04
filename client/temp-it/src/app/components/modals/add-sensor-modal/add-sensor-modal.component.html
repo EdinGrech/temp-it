@@ -24,7 +24,7 @@
       <ion-card-title>Connection Test</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div class="connection-test-results">
+      <div class="connection-test-results height">
         <!-- spinner while loading -->
         <ion-text color="danger" *ngIf="!connectionTested && connectionTested !== null">
           <ion-icon name="close-circle-outline"></ion-icon>
@@ -45,7 +45,7 @@
     </ion-card-header>
     <ion-card-content>
       <!-- spinner with text 'generating pin' -->
-      <div class="connection-test-results" *ngIf="!wifiForm">
+      <div class="connection-test-results height" *ngIf="!wifiForm">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
         <ion-text>Generating Pin</ion-text>
       </div>
@@ -85,9 +85,10 @@
     </ion-card-header>
     <ion-card-content>
       <div class="connection-test-results">
-        <ion-text class="help-tip">Awaiting sensor to connect to server, this might take a minute. To setup further
-          sensor
-          details please wait.</ion-text>
+        <div>
+          <ion-text class="help-tip">Awaiting sensor to connect to server, this might take a minute.</ion-text>
+          <ion-text class="help-tip">To setup further sensor details please wait.</ion-text>
+        </div>
         <div class="spinner-div">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
         </div>

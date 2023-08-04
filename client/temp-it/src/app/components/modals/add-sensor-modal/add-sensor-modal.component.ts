@@ -18,10 +18,15 @@ import { Observable, Subscription } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 import {
+  selectUserSensors,
   userAddSensorPin,
   userAddSensorPinDateAdded,
 } from 'src/app/state/user/user.selectors';
-import { requestUserPin } from 'src/app/state/user/user.actions';
+import {
+  requestUserPin,
+  requestUserSensors,
+} from 'src/app/state/user/user.actions';
+import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
 type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
@@ -52,7 +57,7 @@ type currentStep = 'config' | 'waiting' | 'details' | 'done';
 export class AddSensorModalComponent implements OnInit {
   sensorDetailsForm!: FormGroup;
   showAlertDetails: boolean = false;
-  
+
   wifiForm!: FormGroup;
   connectionTested?: boolean;
   testLoading: boolean = false;
@@ -67,10 +72,13 @@ export class AddSensorModalComponent implements OnInit {
   datePinAdded?: Subscription;
   pinSub?: Subscription;
 
+  lastSensorId?: number;
+
   constructor(
     private formBuilder: FormBuilder,
     private modalController: ModalController,
-    private store: Store<{ auth: any; global: any }>
+    private store: Store<{ auth: any; global: any }>,
+    private sensorService: SensorService
   ) {}
 
   ngOnInit() {
@@ -132,7 +140,7 @@ export class AddSensorModalComponent implements OnInit {
     if (this.wifiForm.valid) {
       // Send form data to esp32
       console.log(this.wifiForm.value);
-      this.dispatchBeacon4ESP()
+      this.dispatchBeacon4ESP();
       // wait for esp32 to respond
       this.currentStep = 'waiting';
     } else {
@@ -142,19 +150,64 @@ export class AddSensorModalComponent implements OnInit {
     }
   }
 
-  dispatchBeacon4ESP(){
-    //have a dispatch here that will get the sensor id
-    setTimeout(() => {
-      this.currentStep = 'details';
-    }
-    , 13000);
+  // dispatchBeacon4ESP() {
+  //   let scopeSensors;
+  //     this.sensorService.getUserSensorsCount().subscribe((count) => {
+  //       let sensorList = this.store.select(selectUserSensors);
+  //       let sensorListValue = sensorList.subscribe((sensors) => {
+  //         scopeSensors = sensors;
+  //       });
+  //       if (count > scopeSensors.length) {
+  //         this.store.dispatch(requestUserSensors());
+  //         this.store.select(selectUserSensors).subscribe((sensors) => {
+  //           this.lastSensorId = sensors[sensors.length - 1].id;
+  //           sensorListValue.unsubscribe();
+  //           this.currentStep = 'details';
+  //         });
+  //       } else {
+  //         setTimeout(() => {
+  //           this.dispatchBeacon4ESP()
+  //         }, 5000);
+  //       }
+  //     });
+  // }
+
+  checkUserSensorsCountAndStop(intervalId: string | number | NodeJS.Timeout | undefined, condition: (arg0: number) => any, callback: (arg0: number) => void) {
+    this.sensorService.getUserSensorsCount()
+      .subscribe(count => {
+        // Check if the condition is met based on the value received
+        if (condition(count)) {
+          clearInterval(intervalId); // Stop the interval
+          callback(count); // Call the callback function with the final count value
+        }
+      });
+  }
+  
+  startCallingFunctionWithInterval(condition: any, callback: any) {
+    const intervalDuration = 5000; // 5 seconds in milliseconds
+    const intervalId = setInterval(() => {
+      this.checkUserSensorsCountAndStop(intervalId, condition, callback);
+    }, intervalDuration);
+  }
+  
+  stopCondition(count:number) {
+    const desiredValue = 10; // Replace this with the value you want to reach
+    return count >= desiredValue;
+  }
+  
+  onStopped(count:number) {
+    console.log(`Condition met! Final count: ${count}`);
+  }
+  
+  dispatchBeacon4ESP() {
+    this.startCallingFunctionWithInterval(this.stopCondition, this.onStopped);
   }
 
   close() {
     this.modalController.dismiss();
   }
 
-  testConnection() {
+  testConnection() { //to be done
     this.testLoading = true;
     setTimeout(() => {
       this.testLoading = false;
@@ -166,9 +219,9 @@ export class AddSensorModalComponent implements OnInit {
   submitDetailsForm() {
     let formValue;
     if (this.sensorDetailsForm.valid) {
-      if(this.sensorDetailsForm.value.allowNotifications){
+      if (this.sensorDetailsForm.value.allowNotifications) {
         formValue = this.sensorDetailsForm.value;
-      }else{
+      } else {
         formValue = {
           // all of the form values except allowNotifications
           sensorName: this.sensorDetailsForm.value.sensorName,
@@ -176,7 +229,7 @@ export class AddSensorModalComponent implements OnInit {
           description: this.sensorDetailsForm.value.description,
           active: this.sensorDetailsForm.value.active,
           allowAdminsToEdit: this.sensorDetailsForm.value.allowAdminsToEdit,
-        }
+        };
       }
       this.currentStep = 'done';
       console.log(formValue);

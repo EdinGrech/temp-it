@@ -4,7 +4,7 @@ import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
-import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,8 +18,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class TempHumSummeryGraphComponent implements OnInit{
-  @Input() sensorDetails!: SensorDetails;
-  private userSensorId!:number;
+  @Input() userSensorId!:number;
   private newLabel? = 'New label';
   height!:number;
 
@@ -40,7 +39,6 @@ export class TempHumSummeryGraphComponent implements OnInit{
     } else {
       this.height = 100;
     }
-    this.userSensorId = 1;
     this.sensorService.getSensorLast24Hours(this.userSensorId).subscribe((_data:singleSensorData[]) => {
       this.rawToGraphData(_data);
       this.chart?.update();
@@ -50,9 +48,9 @@ export class TempHumSummeryGraphComponent implements OnInit{
   rawToGraphData(rawData: singleSensorData[]): void {
     //if mobile pick every 2nd data point
     if(this.isMobile()){
-      this.lineChartData.datasets[0].data = (rawData.map((data:singleSensorData) => data.temperature)).filter((_data, index) => index % 2 === 0)
-      this.lineChartData.datasets[1].data = (rawData.map((data:singleSensorData) => data.humidity)).filter((_data, index) => index % 2 === 0)
-      this.lineChartData.labels = (rawData.map((data:singleSensorData) => new Date(data.date_time).getHours() + ':' + new Date(data.date_time).getMinutes())).filter((_data, index) => index % 2 === 0) as string[]
+      this.lineChartData.datasets[0].data = (rawData.map((data:singleSensorData) => data.temperature)).filter((_data, index) => index % 4 === 0)
+      this.lineChartData.datasets[1].data = (rawData.map((data:singleSensorData) => data.humidity)).filter((_data, index) => index % 4 === 0)
+      this.lineChartData.labels = (rawData.map((data:singleSensorData) => new Date(data.date_time).getHours() + ':' + new Date(data.date_time).getMinutes())).filter((_data, index) => index % 4 === 0) as string[]
     } else {
       this.lineChartData.datasets[0].data = (rawData.map((data:singleSensorData) => data.temperature))
       this.lineChartData.datasets[1].data = (rawData.map((data:singleSensorData) => data.humidity))

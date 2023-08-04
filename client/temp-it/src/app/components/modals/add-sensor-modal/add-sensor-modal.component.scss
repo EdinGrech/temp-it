@@ -1,7 +1,9 @@
 .connection-test-results{
     display: flex;
     align-items: center;
-    height: 50px;
+    .height{
+        height: 50px;
+    }
 
     ion-text{
         display: flex;
@@ -34,12 +36,10 @@ div.done{
 
 ion-text.help-tip{
     font-size: 18px;
-    color: var(--ion-color-medium, #e8eff1);
 }
 
 ion-card-title{
     font-size: 24px;
-    color: var(--ion-text-color, #e8eff1);
 }
 
 .flex-colum{

@@ -5,11 +5,8 @@
         <h1>
           {{ sensorDetails.name ? sensorDetails.name : "Sensor" }}
         </h1>
-        <ion-icon
-        class="size-20"
-        [color]="sensorDetails.active ? 'success' : 'danger'"
-        [name]="sensorDetails.active ? 'checkmark-circle' : 'close-circle'"
-        ></ion-icon>
+        <ion-icon class="size-20" [color]="sensorDetails.active ? 'success' : 'danger'"
+          [name]="sensorDetails.active ? 'checkmark-circle' : 'close-circle'"></ion-icon>
       </div>
       <p>
         {{ sensorDetails.active ? "Active" : "Inactive" }}
@@ -21,14 +18,12 @@
     </ion-button>
   </ion-item>
   <div>
-    <app-temp-hum-summery-graph
-      [sensorDetails]="sensorDetails"
-    ></app-temp-hum-summery-graph>
+    <app-temp-hum-summery-graph [userSensorId]="sensorDetails.id"></app-temp-hum-summery-graph>
   </div>
   <ion-item lines="none">
     <ion-icon slot="start" name="pin-outline"></ion-icon>
     <ion-label>{{
       sensorDetails.location ? sensorDetails.location : "Not set"
-    }}</ion-label>
+      }}</ion-label>
   </ion-item>
 </ion-card>
