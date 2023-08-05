@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 import {
@@ -24,7 +24,6 @@ import {
 } from 'src/app/state/user/user.selectors';
 import {
   requestUserPin,
-  requestUserSensors,
 } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
@@ -54,7 +53,7 @@ type currentStep = 'config' | 'waiting' | 'details' | 'done';
     ]),
   ],
 })
-export class AddSensorModalComponent implements OnInit {
+export class AddSensorModalComponent implements OnInit, OnDestroy {
   sensorDetailsForm!: FormGroup;
   showAlertDetails: boolean = false;
 
@@ -73,6 +72,9 @@ export class AddSensorModalComponent implements OnInit {
   pinSub?: Subscription;
 
   lastSensorId?: number;
+
+  private intervalSubscription: Subscription | null = null; // Track the interval subscription
+  private initialSensorCount!: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -98,6 +100,9 @@ export class AddSensorModalComponent implements OnInit {
           }
         });
       }
+    });
+    this.store.select(selectUserSensors).subscribe((sensors) => {
+      this.initialSensorCount = sensors.length;
     });
     this.sensorDetailsForm = this.formBuilder.group({
       sensorName: ['', [Validators.required]],
@@ -127,11 +132,15 @@ export class AddSensorModalComponent implements OnInit {
     });
   }
 
-  ngOndestroy() {
+  ngOnDestroy() {
     if (this.pinSub) {
       this.pinSub.unsubscribe();
     }
-    this.sensorDetailsFormSub.unsubscribe();
+    this.sensorDetailsFormSub?.unsubscribe();
+    if (this.intervalSubscription) {
+      this.intervalSubscription.unsubscribe();
+      this.intervalSubscription = null;
+    }
   }
 
   getUserPin() {}
@@ -171,43 +180,49 @@ export class AddSensorModalComponent implements OnInit {
   //       }
   //     });
   // }
+  // Assuming 'sensorService' is a service that provides the getUserSensorsCount() method which returns an Observable.
 
-  checkUserSensorsCountAndStop(intervalId: string | number | NodeJS.Timeout | undefined, condition: (arg0: number) => any, callback: (arg0: number) => void) {
-    this.sensorService.getUserSensorsCount()
-      .subscribe(count => {
-        // Check if the condition is met based on the value received
-        if (condition(count)) {
-          clearInterval(intervalId); // Stop the interval
-          callback(count); // Call the callback function with the final count value
-        }
+  checkUserSensorsCountAndStop(condition: (count: number,initialSensorCount:number) => boolean): Promise<number> {
+    return new Promise<number>((resolve) => {
+      this.intervalSubscription = interval(7000).subscribe(() => {
+        this.sensorService.getUserSensorsCount().subscribe((count:any) => {
+          if (condition(count.number_of_sensors,this.initialSensorCount)) {
+            this.intervalSubscription?.unsubscribe();
+            this.intervalSubscription = null;
+            resolve(count);
+          }
+        });
       });
+    });
   }
-  
-  startCallingFunctionWithInterval(condition: any, callback: any) {
-    const intervalDuration = 5000; // 5 seconds in milliseconds
-    const intervalId = setInterval(() => {
-      this.checkUserSensorsCountAndStop(intervalId, condition, callback);
-    }, intervalDuration);
+
+  startCallingFunctionWithInterval(condition: (count: number,initialSensorCount:number) => boolean): Promise<number> {
+    return this.checkUserSensorsCountAndStop(condition);
   }
-  
-  stopCondition(count:number) {
-    const desiredValue = 10; // Replace this with the value you want to reach
-    return count >= desiredValue;
+
+  stopCondition(count: number,initialSensorCount:number): boolean {
+    return count > initialSensorCount ? true : false; 
   }
-  
-  onStopped(count:number) {
+
+  async onStopped(count: number) {
     console.log(`Condition met! Final count: ${count}`);
+    this.store.select(selectUserSensors).subscribe((sensors) => {
+    this.lastSensorId = sensors[sensors.length - 1].id;
+    this.currentStep = 'details';
+    });
   }
-  
-  dispatchBeacon4ESP() {
-    this.startCallingFunctionWithInterval(this.stopCondition, this.onStopped);
+
+  async dispatchBeacon4ESP() {
+    const count = await this.startCallingFunctionWithInterval(this.stopCondition);
+    await this.onStopped(count);
   }
 
   close() {
     this.modalController.dismiss();
   }
 
-  testConnection() { //to be done
+  testConnection() {
+    //to be done
     this.testLoading = true;
     setTimeout(() => {
       this.testLoading = false;
