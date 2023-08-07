@@ -9,7 +9,7 @@ export const initialState: GlobalState = {
   error: null,
 };
 
-export const globeReduer = createReducer(
+export const globeReducer = createReducer(
   initialState,
   on(globalError, (state, { error }) => ({
     ...state,
