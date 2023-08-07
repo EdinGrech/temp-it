@@ -164,26 +164,26 @@ class SensorDetailsView(APIView):
 
         
 class EditSensorDetailsView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     def put(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        sensor_owner: SensorDetails = SensorDetails.objects.filter(sensor_id=sensor_id, user_id_owner=user.id).first()
-        if not sensor_owner:
-            # check if user is a member of the group where the sensor is shared
-            sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
-            for group_id in sensor_group_ids:
-                group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
-                if user.id in group_members.member_id.all():
-                    break  
-                else:
-                    return Response({'message': 'You are not allowed to view this sensor data'}, status=403) 
-        elif sensor_owner:
-            sensor: SensorDetails = SensorDetails.objects.get(sensor_id=sensor_id)
-            serializer: SensorDetailsSerializer = SensorDetailsSerializer(sensor)
-            return Response(serializer.data)
+        sensor: SensorDetails = SensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
+        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
+            return Response(serializer.data, status=201)
         else:
-            return Response({'message': 'Sensor does not exist'}, status=444)
+            if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
+                sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+                for group_id in sensor_group_ids:
+                    group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
+                    if user.id in group_members.member_id.all():
+                        serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
+                        return Response({'message': 'Sensor details updated', 'data': serializer.data}, status=201)
+                    else:
+                        return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
+            else:
+                return Response({'message': 'Sensor does not exist'}, status=444)   
         
 class MySensorsView(APIView):
     permission_classes = [IsAuthenticated]
