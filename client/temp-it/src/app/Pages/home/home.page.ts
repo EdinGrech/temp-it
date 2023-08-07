@@ -15,19 +15,31 @@ import { selectUserSensors } from 'src/app/state/user/user.selectors';
 export class HomePage implements OnInit {
   sensorDetailsList?: SensorDetails[];
   showUserSensors: boolean = false;
-  sensorSub?:Subscription;
+  sensorSub?: Subscription;
 
-  constructor(private modalController: ModalController, private store: Store<{auth:any,global:any}>) {}
+  constructor(
+    private modalController: ModalController,
+    private store: Store<{ auth: any; global: any }>
+  ) {}
   ngOnInit(): void {
-    this.store.dispatch(requestUserSensors())
-    this.sensorSub = this.store.select(selectUserSensors).subscribe((sensors) => {
-      if(sensors.length > 0){
-        this.showUserSensors = true;
-        this.sensorDetailsList = sensors;
-      } else {
-        return;
-      }
-    }); 
+    this.store.dispatch(requestUserSensors());
+    this.sensorSub = this.store
+      .select(selectUserSensors)
+      .subscribe((sensors) => {
+        if (sensors.length > 0) {
+          this.showUserSensors = true;
+          this.sensorDetailsList = sensors;
+        } else {
+          return;
+        }
+      });
+  }
+
+  handleRefresh(event: any) {
+    this.store.dispatch(requestUserSensors());
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
   }
 
   ngOnDestroy(): void {
