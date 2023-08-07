@@ -44,6 +44,11 @@ export const selectUserSensors = createSelector(
   (state: UserState) => state.sensors
 );
 
+export const selectUserSensor = (id: number) => createSelector(
+  selectUserSensors,
+  (data) => data.find((s) => s.id === id),
+);
+
 export const selectUserSensorsLoading = createSelector(
   selectUser,
   (state: UserState) => state.loadingSensors

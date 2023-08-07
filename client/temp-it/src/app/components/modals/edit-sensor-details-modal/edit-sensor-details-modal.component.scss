@@ -1,0 +1,53 @@
+.connection-test-results{
+    display: flex;
+    align-items: center;
+    .height{
+        height: 50px;
+    }
+
+    ion-text{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 18px;
+        ion-icon{
+            font-size: 24px;
+            margin-right: 3px;
+        }
+    }
+
+    ion-spinner{
+        margin-right: 3px;
+    }
+}
+
+.formButton{
+    margin-top: 23px;
+}
+
+div.done{
+    //in the middle of the modals height
+    margin-top: calc(50% - 150px);
+    display: flex;
+    justify-content: center;
+}
+
+ion-text.help-tip{
+    font-size: 18px;
+}
+
+ion-card-title{
+    font-size: 24px;
+}
+
+.flex-colum{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.spinner-div{
+    width: 10%;
+}
