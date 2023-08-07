@@ -77,27 +77,33 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
     low_temp_alert = serializers.FloatField()
     high_humidity_alert = serializers.FloatField()
     low_humidity_alert = serializers.FloatField()
+    allow_group_admins_to_edit = serializers.BooleanField(default=False)
+    active_alerts = serializers.BooleanField()
 
     class Meta:
         model = SensorDetails
-        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
+        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'allow_group_admins_to_edit', 'active_alerts', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},
             'description': {'required': True, 'help_text': 'Description of the sensor'},
             'active': {'required': True, 'help_text': 'Is the sensor active?'},
+            'allow_group_admins_to_edit': {'required': True, 'help_text': 'Allow group admins to edit?'},
+            'active_alerts': {'required': True, 'help_text': 'Active alerts?'},
             'high_temp_alert': {'required': True, 'help_text': 'High temperature alert'},
             'low_temp_alert': {'required': True, 'help_text': 'Low temperature alert'},
             'high_humidity_alert': {'required': True, 'help_text': 'High humidity alert'},
             'low_humidity_alert': {'required': True, 'help_text': 'Low humidity alert'},
         }
     
-    def update(instance: SensorDetails, validated_data: dict) -> SensorDetails:
+    def update(self, instance: SensorDetails, validated_data: dict) -> SensorDetails:
+        print(instance)
         instance.name = validated_data.get('name', instance.name)
         instance.location = validated_data.get('location', instance.location)
         instance.description = validated_data.get('description', instance.description)
         instance.active = validated_data.get('active', instance.active)
         instance.allow_group_admins_to_edit = validated_data.get('allow_group_admins_to_edit', instance.allow_group_admins_to_edit)
+        instance.active_alerts = validated_data.get('active_alerts', instance.active_alerts)
         instance.high_temp_alert = validated_data.get('high_temp_alert', instance.high_temp_alert)
         instance.low_temp_alert = validated_data.get('low_temp_alert', instance.low_temp_alert)
         instance.high_humidity_alert = validated_data.get('high_humidity_alert', instance.high_humidity_alert)

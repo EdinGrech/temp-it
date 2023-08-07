@@ -5,6 +5,7 @@ export interface SensorDetails {
   description: string;
   active: boolean;
   date_created: string | Date;
+  active_alerts: boolean;
   allow_group_admins_to_edit: boolean;
   high_temp_alert?: number;
   low_temp_alert?: number;
@@ -19,6 +20,7 @@ export interface SensorDetailsUpdatable {
     location: string;
     description: string;
     active: boolean;
+    active_alerts: boolean;
     allow_group_admins_to_edit: boolean;
     high_temp_alert?: number;
     low_temp_alert?: number;

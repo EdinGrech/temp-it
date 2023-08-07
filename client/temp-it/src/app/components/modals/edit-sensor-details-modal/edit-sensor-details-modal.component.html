@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Sensor</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scroll-content">
+  <ion-card *ngIf="currentStep === 'details'" [@formAnimation]>
+    <ion-card-header>
+      <ion-card-title>Sensor Details</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="sensorDetailsForm" (ngSubmit)="submitDetailsForm()">
+        <ion-list>
+          <ion-item>
+            <ion-label floating>Sensor Name:</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label floating>Location:</ion-label>
+            <ion-input type="text" formControlName="location"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label floating>Description:</ion-label>
+            <ion-input type="text" formControlName="description"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Active:</ion-label>
+            <ion-checkbox formControlName="active"></ion-checkbox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Allow group admins to edit details:</ion-label>
+            <ion-checkbox formControlName="allow_group_admins_to_edit"></ion-checkbox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Activate alerts:</ion-label>
+            <ion-checkbox formControlName="active_alerts"></ion-checkbox>
+          </ion-item>
+
+          <ion-item *ngIf="showAlertDetails">
+            <ion-label>Max Temperature threshold:</ion-label>
+            <ion-input type="float" formControlName="high_temp_alert"></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="showAlertDetails">
+            <ion-label>Min Temperature threshold:</ion-label>
+            <ion-input type="float" formControlName="low_temp_alert"></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="showAlertDetails">
+            <ion-label>Max Humidity threshold:</ion-label>
+            <ion-input type="float" formControlName="high_humidity_alert"></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="showAlertDetails">
+            <ion-label>Min Humidity threshold:</ion-label>
+            <ion-input type="float" formControlName="low_humidity_alert"></ion-input>
+          </ion-item>
+
+        </ion-list>
+        <ion-button class="formButton" expand="full" shape="round" type="submit">Submit</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="done" *ngIf="currentStep === 'done'">
+    <div class="flex-colum">
+      <ion-text class="help-tip">Sensor will be visible in your home page.</ion-text>
+      <ion-text class="help-tip">You can also edit it's details any time.</ion-text>
+      <ion-button size="large" (click)="done()" expand="half" shape="round">Done
+        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

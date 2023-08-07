@@ -22,7 +22,7 @@ import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { userAuthReducer } from './state/user/user.reducer';
 import { UserEffects } from './state/user/user.effects';
 
-import { globeReduer } from './state/global/global.reducer';
+import { globeReducer as globeReducer } from './state/global/global.reducer';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorsInterceptor } from './interceptors/http-errors.interceptor';
@@ -39,7 +39,7 @@ import { AlertHandlerComponent } from './components/alert-handler/alert-handler.
     BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    StoreModule.forRoot({ auth: userAuthReducer, global: globeReduer }),
+    StoreModule.forRoot({ auth: userAuthReducer, global: globeReducer }),
     EffectsModule.forRoot([UserEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),

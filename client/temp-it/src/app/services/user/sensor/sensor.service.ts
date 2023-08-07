@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SensorDetails, SensorDetailsUpdatable, singleSensorData } from 'src/app/interfaces/sensor/sensor';
@@ -21,12 +21,19 @@ export class SensorService {
   }
 
   updateSensorDetails(sensorDetails: SensorDetailsUpdatable):Observable<HttpResponse>{
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+    
     return this.http.put<HttpResponse>(
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/temp/sensor-details/' + sensorDetails.id,
-        sensorDetails.updatable
+        '/api/temp/sensor-details/' + sensorDetails.id + '/update',
+        sensorDetails.updatable, httpOptions
     )
   }
 

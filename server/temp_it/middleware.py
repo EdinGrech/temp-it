@@ -6,4 +6,5 @@ class CorsMiddleware:
         response = self.get_response(request)
         response['Access-Control-Allow-Origin'] = '*' # Replace with your frontend origin
         response['Access-Control-Allow-Headers'] = '*' # Allow any custom headers
+        response['Access-Control-Allow-Methods'] = '*' # Allow any HTTP methods
         return response

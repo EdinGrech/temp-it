@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-//impoer ion card
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+
+import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-sensor-details-modal/edit-sensor-details-modal.component';
 
 import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum-summery-graph/temp-hum-summery-graph.component';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
@@ -16,9 +17,26 @@ import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 export class SensorSummeryCardComponent  implements OnInit {
   @Input() sensorDetails!: SensorDetails;
 
-  constructor() { }
+  constructor(private modalController: ModalController,) { }
 
   ngOnInit() { }
 
-  editSensor(){}
+  async editSensor() {
+    const modal = await this.modalController.create({
+      component: EditSensorDetailsModalComponent,
+      componentProps: {
+        sensorId: (this.sensorDetails.id as number)
+      }
+    });
+
+    await modal.present();
+  }
+
+  closeModal() {
+    this.modalController.dismiss();
+  }
+
+  viewSensorDetails(){}
+
+  deleteSensor(){}
 }

@@ -10,6 +10,9 @@
 </ion-header>
 
 <ion-content class="scroll-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content> </ion-refresher-content>
+  </ion-refresher>
   <div *ngFor="let sensorDetails of sensorDetailsList">
     <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
   </div>

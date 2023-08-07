@@ -7,6 +7,10 @@ const routes: Routes = [
     path: '',
     component: HomePage,
   },
+  {
+    path: 'enhanced-view',
+    loadChildren: () => import('src/app/Pages/dynamic-pages/enhanced-view/enhanced-sensor-view/enhanced-sensor-view.module').then( m => m.EnhancedSensorViewPageModule)
+  }
 ];
 
 @NgModule({

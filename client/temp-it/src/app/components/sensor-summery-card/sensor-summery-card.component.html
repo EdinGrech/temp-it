@@ -20,10 +20,13 @@
   <div>
     <app-temp-hum-summery-graph [userSensorId]="sensorDetails.id"></app-temp-hum-summery-graph>
   </div>
-  <ion-item lines="none">
-    <ion-icon slot="start" name="pin-outline"></ion-icon>
-    <ion-label>{{
-      sensorDetails.location ? sensorDetails.location : "Not set"
-      }}</ion-label>
-  </ion-item>
+  <ion-buttons class="card-bottom-buttons">
+    <ion-button color="primary" (click)="viewSensorDetails()">
+      <ion-text>Enhanced Details</ion-text>
+    </ion-button>
+    <ion-button class="ion-align-items-center" color="danger" (click)="deleteSensor()">
+      <ion-icon slot="start" name="trash"></ion-icon>
+      <ion-text>Delete</ion-text>
+    </ion-button>
+  </ion-buttons>
 </ion-card>
