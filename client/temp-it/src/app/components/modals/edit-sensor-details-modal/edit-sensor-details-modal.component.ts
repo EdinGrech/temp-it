@@ -21,6 +21,7 @@ import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { SensorDetails, SensorDetailsUpdatable } from 'src/app/interfaces/sensor/sensor';
 import { selectUserSensor } from 'src/app/state/user/user.selectors';
 import { requestUserSensors } from 'src/app/state/user/user.actions';
+import { AppState } from 'src/app/state/app.state';
 
 type currentStep = 'details' | 'done';
 
@@ -60,7 +61,7 @@ export class EditSensorDetailsModalComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private modalController: ModalController,
-    private store: Store<{ auth: any; global: any }>,
+    private store: Store<AppState>,
     private sensorService: SensorService
   ) {}
 

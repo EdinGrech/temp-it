@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { AddSensorModalComponent } from 'src/app/components/modals/add-sensor-modal/add-sensor-modal.component';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { AppState } from 'src/app/state/app.state';
 import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { selectUserSensors } from 'src/app/state/user/user.selectors';
 
@@ -19,7 +20,7 @@ export class HomePage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private store: Store<{ auth: any; global: any }>
+    private store: Store<AppState>
   ) {}
   ngOnInit(): void {
     this.store.dispatch(requestUserSensors());

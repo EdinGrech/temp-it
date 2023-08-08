@@ -19,10 +19,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterState, StoreRouterConnectingModule } from '@ngrx/router-store';
 
-import { userAuthReducer } from './state/user/user.reducer';
 import { UserEffects } from './state/user/user.effects';
-
-import { globeReducer as globeReducer } from './state/global/global.reducer';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorsInterceptor } from './interceptors/http-errors.interceptor';
@@ -30,6 +27,8 @@ import { HttpHeaddersInterceptor } from './interceptors/http-headders.intercepto
 
 import { LoaderOverlayComponent } from './components/loader-overlay/loader-overlay.component';
 import { AlertHandlerComponent } from './components/alert-handler/alert-handler.component';
+import { globeReducer } from './state/global/global.reducer';
+import { userAuthReducer } from './state/user/user.reducer';
 
 @NgModule({
   declarations: [AppComponent],

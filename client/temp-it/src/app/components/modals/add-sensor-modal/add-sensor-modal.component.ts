@@ -26,6 +26,7 @@ import {
   requestUserPin,
 } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
+import { AppState } from 'src/app/state/app.state';
 
 type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
@@ -79,7 +80,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private modalController: ModalController,
-    private store: Store<{ auth: any; global: any }>,
+    private store: Store<AppState>,
     private sensorService: SensorService
   ) {}
 

@@ -48,7 +48,7 @@ export interface UserState {
   sensor24HourData?: singleSensorData[];
 }
 
-export const initialState: UserState = {
+export const initialUserState: UserState = {
   user: {
     username: '',
     email: '',
@@ -63,7 +63,7 @@ export const initialState: UserState = {
 };
 
 export const userAuthReducer = createReducer(
-  initialState,
+  initialUserState,
   on(loadUser, (state) => ({
     ...state,
     loading: true,
