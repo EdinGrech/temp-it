@@ -21,3 +21,17 @@ ion-icon.size-20{
         }
     }
 }
+
+@media (max-width: 767px) {
+    .card-bottom-buttons{
+        padding: 20px 10px; 
+        ion-button{
+            padding-right: 10px;
+            align-items: center;
+            font-size: 1.1em;
+            ion-icon{
+                font-size: 1.2em;
+            }
+        }
+    }
+}
