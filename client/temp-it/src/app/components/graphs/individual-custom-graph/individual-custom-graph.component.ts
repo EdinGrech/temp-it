@@ -3,25 +3,24 @@ import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
-import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-temp-hum-summery-graph',
-  templateUrl: './temp-hum-summery-graph.component.html',
-  styleUrls: ['./temp-hum-summery-graph.component.scss'],
+  selector: 'app-individual-custom-graph',
+  templateUrl: './individual-custom-graph.component.html',
+  styleUrls: ['./individual-custom-graph.component.scss'],
   imports: [NgChartsModule, CommonModule],
   providers: [
     { provide: NgChartsConfiguration, useValue: { generateColors: false } },
   ],
   standalone: true,
 })
-export class TempHumSummeryGraphComponent implements OnInit {
-  @Input() userSensorId!: number;
+export class IndividualCustomGraphComponent  implements OnInit {
+  @Input() rawGraphData!: any;
   height!: number;
 
-  constructor(private sensorService: SensorService) {
+  constructor() {
     Chart.register(Annotation);
   }
 
@@ -36,16 +35,9 @@ export class TempHumSummeryGraphComponent implements OnInit {
     } else {
       this.height = 100;
     }
-    this.sensorService
-      .getSensorLast24Hours(this.userSensorId)
-      .subscribe((_data: singleSensorData[]) => {
-        this.rawToGraphData(_data);
-        this.chart?.update();
-      });
   }
 
   rawToGraphData(rawData: singleSensorData[]): void {
-    //if mobile pick every 2nd data point
     if (this.isMobile()) {
       this.lineChartData.datasets[0].data = rawData
         .map((data: singleSensorData) => data.temperature)
@@ -113,7 +105,6 @@ export class TempHumSummeryGraphComponent implements OnInit {
       },
     },
     scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
       y: {
         position: 'left',
       },
@@ -130,27 +121,6 @@ export class TempHumSummeryGraphComponent implements OnInit {
 
     plugins: {
       legend: { display: true },
-//       annotation: {
-//         annotations: [
-//           {
-//             type: 'line',
-// //            scaleID: 'y1',
-//             yMin: 30,
-//             yMax: 30,
-//             borderColor: 'rgb(255, 99, 132)',
-//             borderWidth: 2,
-//             label: {
-//               display: true,
-//               position: 'center',
-//               color: 'orange',
-//               content: 'LineAnno',
-//               font: {
-//                 weight: 'bold',
-//               },
-//             },
-//           },
-//         ],
-//       },
     },
   };
 

@@ -6,6 +6,7 @@ import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-
 
 import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum-summery-graph/temp-hum-summery-graph.component';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sensor-summery-card',
@@ -17,7 +18,7 @@ import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 export class SensorSummeryCardComponent  implements OnInit {
   @Input() sensorDetails!: SensorDetails;
 
-  constructor(private modalController: ModalController,) { }
+  constructor(private modalController: ModalController,private router: Router,private route: ActivatedRoute) { }
 
   ngOnInit() { }
 
@@ -36,7 +37,9 @@ export class SensorSummeryCardComponent  implements OnInit {
     this.modalController.dismiss();
   }
 
-  viewSensorDetails(){}
+  viewSensorDetails(){
+    this.router.navigate(['enhanced-view', this.sensorDetails.id], { relativeTo: this.route });
+  }
 
   deleteSensor(){}
 }
