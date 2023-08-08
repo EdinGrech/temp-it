@@ -31,7 +31,7 @@ export class HomePage implements OnInit {
           this.showUserSensors = true;
           this.sensorDetailsList = sensors;
         } else {
-          return;
+          this.showUserSensors = false
         }
       });
   }
