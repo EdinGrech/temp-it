@@ -63,4 +63,18 @@ export class SensorService {
         '/api/temp/my-sensors-count'
     )
   }
+
+  getUserSensorDataCustomRange(startDate:number, endDate:number, id:number):Observable<singleSensorData[]>{
+    const body = {
+      startDate: startDate,
+      endDate: endDate
+    }
+    
+    return this.http.post<singleSensorData[]>(
+      environment.motherShipUrl +
+        ':' +
+        environment.apiPort +
+        '/api/temp/sensor/date-range/' + id, body
+    )
+  }
 }

@@ -1,16 +1,25 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>enhanced-sensor-view</ion-title>
+    <ion-title>Sensor Info</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">enhanced-sensor-view</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-text>
+  <div *ngIf="sensor">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title>{{sensor.name}}</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-  </ion-text>
+
+  </div>
+
+  <ion-datetime-button datetime="datetime" (ionChange)="datetimeChanged($event)"></ion-datetime-button>
+
+  <ion-modal [keepContentsMounted]="true">
+    <ng-template>
+      <ion-datetime id="datetime"></ion-datetime>
+    </ng-template>
+  </ion-modal>
 </ion-content>

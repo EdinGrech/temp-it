@@ -48,3 +48,10 @@ ion-content.scroll-content {
      scrollbar-width: thin;
  }
 }
+
+.ion-datetime-button-overlay{
+    --border-radius:20px; 
+    .ion-delegate-host{
+        --height: 190px;
+    } 
+}
