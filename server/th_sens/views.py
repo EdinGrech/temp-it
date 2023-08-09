@@ -68,7 +68,7 @@ class LastDaySensorReadingView(APIView):
             else:
                 return Response({'message': 'Sensor does not exist'}, status=444)             
 
-class DateRangeSensorReadingView(APIView):
+class depDateRangeSensorReadingView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request: Request, **kwargs: Any) -> Response:
         # allow only sensor owner or group members where the sensor is shared to view the data
@@ -77,19 +77,50 @@ class DateRangeSensorReadingView(APIView):
         end_date: str = kwargs.get('end_date')
         sensor_id: int = kwargs.get('pk')
         # check if the user is the owner of the sensor
-        sensor_owner: SensorDetails = SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).first()
-        if not sensor_owner:
-            # check if user is a member of the group where the sensor is shared
-            sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
-            for group_id in sensor_group_ids:
-                group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
-                if user in group_members.member_id.all():
-                    break  
-                else:
-                    return Response({'message': 'You are not allowed to view this sensor data'})    
-        sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
-        serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
-        return Response(serializer.data)
+        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
+            serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
+            return Response(serializer.data)
+        else:
+            if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
+                sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+                for group_id in sensor_group_ids:
+                    group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
+                    if user.id in group_members.member_id.all():
+                        sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
+                        serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
+                        return Response(serializer.data)  
+                    else:
+                        return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
+            else:
+                return Response({'message': 'Sensor does not exist'}, status=444)
+            
+class DateRangeSensorReadingView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request: Request, **kwargs: Any) -> Response:
+        # allow only sensor owner or group members where the sensor is shared to view the data
+        user: th_User = request.user
+        start_date: str = request.data.get('startDate')
+        end_date: str = request.data.get('endDate')
+        sensor_id: int = kwargs.get('pk')
+        # check if the user is the owner of the sensor
+        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
+            serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
+            return Response(serializer.data)
+        else:
+            if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
+                sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+                for group_id in sensor_group_ids:
+                    group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
+                    if user.id in group_members.member_id.all():
+                        sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
+                        serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
+                        return Response(serializer.data)  
+                    else:
+                        return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
+            else:
+                return Response({'message': 'Sensor does not exist'}, status=444)
     
 class RegisterSensorView(generics.CreateAPIView):
     # register a sensor by getting the data field add_sensor_pin from request and compare it with the user's add_sensor_pin
