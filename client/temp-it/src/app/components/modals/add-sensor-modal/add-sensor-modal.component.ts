@@ -23,10 +23,12 @@ import {
   userAddSensorPinDateAdded,
 } from 'src/app/state/user/user.selectors';
 import {
-  requestUserPin,
+  requestUserPin, requestUserSensors,
 } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { AppState } from 'src/app/state/app.state';
+
+import { SensorDetails, SensorDetailsUpdatable } from 'src/app/interfaces/sensor/sensor';
 
 type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
@@ -106,16 +108,16 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       this.initialSensorCount = sensors.length;
     });
     this.sensorDetailsForm = this.formBuilder.group({
-      sensorName: ['', [Validators.required]],
-      sensorLocation: ['', [Validators.required]],
+      name: ['', [Validators.required]],
+      location: ['', [Validators.required]],
       description: ['', [Validators.required]],
       active: [true, [Validators.required]],
-      allowAdminsToEdit: [true, [Validators.required]],
-      allowNotifications: [false, [Validators.required]],
-      maxTempAllowed: [30],
-      minTempAllowed: [10],
-      maxHumAllowed: [80],
-      minHumAllowed: [40],
+      allow_group_admins_to_edit: [true, [Validators.required]],
+      active_alerts: [false, [Validators.required]],
+      high_temp_alert: [30],
+      low_temp_alert: [10],
+      high_humidity_alert: [80],
+      low_humidity_alert: [40],
     });
     this.sensorDetailsForm.valueChanges.subscribe((val) => {
       this.showAlertDetails = val.allowNotifications;
@@ -160,29 +162,6 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  // dispatchBeacon4ESP() {
-  //   let scopeSensors;
-  //     this.sensorService.getUserSensorsCount().subscribe((count) => {
-  //       let sensorList = this.store.select(selectUserSensors);
-  //       let sensorListValue = sensorList.subscribe((sensors) => {
-  //         scopeSensors = sensors;
-  //       });
-  //       if (count > scopeSensors.length) {
-  //         this.store.dispatch(requestUserSensors());
-  //         this.store.select(selectUserSensors).subscribe((sensors) => {
-  //           this.lastSensorId = sensors[sensors.length - 1].id;
-  //           sensorListValue.unsubscribe();
-  //           this.currentStep = 'details';
-  //         });
-  //       } else {
-  //         setTimeout(() => {
-  //           this.dispatchBeacon4ESP()
-  //         }, 5000);
-  //       }
-  //     });
-  // }
-  // Assuming 'sensorService' is a service that provides the getUserSensorsCount() method which returns an Observable.
-
   checkUserSensorsCountAndStop(condition: (count: number,initialSensorCount:number) => boolean): Promise<number> {
     return new Promise<number>((resolve) => {
       this.intervalSubscription = interval(7000).subscribe(() => {
@@ -206,7 +185,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   async onStopped(count: number) {
-    console.log(`Condition met! Final count: ${count}`);
+    this.store.dispatch(requestUserSensors());
     this.store.select(selectUserSensors).subscribe((sensors) => {
     this.lastSensorId = sensors[sensors.length - 1].id;
     this.currentStep = 'details';
@@ -233,28 +212,56 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   submitDetailsForm() {
-    let formValue;
-    if (this.sensorDetailsForm.valid) {
-      if (this.sensorDetailsForm.value.allowNotifications) {
-        formValue = this.sensorDetailsForm.value;
-      } else {
-        formValue = {
-          // all of the form values except allowNotifications
-          sensorName: this.sensorDetailsForm.value.sensorName,
-          sensorLocation: this.sensorDetailsForm.value.sensorLocation,
-          description: this.sensorDetailsForm.value.description,
-          active: this.sensorDetailsForm.value.active,
-          allowAdminsToEdit: this.sensorDetailsForm.value.allowAdminsToEdit,
-        };
+    let SensorDetailsUpdatable:SensorDetailsUpdatable = {
+      id: 0,
+      updatable: {
+        name: '',
+        location: '',
+        description: '',
+        active: false,
+        active_alerts: false,
+        allow_group_admins_to_edit: false,
+        high_temp_alert: undefined,
+        low_temp_alert: undefined,
+        high_humidity_alert: undefined,
+        low_humidity_alert: undefined
       }
-      this.currentStep = 'done';
-      console.log(formValue);
+    };
+
+    if (this.sensorDetailsForm.valid) {
+      SensorDetailsUpdatable.id = this.lastSensorId!;
+      SensorDetailsUpdatable.updatable = this.sensorDetailsForm.value;
+      this.sensorService.updateSensorDetails(SensorDetailsUpdatable).subscribe((res) => {
+        console.log(res);
+        this.store.dispatch(requestUserSensors());
+        this.currentStep = 'done';
+      });
     } else {
       this.sensorDetailsForm.markAllAsTouched();
-      //print what fields are invalid
       console.log(this.sensorDetailsForm);
     }
   }
+
+  // submitDetailsForm() {
+  //   let formValue;
+  //   if (this.sensorDetailsForm.valid) {
+  //     if (this.sensorDetailsForm.value.allowNotifications) {
+  //       formValue = this.sensorDetailsForm.value;
+  //     } else {
+  //       formValue = {
+  //         // all of the form values except allowNotifications
+  //         sensorName: this.sensorDetailsForm.value.sensorName,
+  //         sensorLocation: this.sensorDetailsForm.value.sensorLocation,
+  //         description: this.sensorDetailsForm.value.description,
+  //         active: this.sensorDetailsForm.value.active,
+  //         allowAdminsToEdit: this.sensorDetailsForm.value.allowAdminsToEdit,
+  //       };
+  //     }
+  //     this.currentStep = 'done';
+  //   } else {
+  //     this.sensorDetailsForm.markAllAsTouched();
+  //   }
+  // }
 
   done() {
     this.modalController.dismiss(this.wifiForm.value);
