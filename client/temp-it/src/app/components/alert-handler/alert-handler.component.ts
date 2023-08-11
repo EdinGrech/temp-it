@@ -9,6 +9,7 @@ import { selectGlobalError } from '../../state/global/global.selectors';
 import { selectUserError } from '../../state/user/user.selectors';
 
 import { AlertController } from '@ionic/angular';
+import { AppState } from 'src/app/state/app.state';
 @Component({
   selector: 'app-alert-handler',
   templateUrl: './alert-handler.component.html',
@@ -26,7 +27,7 @@ export class AlertHandlerComponent  implements OnInit {
   private isAlertDisplayed = false;
 
   constructor(
-    public store: Store<{ auth: any; global: any }>,
+    public store: Store<AppState>,
     private alertController: AlertController ) {}
 
   ngOnInit() {

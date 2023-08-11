@@ -1,0 +1,104 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Sensor Info</ion-title>
+    <ion-buttons slot="end">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scroll-content" *ngIf="sensor">
+  <div class="flex-container">
+    <ion-card class="narrow-card">
+      <ion-item lines="none">
+        <ion-label>
+          <div class="display-flex">
+            <h1>{{ sensor.name ? sensor.name : "Sensor" }}</h1>
+            <ion-icon class="size-20" [color]="sensor.active ? 'success' : 'danger'"
+              [name]="sensor.active ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          </div>
+          <p>{{ sensor.active ? "Active" : "Inactive" }}</p>
+        </ion-label>
+        <ion-button slot="end" (click)="editSensor()">
+          Edit
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-card-content>
+        <h2>General Info</h2>
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <ion-label>Location</ion-label>
+              <p>{{sensor.location}}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <ion-label>Date Created</ion-label>
+              <p>{{sensor.date_created | date: 'medium'}}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <ion-label>Description</ion-label>
+              <p>{{sensor.description}}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <ion-label>Allow Group Admins to Edit</ion-label>
+              <p>{{sensor.allow_group_admins_to_edit ? "Yes" : "No"}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <h2>Alert Settings</h2>
+        <ion-list>
+          <ion-item>
+            <ion-label>Active Alerts</ion-label>
+            <ion-text>{{sensor.active_alerts ? "Yes" : "No"}}</ion-text>
+          </ion-item>
+          <div *ngIf="sensor.active_alerts">
+            <ion-item>
+              <ion-label>High Temperature Alert</ion-label>
+              <ion-text>{{sensor.high_temp_alert + ' °C'}}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Low Temperature Alert</ion-label>
+              <ion-text>{{sensor.low_temp_alert + ' °C'}}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>High Humidity Alert</ion-label>
+              <ion-text>{{sensor.high_humidity_alert + ' %'}}</ion-text>
+            </ion-item>
+            <ion-item>
+              <ion-label>Low Humidity Alert</ion-label>
+              <ion-text>{{sensor.low_humidity_alert + ' %'}}</ion-text>
+            </ion-item>
+          </div>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+    <ion-card class="wide-card">
+      <ion-card-header>
+        <ion-card-title>Temperature & Humidity Data</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <app-individual-custom-graph [rawGraphData]="rawData"></app-individual-custom-graph>
+        <app-date-range-picker [minDate]="minDate" [maxDate]="maxDate"
+          (valueChange)="datetimeChanged($event)"></app-date-range-picker>
+        <ion-button (click)="getSensorReadings()">Get Data</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+<ion-content *ngIf="!sensor">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Looking for Sensor</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-spinner></ion-spinner>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

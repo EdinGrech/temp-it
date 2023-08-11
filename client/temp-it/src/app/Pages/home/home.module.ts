@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
-import { Tab1PageRoutingModule } from './home-routing.module';
+import { HomePageRoutingModule } from './home-routing.module';
 import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
 
 //components
@@ -18,7 +18,7 @@ import { SensorSummeryCardComponent } from 'src/app/components/sensor-summery-ca
         CommonModule,
         FormsModule,
         ExploreContainerComponentModule,
-        Tab1PageRoutingModule,
+        HomePageRoutingModule,
         ThemeSettingComponent,
         SensorSummeryCardComponent
     ]

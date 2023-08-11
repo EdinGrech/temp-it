@@ -21,6 +21,7 @@ import { forgotUserPassword, loginUser, registerUser } from '../../state/user/us
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { AppState } from 'src/app/state/app.state';
 
 export type Screen = 'signin' | 'signup' | 'forget';
 @Component({
@@ -50,7 +51,7 @@ export class AuthPage implements OnInit {
   constructor(
     public colorMode: ColorModeService,
     private fb: FormBuilder,
-    public store: Store<{ auth: any; global: any }>,
+    public store: Store<AppState>,
     private router: Router
   ) {
     this.signUpFormData = this.fb.group({

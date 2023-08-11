@@ -5,12 +5,12 @@ export interface GlobalState {
   error: any;
 }
 
-export const initialState: GlobalState = {
+export const initialGlobalState: GlobalState = {
   error: null,
 };
 
-export const globeReduer = createReducer(
-  initialState,
+export const globeReducer = createReducer(
+  initialGlobalState,
   on(globalError, (state, { error }) => ({
     ...state,
     error,

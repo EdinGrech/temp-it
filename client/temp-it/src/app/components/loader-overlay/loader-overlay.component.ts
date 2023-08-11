@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { selectUserLoading } from 'src/app/state/user/user.selectors';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { AppState } from 'src/app/state/app.state';
 
 @Component({
   selector: 'app-loader-overlay',
@@ -18,7 +19,7 @@ export class LoaderOverlayComponent implements OnInit {
   loadingTimeout: number = 5000; // Adjust the timeout duration (in milliseconds) as needed.
 
   constructor(
-    public store: Store<{ auth: any; global: any }>,
+    public store: Store<AppState>,
     private loadingController: LoadingController
   ) {
     this.loading$.subscribe((loading) => {

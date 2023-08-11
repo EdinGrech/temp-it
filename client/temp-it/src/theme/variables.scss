@@ -144,6 +144,8 @@
     --ion-color-light-contrast-rgb: 255, 255, 255;
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
+
+    --wheel-fade-background-rgb: 29, 30, 38;
   }
 
   /*
@@ -188,6 +190,8 @@
     --ion-toolbar-background: var(--ion-color-step-150);
     --ion-toolbar-border-color: var(--ion-color-step-250);
   }
+
+  --wheel-fade-background-rgb: 255, 255, 255;
 
   /*
    * Material Design Dark Theme

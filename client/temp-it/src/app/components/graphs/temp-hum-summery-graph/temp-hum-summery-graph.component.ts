@@ -1,54 +1,87 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
+import { SensorService } from 'src/app/services/user/sensor/sensor.service';
+import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-temp-hum-summery-graph',
   templateUrl: './temp-hum-summery-graph.component.html',
   styleUrls: ['./temp-hum-summery-graph.component.scss'],
-  imports: [NgChartsModule],
+  imports: [NgChartsModule, CommonModule],
   providers: [
-    { provide: NgChartsConfiguration, useValue: { generateColors: false }}
+    { provide: NgChartsConfiguration, useValue: { generateColors: false } },
   ],
   standalone: true,
 })
-export class TempHumSummeryGraphComponent {
-  private newLabel? = 'New label';
+export class TempHumSummeryGraphComponent implements OnInit {
+  @Input() userSensorId!: number;
+  height!: number;
 
-  constructor() {
+  constructor(private sensorService: SensorService) {
     Chart.register(Annotation);
+  }
+
+  isMobile(): boolean {
+    const screenWidth = window.innerWidth;
+    return screenWidth < 600 ? true : false;
+  }
+
+  ngOnInit(): void {
+    if (this.isMobile()) {
+      this.height = 300;
+    } else {
+      this.height = 100;
+    }
+    this.sensorService
+      .getSensorLast24Hours(this.userSensorId)
+      .subscribe((_data: singleSensorData[]) => {
+        this.rawToGraphData(_data);
+        this.chart?.update();
+      });
+  }
+
+  rawToGraphData(rawData: singleSensorData[]): void {
+    //if mobile pick every 2nd data point
+    if (this.isMobile()) {
+      this.lineChartData.datasets[0].data = rawData
+        .map((data: singleSensorData) => data.temperature)
+        .filter((_data, index) => index % 4 === 0);
+      this.lineChartData.datasets[1].data = rawData
+        .map((data: singleSensorData) => data.humidity)
+        .filter((_data, index) => index % 4 === 0);
+      this.lineChartData.labels = rawData
+        .map(
+          (data: singleSensorData) =>
+            new Date(data.date_time).getHours() +
+            ':' +
+            new Date(data.date_time).getMinutes()
+        )
+        .filter((_data, index) => index % 4 === 0) as string[];
+    } else {
+      this.lineChartData.datasets[0].data = rawData.map(
+        (data: singleSensorData) => data.temperature
+      );
+      this.lineChartData.datasets[1].data = rawData.map(
+        (data: singleSensorData) => data.humidity
+      );
+      this.lineChartData.labels = rawData.map(
+        (data: singleSensorData) =>
+          new Date(data.date_time).getHours() +
+          ':' +
+          new Date(data.date_time).getMinutes()
+      ) as string[];
+    }
   }
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
-        data: [65, 59, 80, 81, 56, 55, 40],
-        label: 'Series A',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
-      },
-      {
-        data: [28, 48, 40, 19, 86, 27, 90],
-        label: 'Series B',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
-        fill: 'origin',
-      },
-      {
-        data: [180, 480, 770, 90, 1000, 270, 400],
-        label: 'Series C',
-        yAxisID: 'y1',
+        data: [],
+        label: 'Temperature',
         backgroundColor: 'rgba(255,0,0,0.3)',
         borderColor: 'red',
         pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -57,8 +90,20 @@ export class TempHumSummeryGraphComponent {
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
         fill: 'origin',
       },
+      {
+        data: [],
+        label: 'Humidity',
+        yAxisID: 'y1',
+        backgroundColor: 'rgba(148,159,177,0.2)',
+        borderColor: 'rgba(148,159,177,1)',
+        pointBackgroundColor: 'rgba(148,159,177,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+        fill: 'origin',
+      },
     ],
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: [],
   };
 
   public lineChartOptions: ChartConfiguration['options'] = {
@@ -68,11 +113,8 @@ export class TempHumSummeryGraphComponent {
       },
     },
     scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
       y: {
-        position: 'left',
-      },
-      y1: {
+        labels: ['Temperature'],
         position: 'right',
         grid: {
           color: 'rgba(255,0,0,0.3)',
@@ -81,79 +123,39 @@ export class TempHumSummeryGraphComponent {
           color: 'red',
         },
       },
+      y1: {
+        labels: ['Humidity'], 
+        position: 'left',
+      },
     },
 
     plugins: {
       legend: { display: true },
-      annotation: {
-        annotations: [
-          {
-            type: 'line',
-            scaleID: 'x',
-            value: 'March',
-            borderColor: 'orange',
-            borderWidth: 2,
-            label: {
-              display: true,
-              position: 'center',
-              color: 'orange',
-              content: 'LineAnno',
-              font: {
-                weight: 'bold',
-              },
-            },
-          },
-        ],
-      },
+//       annotation: {
+//         annotations: [
+//           {
+//             type: 'line',
+// //            scaleID: 'y1',
+//             yMin: 30,
+//             yMax: 30,
+//             borderColor: 'rgb(255, 99, 132)',
+//             borderWidth: 2,
+//             label: {
+//               display: true,
+//               position: 'center',
+//               color: 'orange',
+//               content: 'LineAnno',
+//               font: {
+//                 weight: 'bold',
+//               },
+//             },
+//           },
+//         ],
+//       },
     },
   };
 
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  private static generateNumber(i: number): number {
-    return Math.floor(Math.random() * (i < 2 ? 100 : 1000) + 1);
-  }
-
-  // events
-  public chartClicked({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public chartHovered({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public hideOne(): void {
-    const isHidden = this.chart?.isDatasetHidden(1);
-    this.chart?.hideDataset(1, !isHidden);
-  }
-
-  public changeColor(): void {
-    this.lineChartData.datasets[2].borderColor = 'green';
-    this.lineChartData.datasets[2].backgroundColor = `rgba(0, 255, 0, 0.3)`;
-
-    this.chart?.update();
-  }
-
-  public changeLabel(): void {
-    const tmp = this.newLabel;
-    this.newLabel = this.lineChartData.datasets[2].label;
-    this.lineChartData.datasets[2].label = tmp;
-
-    this.chart?.update();
-  }
 }

@@ -1,0 +1,24 @@
+<ion-item>
+  <ion-label>Start Date</ion-label>
+  <p>
+    <ion-datetime-button datetime="dateTimeStart"></ion-datetime-button>
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="dateTimeStart" (ionChange)="dateRangeChanged($event,'start')" [value]="startDate"
+          [min]="minDate" [max]="endDate || maxDate"></ion-datetime>
+      </ng-template>
+    </ion-modal>
+  </p>
+</ion-item>
+<ion-item>
+  <ion-label>End Date</ion-label>
+  <p>
+    <ion-datetime-button datetime="dateTimeEnd"></ion-datetime-button>
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="dateTimeEnd" (ionChange)="dateRangeChanged($event,'end')" [value]="endDate"
+          [min]="startDate || minDate" [max]="maxDate"></ion-datetime>
+      </ng-template>
+    </ion-modal>
+  </p>
+</ion-item>

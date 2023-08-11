@@ -9,10 +9,10 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { globalError } from '../state/global/global.actions';
 
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {
 
@@ -28,7 +28,7 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
         if (error.status == 0) {
           error.error.error = 'No connection to server.';
         } else if (error.status === 401) {
-          this.cookieService.delete('jwt');
+          this.cookieService.deleteAll();
           this.router.navigate(['/auth']);
         }
         return throwError(error);

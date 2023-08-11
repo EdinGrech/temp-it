@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GrapherService } from './grapher.service';
+import { PinService } from './pin.service';
 
-describe('GrapherService', () => {
-  let service: GrapherService;
+describe('PinService', () => {
+  let service: PinService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GrapherService);
+    service = TestBed.inject(PinService);
   });
 
   it('should be created', () => {

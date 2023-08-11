@@ -19,15 +19,19 @@ COPY . /app
 # Expose the port on which Django runs
 EXPOSE 8000
 
-ARG SUPERUSER_USERNAME=admin
-ARG SUPERUSER_PASSWORD=admin
-ARG SUPERUSER_EMAIL=cheese@mail.com
+ENV SUPERUSER_USERNAME=admin
+ENV SUPERUSER_PASSWORD=admin
+ENV SUPERUSER_EMAIL=cheese@mail.com
 
+RUN apt-get update && apt-get install -y dos2unix
 # Copy the setup.sh file into the container
 COPY setup.sh /setup.sh
+
+# Convert the file format from Windows to Linux
+RUN dos2unix /setup.sh
 
 # Make the script executable
 RUN chmod +x /setup.sh
 
 # Execute the setup.sh script as the entrypoint
-ENTRYPOINT ["/setup.sh"]
+ENTRYPOINT ["/bin/sh","/setup.sh"]

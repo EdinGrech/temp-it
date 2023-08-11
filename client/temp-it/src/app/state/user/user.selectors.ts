@@ -28,3 +28,38 @@ export const forgotUserPasswordStatus = createSelector(
   selectUser,
   (state: UserState) => state.forgotPskProcess,
 );
+
+export const userAddSensorPin = createSelector(
+  selectUser,
+  (state: UserState) => state.pin
+);
+
+export const userAddSensorPinDateAdded = createSelector(
+  selectUser,
+  (state: UserState) => state.pinDateAdded
+);
+
+export const selectUserSensors = createSelector(
+  selectUser,
+  (state: UserState) => state.sensors
+);
+
+export const selectUserSensor = (id: number) => createSelector(
+  selectUserSensors,
+  (data) => data.find((s) => s.id === id),
+);
+
+export const selectUserSensorsLoading = createSelector(
+  selectUser,
+  (state: UserState) => state.loadingSensors
+);
+
+export const selectUserSensorsError = createSelector(
+  selectUser,
+  (state: UserState) => state.sensorError
+);
+
+export const selectUserSensorsLen = createSelector(
+  selectUser,
+  (state: UserState) => state.sensorLen
+);
