@@ -41,5 +41,5 @@ export class SensorSummeryCardComponent  implements OnInit {
     this.router.navigate(['enhanced-view', this.sensorDetails.id], { relativeTo: this.route });
   }
 
-  deleteSensor(){}
+  favSensor(){}
 }

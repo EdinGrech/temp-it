@@ -113,11 +113,8 @@ export class TempHumSummeryGraphComponent implements OnInit {
       },
     },
     scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
       y: {
-        position: 'left',
-      },
-      y1: {
+        labels: ['Temperature'],
         position: 'right',
         grid: {
           color: 'rgba(255,0,0,0.3)',
@@ -125,6 +122,10 @@ export class TempHumSummeryGraphComponent implements OnInit {
         ticks: {
           color: 'red',
         },
+      },
+      y1: {
+        labels: ['Humidity'], 
+        position: 'left',
       },
     },
 
@@ -157,37 +158,4 @@ export class TempHumSummeryGraphComponent implements OnInit {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  // events
-  public chartClicked({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public chartHovered({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public hideOne(): void {
-    const isHidden = this.chart?.isDatasetHidden(1);
-    this.chart?.hideDataset(1, !isHidden);
-  }
-
-  public changeColor(): void {
-    this.lineChartData.datasets[2].borderColor = 'green';
-    this.lineChartData.datasets[2].backgroundColor = `rgba(0, 255, 0, 0.3)`;
-
-    this.chart?.update();
-  }
 }

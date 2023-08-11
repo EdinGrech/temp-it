@@ -1,23 +1,31 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  AfterViewInit,
+} from '@angular/core';
 import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-individual-custom-graph',
   templateUrl: './individual-custom-graph.component.html',
   styleUrls: ['./individual-custom-graph.component.scss'],
-  imports: [NgChartsModule, CommonModule],
+  imports: [NgChartsModule, CommonModule, IonicModule,],
   providers: [
     { provide: NgChartsConfiguration, useValue: { generateColors: false } },
   ],
   standalone: true,
 })
-export class IndividualCustomGraphComponent  implements OnInit {
-  @Input() rawGraphData!: any;
+export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges {
+  @Input() rawGraphData?: any;
   height!: number;
 
   constructor() {
@@ -26,47 +34,47 @@ export class IndividualCustomGraphComponent  implements OnInit {
 
   isMobile(): boolean {
     const screenWidth = window.innerWidth;
-    return screenWidth < 600 ? true : false;
+    return screenWidth < 768 ? true : false;
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     if (this.isMobile()) {
       this.height = 300;
     } else {
-      this.height = 100;
+      this.height = 145;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['rawGraphData'] && this.rawGraphData) {
+      this.rawToGraphData(this.rawGraphData);
     }
   }
 
   rawToGraphData(rawData: singleSensorData[]): void {
+    let dataSkipStep: number;
     if (this.isMobile()) {
-      this.lineChartData.datasets[0].data = rawData
-        .map((data: singleSensorData) => data.temperature)
-        .filter((_data, index) => index % 4 === 0);
-      this.lineChartData.datasets[1].data = rawData
-        .map((data: singleSensorData) => data.humidity)
-        .filter((_data, index) => index % 4 === 0);
-      this.lineChartData.labels = rawData
-        .map(
-          (data: singleSensorData) =>
-            new Date(data.date_time).getHours() +
-            ':' +
-            new Date(data.date_time).getMinutes()
-        )
-        .filter((_data, index) => index % 4 === 0) as string[];
+      dataSkipStep = Math.round(rawData.length / 72);
     } else {
-      this.lineChartData.datasets[0].data = rawData.map(
-        (data: singleSensorData) => data.temperature
-      );
-      this.lineChartData.datasets[1].data = rawData.map(
-        (data: singleSensorData) => data.humidity
-      );
-      this.lineChartData.labels = rawData.map(
+      dataSkipStep = Math.round(rawData.length / 300);
+    }
+    this.lineChartData.datasets[0].data = rawData
+      .map((data: singleSensorData) => data.temperature)
+      .filter((_data, index) => index % dataSkipStep === 0);
+    this.lineChartData.datasets[1].data = rawData
+      .map((data: singleSensorData) => data.humidity)
+      .filter((_data, index) => index % dataSkipStep === 0);
+    this.lineChartData.labels = rawData
+      .map(
         (data: singleSensorData) =>
+          new Date(data.date_time).getDate() +
+          '/' +
           new Date(data.date_time).getHours() +
           ':' +
           new Date(data.date_time).getMinutes()
-      ) as string[];
-    }
+      )
+      .filter((_data, index) => index % dataSkipStep === 0) as string[];
+    this.chart?.update();
   }
 
   public lineChartData: ChartConfiguration['data'] = {
@@ -106,9 +114,7 @@ export class IndividualCustomGraphComponent  implements OnInit {
     },
     scales: {
       y: {
-        position: 'left',
-      },
-      y1: {
+        labels: ['Temperature'],
         position: 'right',
         grid: {
           color: 'rgba(255,0,0,0.3)',
@@ -116,6 +122,10 @@ export class IndividualCustomGraphComponent  implements OnInit {
         ticks: {
           color: 'red',
         },
+      },
+      y1: {
+        labels: ['Humidity'], 
+        position: 'left',
       },
     },
 
@@ -127,37 +137,4 @@ export class IndividualCustomGraphComponent  implements OnInit {
   public lineChartType: ChartType = 'line';
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  // events
-  public chartClicked({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public chartHovered({
-    event,
-    active,
-  }: {
-    event?: ChartEvent;
-    active?: object[];
-  }): void {
-    console.log(event, active);
-  }
-
-  public hideOne(): void {
-    const isHidden = this.chart?.isDatasetHidden(1);
-    this.chart?.hideDataset(1, !isHidden);
-  }
-
-  public changeColor(): void {
-    this.lineChartData.datasets[2].borderColor = 'green';
-    this.lineChartData.datasets[2].backgroundColor = `rgba(0, 255, 0, 0.3)`;
-
-    this.chart?.update();
-  }
 }

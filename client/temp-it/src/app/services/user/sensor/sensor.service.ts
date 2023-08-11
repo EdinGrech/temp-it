@@ -64,7 +64,7 @@ export class SensorService {
     )
   }
 
-  getUserSensorDataCustomRange(startDate:number, endDate:number, id:number):Observable<singleSensorData[]>{
+  getUserSensorDataCustomRange(startDate:string, endDate:string, id:number):Observable<singleSensorData[]>{
     const body = {
       startDate: startDate,
       endDate: endDate
