@@ -48,7 +48,6 @@ export class EnhancedSensorViewPage implements OnInit {
           this.store.dispatch(requestUserSensors());
         }
         this.sensor = sensor;
-        this.handleSensorUpdate();
       });
     });
   }
@@ -64,9 +63,8 @@ export class EnhancedSensorViewPage implements OnInit {
     await modal.present();
   }
 
-  handleSensorUpdate(){
-    //this.sensor
-    
+  deleteSensor(){
+
   }
 
   datetimeChanged(dateRange: {start: string, end: string},) {

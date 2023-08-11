@@ -19,10 +19,22 @@
           </div>
           <p>{{ sensor.active ? "Active" : "Inactive" }}</p>
         </ion-label>
-        <ion-button slot="end" (click)="editSensor()">
-          Edit
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
+        <ion-buttons slot="end">
+          <ion-button color="danger" (click)="deleteSensor()">
+            <ion-label>
+              <h3>
+                Delete <ion-icon name="trash"></ion-icon>
+              </h3>
+            </ion-label>
+          </ion-button>
+          <ion-button color="primary" (click)="editSensor()">
+            <ion-label>
+              <h3>
+                Edit <ion-icon name="create"></ion-icon>
+              </h3>
+            </ion-label>
+          </ion-button>
+        </ion-buttons>
       </ion-item>
       <ion-card-content>
         <h2>General Info</h2>
