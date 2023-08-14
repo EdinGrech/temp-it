@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
@@ -36,7 +36,8 @@ export class EnhancedSensorViewPage implements OnInit {
     private router: Router,
     private store: Store<AppState>,
     private modalController: ModalController,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private alertController: AlertController
     ) {}
 
   ngOnInit(): void {
@@ -65,14 +66,32 @@ export class EnhancedSensorViewPage implements OnInit {
     await modal.present();
   }
 
-  deleteSensor(){
-    this.sensorService.deleteUserSensor(this.sensor!.id).pipe(first()).subscribe(data => {
-      if(data.status == 201){
+  async deleteSensor(){
+    const alert = await this.alertController.create({
+      header: 'Delete Action',
+      message: 'Are you sure you want to delete this sensor',
+      buttons: [{
+        text: 'Yes',
+        handler: () => {
+          this.deleteConfirmed()
+        }
+      }, 'Cancel'],
+    });
+
+    await alert.present();
+
+    await alert.onDidDismiss();
+
+  }
+
+  deleteConfirmed(){
+    this.sensorService.deleteUserSensor(this.sensor!.id).pipe(first()).subscribe(data_ => {
+      let data:any = data_
+      if(data.message == 'Sensor deleted'){
         this.store.dispatch(requestUserSensors());
         this.router.navigate(['']);
       }
-      //if status type starts with 4
-      if(data.status.toString().charAt(0) == '4'){
+      else{
         this.store.dispatch(globalError({error: (data as any) as HttpErrorResponse}));
       }
     });
