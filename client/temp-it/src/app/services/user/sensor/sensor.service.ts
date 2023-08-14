@@ -77,4 +77,13 @@ export class SensorService {
         '/api/temp/sensor/date-range/' + id, body
     )
   }
+
+  deleteUserSensor(id:number):Observable<HttpResponse>{
+    return this.http.delete<HttpResponse>(
+      environment.motherShipUrl +
+        ':' +
+        environment.apiPort +
+        '/api/temp/delete-sensor/' + id
+    )
+  }
 }

@@ -7,6 +7,7 @@ urlpatterns = [
     path('my-sensors', MySensorsView.as_view()),
     path('my-sensors-count', MyLenSensorsView.as_view()),
     path('accessible-sensors', AccessibleSensorView.as_view()),
+    path('delete-sensor/<int:pk>', DeleteSensorView.as_view()),
 
     path('sensor/<int:pk>', LastDaySensorReadingView.as_view()),
     path('sensor/<str:start_date>/<str:end_date>/<int:pk>', depDateRangeSensorReadingView.as_view()),# to deprecate

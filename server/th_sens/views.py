@@ -121,6 +121,22 @@ class DateRangeSensorReadingView(APIView):
                         return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
             else:
                 return Response({'message': 'Sensor does not exist'}, status=444)
+            
+class DeleteSensorView(APIView):
+    permission_classes = [IsAuthenticated]
+    def delete(self, request: Request, **kwargs: Any) -> Response:
+        # allow only sensor owner or group members where the sensor is shared to view the data
+        user: th_User = request.user
+        sensor_id: int = kwargs.get('pk')
+        # check if the user is the owner of the sensor
+        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            sensor: SensorDetails = SensorDetails.objects.get(id=sensor_id)
+            sensor.delete()
+            return Response({'message': 'Sensor deleted'}, status=200)
+        elif(SensorDetails.objects.filter(sensor_id=sensor_id).exists()):
+            return Response({'message': 'You are not allowed to delete this sensor'}, status=403)
+        else:
+            return Response({'message': 'Sensor does not exist'}, status=444)
     
 class RegisterSensorView(generics.CreateAPIView):
     # register a sensor by getting the data field add_sensor_pin from request and compare it with the user's add_sensor_pin

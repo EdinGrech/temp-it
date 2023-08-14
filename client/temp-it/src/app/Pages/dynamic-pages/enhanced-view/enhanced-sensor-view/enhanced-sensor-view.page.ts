@@ -9,6 +9,8 @@ import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-
 import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { first } from 'rxjs';
+import { globalError } from 'src/app/state/global/global.actions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-enhanced-sensor-view',
@@ -64,7 +66,16 @@ export class EnhancedSensorViewPage implements OnInit {
   }
 
   deleteSensor(){
-
+    this.sensorService.deleteUserSensor(this.sensor!.id).pipe(first()).subscribe(data => {
+      if(data.status == 201){
+        this.store.dispatch(requestUserSensors());
+        this.router.navigate(['']);
+      }
+      //if status type starts with 4
+      if(data.status.toString().charAt(0) == '4'){
+        this.store.dispatch(globalError({error: (data as any) as HttpErrorResponse}));
+      }
+    });
   }
 
   datetimeChanged(dateRange: {start: string, end: string},) {
