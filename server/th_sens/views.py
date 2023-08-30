@@ -132,7 +132,7 @@ class DeleteSensorView(APIView):
         if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             sensor: SensorDetails = SensorDetails.objects.get(id=sensor_id)
             sensor.delete()
-            return Response({'message': 'Sensor deleted'}, status=200)
+            return Response({'message': 'Sensor deleted'}, status=201)
         elif(SensorDetails.objects.filter(sensor_id=sensor_id).exists()):
             return Response({'message': 'You are not allowed to delete this sensor'}, status=403)
         else:

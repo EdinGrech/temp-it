@@ -7,6 +7,7 @@ export const environment = {
   motherShipUrl: 'http://localhost',
   appPort: '8100',
   apiPort: '8000',
+  esp32Url: 'http://192.168.42.1',
 };
 
 /*
