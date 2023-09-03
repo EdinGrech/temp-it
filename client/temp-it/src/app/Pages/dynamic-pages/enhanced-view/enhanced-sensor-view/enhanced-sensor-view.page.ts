@@ -24,9 +24,10 @@ export class EnhancedSensorViewPage implements OnInit {
 
   dateRange?:{start: string, end: string};
 
-  //min 6 months ago
+  // Set the minDate and maxDate properties
   minDate: string = new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString();
-  maxDate: string = new Date().toISOString();
+  maxDate: string = new Date(new Date().setHours(new Date().getHours() + 2)).toISOString(); // Adjust for GMT+2
+
   invalidDates: boolean = true;
   rawData: any;
   dateChange4LookUp: boolean = false;
@@ -38,7 +39,7 @@ export class EnhancedSensorViewPage implements OnInit {
     private modalController: ModalController,
     private sensorService: SensorService,
     private alertController: AlertController
-    ) {}
+    ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -51,6 +52,9 @@ export class EnhancedSensorViewPage implements OnInit {
           this.store.dispatch(requestUserSensors());
         }
         this.sensor = sensor;
+        if(this.sensor){
+          this.minDate = new Date(this.sensor!.date_created).toISOString();
+        }
       });
     });
   }

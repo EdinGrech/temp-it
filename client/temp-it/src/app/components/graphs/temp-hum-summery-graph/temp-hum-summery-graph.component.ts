@@ -54,11 +54,11 @@ export class TempHumSummeryGraphComponent implements OnInit {
         .map((data: singleSensorData) => data.humidity)
         .filter((_data, index) => index % 4 === 0);
       this.lineChartData.labels = rawData
-        .map(
-          (data: singleSensorData) =>
-            new Date(data.date_time).getHours() +
-            ':' +
-            new Date(data.date_time).getMinutes()
+        .map((data: singleSensorData) =>
+          new Date(data.date_time).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
         )
         .filter((_data, index) => index % 4 === 0) as string[];
     } else {
@@ -68,11 +68,11 @@ export class TempHumSummeryGraphComponent implements OnInit {
       this.lineChartData.datasets[1].data = rawData.map(
         (data: singleSensorData) => data.humidity
       );
-      this.lineChartData.labels = rawData.map(
-        (data: singleSensorData) =>
-          new Date(data.date_time).getHours() +
-          ':' +
-          new Date(data.date_time).getMinutes()
+      this.lineChartData.labels = rawData.map((data: singleSensorData) =>
+        new Date(data.date_time).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
       ) as string[];
     }
   }
@@ -124,34 +124,34 @@ export class TempHumSummeryGraphComponent implements OnInit {
         },
       },
       y1: {
-        labels: ['Humidity'], 
+        labels: ['Humidity'],
         position: 'left',
       },
     },
 
     plugins: {
       legend: { display: true },
-//       annotation: {
-//         annotations: [
-//           {
-//             type: 'line',
-// //            scaleID: 'y1',
-//             yMin: 30,
-//             yMax: 30,
-//             borderColor: 'rgb(255, 99, 132)',
-//             borderWidth: 2,
-//             label: {
-//               display: true,
-//               position: 'center',
-//               color: 'orange',
-//               content: 'LineAnno',
-//               font: {
-//                 weight: 'bold',
-//               },
-//             },
-//           },
-//         ],
-//       },
+      //       annotation: {
+      //         annotations: [
+      //           {
+      //             type: 'line',
+      // //            scaleID: 'y1',
+      //             yMin: 30,
+      //             yMax: 30,
+      //             borderColor: 'rgb(255, 99, 132)',
+      //             borderWidth: 2,
+      //             label: {
+      //               display: true,
+      //               position: 'center',
+      //               color: 'orange',
+      //               content: 'LineAnno',
+      //               font: {
+      //                 weight: 'bold',
+      //               },
+      //             },
+      //           },
+      //         ],
+      //       },
     },
   };
 

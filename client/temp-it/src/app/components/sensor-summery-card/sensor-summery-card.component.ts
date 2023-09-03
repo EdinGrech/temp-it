@@ -5,8 +5,10 @@ import { CommonModule } from '@angular/common';
 import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-sensor-details-modal/edit-sensor-details-modal.component';
 
 import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum-summery-graph/temp-hum-summery-graph.component';
-import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SensorService } from 'src/app/services/user/sensor/sensor.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sensor-summery-card',
@@ -17,10 +19,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class SensorSummeryCardComponent  implements OnInit {
   @Input() sensorDetails!: SensorDetails;
+  sensorLastReading: Observable<singleSensorData> | undefined;
 
-  constructor(private modalController: ModalController,private router: Router,private route: ActivatedRoute) { }
+  constructor(private modalController: ModalController,private router: Router,private route: ActivatedRoute, private sensorService: SensorService) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.sensorLastReading = this.sensorService.getUserSensorLastReading(this.sensorDetails.id as number);
+  }
 
   async editSensor() {
     const modal = await this.modalController.create({

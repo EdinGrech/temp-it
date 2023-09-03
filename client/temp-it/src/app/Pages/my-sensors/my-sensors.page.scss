@@ -1,0 +1,9 @@
+ion-fab {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  @media (max-width: 767px) { 
+    ion-fab.show {
+      opacity: 1 !important;
+    }
+  }

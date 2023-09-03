@@ -26,9 +26,6 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 ion-content.scroll-content {
-    --offset-bottom: auto !important;
-    --overflow: auto;
-    overflow: auto;
 
 &::-webkit-scrollbar {
     width: 5px;

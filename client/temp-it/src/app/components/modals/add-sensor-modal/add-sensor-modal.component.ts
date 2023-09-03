@@ -23,12 +23,14 @@ import {
   userAddSensorPinDateAdded,
 } from 'src/app/state/user/user.selectors';
 import {
-  requestUserPin, requestUserSensors,
+  requestUserPin,
+  requestUserSensors,
 } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { AppState } from 'src/app/state/app.state';
 
-import { SensorDetails, SensorDetailsUpdatable } from 'src/app/interfaces/sensor/sensor';
+import { SensorDetailsUpdatable } from 'src/app/interfaces/sensor/sensor';
+import { EspSetupService } from 'src/app/services/espSetup/esp-setup.service';
 
 type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
@@ -61,7 +63,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   showAlertDetails: boolean = false;
 
   wifiForm!: FormGroup;
-  connectionTested?: boolean;
+  connectionTested: boolean = false;
   testLoading: boolean = false;
   sensorDetailsFormSub!: Subscription;
 
@@ -83,7 +85,8 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private modalController: ModalController,
     private store: Store<AppState>,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private espSetupService: EspSetupService
   ) {}
 
   ngOnInit() {
@@ -146,12 +149,29 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUserPin() {}
+  configESP() {
+    this.testLoading = true;
+    this.espSetupService.testConnection().subscribe((res) => {
+      this.testLoading = false;
+      console.log(res);
+      if (res === 'ok') {
+        this.connectionTested = true;
+        this.espSetupService.setWifi(
+          this.wifiForm.value.pin,
+          this.wifiForm.value.wifiName,
+          this.wifiForm.value.wifiPassword
+        );
+      } else {
+        this.connectionTested = false;
+      }
+    });
+  }
 
   submitForm(): void {
     if (this.wifiForm.valid) {
       // Send form data to esp32
       console.log(this.wifiForm.value);
+      this.configESP();
       this.dispatchBeacon4ESP();
       // wait for esp32 to respond
       this.currentStep = 'waiting';
@@ -162,11 +182,13 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkUserSensorsCountAndStop(condition: (count: number,initialSensorCount:number) => boolean): Promise<number> {
+  checkUserSensorsCountAndStop(
+    condition: (count: number, initialSensorCount: number) => boolean
+  ): Promise<number> {
     return new Promise<number>((resolve) => {
       this.intervalSubscription = interval(7000).subscribe(() => {
-        this.sensorService.getUserSensorsCount().subscribe((count:any) => {
-          if (condition(count.number_of_sensors,this.initialSensorCount)) {
+        this.sensorService.getUserSensorsCount().subscribe((count: any) => {
+          if (condition(count.number_of_sensors, this.initialSensorCount)) {
             this.intervalSubscription?.unsubscribe();
             this.intervalSubscription = null;
             resolve(count);
@@ -176,24 +198,28 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  startCallingFunctionWithInterval(condition: (count: number,initialSensorCount:number) => boolean): Promise<number> {
+  startCallingFunctionWithInterval(
+    condition: (count: number, initialSensorCount: number) => boolean
+  ): Promise<number> {
     return this.checkUserSensorsCountAndStop(condition);
   }
 
-  stopCondition(count: number,initialSensorCount:number): boolean {
-    return count > initialSensorCount ? true : false; 
+  stopCondition(count: number, initialSensorCount: number): boolean {
+    return count > initialSensorCount ? true : false;
   }
 
   async onStopped(count: number) {
     this.store.dispatch(requestUserSensors());
     this.store.select(selectUserSensors).subscribe((sensors) => {
-    this.lastSensorId = sensors[sensors.length - 1].id;
-    this.currentStep = 'details';
+      this.lastSensorId = sensors[sensors.length - 1].id;
+      this.currentStep = 'details';
     });
   }
 
   async dispatchBeacon4ESP() {
-    const count = await this.startCallingFunctionWithInterval(this.stopCondition);
+    const count = await this.startCallingFunctionWithInterval(
+      this.stopCondition
+    );
     await this.onStopped(count);
   }
 
@@ -202,17 +228,19 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   testConnection() {
-    //to be done
     this.testLoading = true;
-    setTimeout(() => {
+    this.espSetupService.testConnection().subscribe((res) => {
+      if (res === 'ok') {
+        this.connectionTested = true;
+      } else {
+        this.connectionTested = false;
+      }
       this.testLoading = false;
-      this.connectionTested = true;
-    }, 2000);
-    console.log('Testing connection');
+    });
   }
 
   submitDetailsForm() {
-    let SensorDetailsUpdatable:SensorDetailsUpdatable = {
+    let SensorDetailsUpdatable: SensorDetailsUpdatable = {
       id: 0,
       updatable: {
         name: '',
@@ -224,18 +252,20 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
         high_temp_alert: undefined,
         low_temp_alert: undefined,
         high_humidity_alert: undefined,
-        low_humidity_alert: undefined
-      }
+        low_humidity_alert: undefined,
+      },
     };
 
     if (this.sensorDetailsForm.valid) {
       SensorDetailsUpdatable.id = this.lastSensorId!;
       SensorDetailsUpdatable.updatable = this.sensorDetailsForm.value;
-      this.sensorService.updateSensorDetails(SensorDetailsUpdatable).subscribe((res) => {
-        console.log(res);
-        this.store.dispatch(requestUserSensors());
-        this.currentStep = 'done';
-      });
+      this.sensorService
+        .updateSensorDetails(SensorDetailsUpdatable)
+        .subscribe((res) => {
+          console.log(res);
+          this.store.dispatch(requestUserSensors());
+          this.currentStep = 'done';
+        });
     } else {
       this.sensorDetailsForm.markAllAsTouched();
       console.log(this.sensorDetailsForm);

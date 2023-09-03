@@ -9,11 +9,11 @@ import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { selectUserSensors } from 'src/app/state/user/user.selectors';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-my-sensors',
+  templateUrl: 'my-sensors.page.html',
+  styleUrls: ['my-sensors.page.scss'],
 })
-export class HomePage implements OnInit {
+export class MySensorsPage implements OnInit {
   sensorDetailsList?: SensorDetails[];
   showUserSensors: boolean = false;
   sensorSub?: Subscription;

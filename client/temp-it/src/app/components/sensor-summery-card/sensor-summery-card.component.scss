@@ -1,8 +1,12 @@
 .display-flex{
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    :last-child{
+    .children{
         padding-left: 10px;
+    }
+    :first-child{
+        padding-left: 0;
     }
 }
 

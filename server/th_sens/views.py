@@ -66,7 +66,30 @@ class LastDaySensorReadingView(APIView):
                     else:
                         return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
             else:
-                return Response({'message': 'Sensor does not exist'}, status=444)             
+                return Response({'message': 'Sensor does not exist'}, status=444)
+
+class LastSensorReadingView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request: Request, **kwargs: Any) -> Response:
+        sensor_id: int = kwargs.get('pk')
+        user: th_User = request.user
+        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:1]
+            serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensorReadings, many=True)
+            return Response(serializer.data)
+        else:
+            if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
+                sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+                for group_id in sensor_group_ids:
+                    group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
+                    if user.id in group_members.member_id.all():
+                        sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:1]
+                        serializer: SensorReadingsSerializerWithoutID = SensorReadingsSerializerWithoutID(sensorReadings, many=True)
+                        return Response(serializer.data)  
+                    else:
+                        return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
+            else:
+                return Response({'message': 'Sensor does not exist'}, status=444)            
 
 class depDateRangeSensorReadingView(APIView):
     permission_classes = [IsAuthenticated]
