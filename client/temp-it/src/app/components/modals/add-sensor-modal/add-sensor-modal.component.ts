@@ -160,7 +160,9 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
           this.wifiForm.value.pin,
           this.wifiForm.value.wifiName,
           this.wifiForm.value.wifiPassword
-        );
+        ).subscribe((res) => {
+          console.log(res);
+        });
       } else {
         this.connectionTested = false;
       }

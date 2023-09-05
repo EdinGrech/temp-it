@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from temp_it.settings import SENSOR_READINGS_PER_HOUR
 
 from th_groups.models import GroupAdmins
-from .models import SensorReading, SensorDetails
+from .models import SensorReading, TemperatureHumiditySensorDetails
 from .serializer import (
     SensorReadingsSerializer, 
     SensorDetailsSerializer, 
@@ -24,8 +24,8 @@ class SensorReadingView(APIView):
         # check if sensor is authorized to post data
         access_token: str = request.data.get('access_token')
         try:
-            sensor: SensorDetails = SensorDetails.objects.get(access_token=access_token)
-        except SensorDetails.DoesNotExist:
+            sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.get(access_token=access_token)
+        except TemperatureHumiditySensorDetails.DoesNotExist:
             return Response({'message': 'Sensor does not exist or access token is invalid'})
         request.data['sensor_id'] = sensor.id
         request.data.pop('access_token', None)
@@ -39,8 +39,8 @@ class SensorRefreshTokenView(APIView):
     def post(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         try:
-            sensor: SensorDetails = SensorDetails.objects.get(id=sensor_id, access_token=request.data.get('access_token'))
-        except SensorDetails.DoesNotExist:
+            sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.get(id=sensor_id, access_token=request.data.get('access_token'))
+        except TemperatureHumiditySensorDetails.DoesNotExist:
             return Response({'message': 'Sensor does not exist'}, status=444)
         serializer: SensorDetailsSerializer = SensorDetailsSerializer.generate_token(self, sensor)
         return Response({'access_token': f'{serializer.access_token}'}, status=201)
@@ -50,7 +50,7 @@ class LastDaySensorReadingView(APIView):
     def get(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:24 * SENSOR_READINGS_PER_HOUR]
             serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensorReadings, many=True)
             return Response(serializer.data)
@@ -73,7 +73,7 @@ class LastSensorReadingView(APIView):
     def get(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:1]
             serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensorReadings, many=True)
             return Response(serializer.data)
@@ -100,7 +100,7 @@ class depDateRangeSensorReadingView(APIView):
         end_date: str = kwargs.get('end_date')
         sensor_id: int = kwargs.get('pk')
         # check if the user is the owner of the sensor
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
             serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
             return Response(serializer.data)
@@ -127,7 +127,7 @@ class DateRangeSensorReadingView(APIView):
         end_date: str = request.data.get('endDate')
         sensor_id: int = kwargs.get('pk')
         # check if the user is the owner of the sensor
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
             serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
             return Response(serializer.data)
@@ -152,11 +152,11 @@ class DeleteSensorView(APIView):
         user: th_User = request.user
         sensor_id: int = kwargs.get('pk')
         # check if the user is the owner of the sensor
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
-            sensor: SensorDetails = SensorDetails.objects.get(id=sensor_id)
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+            sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.get(id=sensor_id)
             sensor.delete()
             return Response({'message': 'Sensor deleted'}, status=201)
-        elif(SensorDetails.objects.filter(sensor_id=sensor_id).exists()):
+        elif(TemperatureHumiditySensorDetails.objects.filter(sensor_id=sensor_id).exists()):
             return Response({'message': 'You are not allowed to delete this sensor'}, status=403)
         else:
             return Response({'message': 'Sensor does not exist'}, status=444)
@@ -176,7 +176,7 @@ class RegisterSensorView(generics.CreateAPIView):
         except th_User.DoesNotExist:
             return Response({'message': 'Invalid PIN'}, status=400)
         # generate access token within the serializer
-        sensor: SensorDetails = SensorDetails.objects.create(user_id_owner=user)
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.create(user_id_owner=user)
         serializer: SensorDetailsSerializer = SensorDetailsSerializer.generate_token(self, sensor)
         serializer.save()
         return Response({
@@ -188,11 +188,11 @@ class UpdateSensorDetailsView(APIView):
     permission_classes = [IsAuthenticated]
     def put(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
-        sensor: SensorDetails = SensorDetails.objects.filter(id=sensor_id).first()
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id).first()
         if not sensor:
             return Response({'message': 'Sensor does not exist'}, status=444)
         user: th_User = request.user
-        sensor_owner: SensorDetails = SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).first()
+        sensor_owner: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).first()
         if not sensor_owner and not sensor.allow_group_admins_to_edit:
             # check if user is a member of the group where the sensor is shared
             sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
@@ -215,7 +215,7 @@ class SensorDetailsView(APIView):
     def get(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        sensor: SensorDetails = SensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
         if not sensor:
             sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
             for group_id in sensor_group_ids:
@@ -238,8 +238,8 @@ class EditSensorDetailsView(APIView):
     def put(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        sensor: SensorDetails = SensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
-        if(SensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
+        if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
             serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
             return Response(serializer.data, status=201)
         else:
@@ -259,7 +259,7 @@ class MySensorsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request: Request) -> Response:
         user: th_User = request.user
-        sensors: QuerySet[SensorDetails] = SensorDetails.objects.filter(user_id_owner=user)
+        sensors: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(user_id_owner=user)
         if(sensors):
             serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensors, many=True)
             return Response(serializer.data)
@@ -276,7 +276,7 @@ class AccessibleSensorView(APIView):
             for group_id in group_ids:
                 sensors: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(group_id=group_id.group_id)
                 for sensor in sensors:
-                    sensor_details: QuerySet[SensorDetails] = SensorDetails.objects.filter(id=sensor.sensor_id)
+                    sensor_details: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(id=sensor.sensor_id)
                     serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensor_details, many=True)
                     return Response(serializer.data)
         else:
@@ -286,7 +286,7 @@ class MyLenSensorsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request: Request) -> Response:
         user: th_User = request.user
-        sensors: QuerySet[SensorDetails] = SensorDetails.objects.filter(user_id_owner=user)
+        sensors: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(user_id_owner=user)
         if(sensors):
             return Response({'number_of_sensors': f'{len(sensors)}'})
         else:

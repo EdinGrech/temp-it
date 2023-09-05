@@ -1,6 +1,6 @@
 import random
 import string
-from .models import SensorReading, SensorDetails
+from .models import SensorReading, TemperatureHumiditySensorDetails
 from rest_framework import serializers
 
 class SensorReadingsSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
     active = serializers.BooleanField(default=False)
 
     class Meta:
-        model = SensorDetails
+        model = TemperatureHumiditySensorDetails
         fields = ['access_token', 'date_created', 'name', 'location', 'description', 'active']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
@@ -81,7 +81,7 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
     active_alerts = serializers.BooleanField()
 
     class Meta:
-        model = SensorDetails
+        model = TemperatureHumiditySensorDetails
         fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'allow_group_admins_to_edit', 'active_alerts', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
@@ -96,7 +96,7 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
             'low_humidity_alert': {'required': True, 'help_text': 'Low humidity alert'},
         }
     
-    def update(self, instance: SensorDetails, validated_data: dict) -> SensorDetails:
+    def update(self, instance: TemperatureHumiditySensorDetails, validated_data: dict) -> TemperatureHumiditySensorDetails:
         print(instance)
         instance.name = validated_data.get('name', instance.name)
         instance.location = validated_data.get('location', instance.location)
