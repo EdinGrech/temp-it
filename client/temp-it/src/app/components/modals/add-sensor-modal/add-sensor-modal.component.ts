@@ -155,14 +155,16 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       this.testLoading = false;
       console.log(res);
       if (res === 'ok') {
-        this.connectionTested = true;
-        this.espSetupService.setWifi(
-          this.wifiForm.value.pin,
-          this.wifiForm.value.wifiName,
-          this.wifiForm.value.wifiPassword
-        ).subscribe((res) => {
-          console.log(res);
-        });
+        setTimeout(() => {
+          this.connectionTested = true;
+          this.espSetupService.setWifi(
+            this.wifiForm.value.pin,
+            this.wifiForm.value.wifiName,
+            this.wifiForm.value.wifiPassword
+          ).subscribe((res) => {
+            console.log(res);
+          });
+        }, 1000);
       } else {
         this.connectionTested = false;
       }
@@ -171,15 +173,10 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
 
   submitForm(): void {
     if (this.wifiForm.valid) {
-      // Send form data to esp32
-      console.log(this.wifiForm.value);
       this.configESP();
       this.dispatchBeacon4ESP();
-      // wait for esp32 to respond
       this.currentStep = 'waiting';
     } else {
-      // Handle form validation errors if needed
-      console.log('Invalid form data');
       this.wifiForm.markAllAsTouched();
     }
   }
@@ -214,6 +211,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     this.store.dispatch(requestUserSensors());
     this.store.select(selectUserSensors).subscribe((sensors) => {
       this.lastSensorId = sensors[sensors.length - 1].id;
+      if(this.currentStep === 'done') return;
       this.currentStep = 'details';
     });
   }
@@ -267,6 +265,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
           console.log(res);
           this.store.dispatch(requestUserSensors());
           this.currentStep = 'done';
+          console.log(this.currentStep)
         });
     } else {
       this.sensorDetailsForm.markAllAsTouched();

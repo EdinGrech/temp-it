@@ -26,7 +26,7 @@ export class EspSetupService {
       .post(
         environment.esp32Url + '/conf',
         {
-          pin: pin,
+          pin: pin.toString(),
           ssid: ssid,
           password: password,
           server_url: serverUrl,
