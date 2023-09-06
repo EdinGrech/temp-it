@@ -24,7 +24,7 @@ class th_User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
 
     # Additional custom fields specific to your project
-    add_sensor_pin = models.CharField(max_length=6, null=True, blank=True)
+    add_sensor_pin = models.CharField(max_length=8, null=True, blank=True)
     pin_created_at = models.DateTimeField(auto_now_add=True)
 
     objects = th_UserManager()
