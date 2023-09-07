@@ -25,24 +25,23 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
 })
 export class IndividualCustomGraphComponent
-implements AfterViewInit, OnChanges
+  implements AfterViewInit, OnChanges
 {
   @ViewChild(BaseChartDirective) chart!: BaseChartDirective;
   @Input() rawGraphData?: any;
   height!: number;
-  
+
   public lineChartType: ChartType = 'line';
-  
-  
+
   constructor() {
     Chart.register(Annotation);
   }
-  
+
   isMobile(): boolean {
     const screenWidth = window.innerWidth;
     return screenWidth < 768 ? true : false;
   }
-  
+
   ngAfterViewInit(): void {
     if (this.isMobile()) {
       this.height = 300;
@@ -62,11 +61,11 @@ implements AfterViewInit, OnChanges
   rawToGraphData(rawData: singleSensorData[]): void {
     let dataSkipStep: number;
     if (this.isMobile()) {
-      dataSkipStep = Math.round(rawData.length / 72);
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
     } else {
-      dataSkipStep = Math.round(rawData.length / 300);
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 30));
     }
-    dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep; 
+    dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
     this.lineChartData.datasets[0].data = rawData
       .map((data: singleSensorData) => data.temperature)
       .filter((_data, index) => index % dataSkipStep === 0);
@@ -81,7 +80,7 @@ implements AfterViewInit, OnChanges
         })
       )
       .filter((_data, index) => index % dataSkipStep === 0) as string[];
-      //console.log(this.lineChartData)
+    //console.log(this.lineChartData)
   }
 
   public lineChartData: ChartConfiguration['data'] = {
@@ -140,5 +139,4 @@ implements AfterViewInit, OnChanges
       legend: { display: true },
     },
   };
-
 }
