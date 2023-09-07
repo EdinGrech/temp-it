@@ -35,7 +35,7 @@ def register(request):
         
         # Generate access token
         access_token_serializer = ThTokenObtainPairSerializer(data={
-            'username': user.username,
+            'email': request.data.get('email'),
             'password': request.data.get('password')
         })
         if access_token_serializer.is_valid():
@@ -44,11 +44,10 @@ def register(request):
             refresh_token = RefreshToken.for_user(user)
 
             response_data = {
-                'access_token': str(access_token),
-                'refresh_token': str(refresh_token),
+                'access': str(access_token),
+                'refresh': str(refresh_token),
                 'user_data': serializer.data
-            }
-            
+            }            
             return Response(response_data, status=status.HTTP_201_CREATED)
         
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

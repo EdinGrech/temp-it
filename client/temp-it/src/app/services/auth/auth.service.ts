@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { User, UserSignUpResponse } from 'src/app/interfaces/user';
+import { AuthTokens, RegisterResponse, User } from 'src/app/interfaces/user';
 
 import { CookieService } from 'ngx-cookie-service';
 
@@ -14,11 +14,41 @@ import { Store } from '@ngrx/store';
 export class AuthService {
   constructor(private http: HttpClient, private cookieService: CookieService, public store: Store<{global: any}>,) {}
 
+  refreshToken() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+    const body = {
+      refresh: this.cookieService.get('refresh'),
+    };
+    return this.http
+      .post<AuthTokens>(
+        environment.motherShipUrl +
+          ':' +
+          environment.apiPort +
+          '/api/auth/token/refresh/',
+        body,
+        httpOptions
+      )
+      .pipe(
+        map((response: any) => {
+          this.cookieService.set('access', response['access']);
+          this.cookieService.set('refresh', response['refresh']);
+          return response;
+        }),
+        catchError((error: any) => {
+          return throwError(error);
+        })
+      );
+  }
+
   signUp(
     username: string,
     email: string,
     password: string
-  ): Observable<UserSignUpResponse> {
+  ): Observable<RegisterResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -30,7 +60,7 @@ export class AuthService {
       password: password,
     };
     this.cookieService.deleteAll();
-    return this.http.post<UserSignUpResponse>(
+    return this.http.post<RegisterResponse>(
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
@@ -50,12 +80,12 @@ export class AuthService {
       }),
     };
     const body = {
-      emailOrUsername: email,
+      email: email,
       password: password,
     };
     this.cookieService.deleteAll();
     return this.http
-      .post<any>(
+      .post<AuthTokens>(
         environment.motherShipUrl +
           ':' +
           environment.apiPort +
@@ -65,7 +95,8 @@ export class AuthService {
       )
       .pipe(
         map((response: any) => {
-          this.cookieService.set('jwt', response['token']);
+          this.cookieService.set('access', response['access']);
+          this.cookieService.set('refresh', response['refresh']);
           return response;
         }),
         catchError((error: any) => {

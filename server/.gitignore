@@ -1,6 +1,10 @@
 .env
 /venv
 /temp_it/__pycache__
+/temp_it/migrations/__pycache__
 /th_sens/__pycache__
+/th_sens/migrations/__pycache__
 /th_auth/__pycache__
+/th_auth/migrations/__pycache__
 /th_groups/__pycache__
+/th_groups/migrations/__pycache__
