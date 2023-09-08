@@ -24,7 +24,7 @@ export class AuthService {
       refresh: this.cookieService.get('refresh'),
     };
     return this.http
-      .post<AuthTokens>(
+      .post<any>(
         environment.motherShipUrl +
           ':' +
           environment.apiPort +
@@ -34,12 +34,11 @@ export class AuthService {
       )
       .pipe(
         map((response: any) => {
-          this.cookieService.set('access', response['access']);
-          this.cookieService.set('refresh', response['refresh']);
+          console.log(this.cookieService.getAll());
+          this.cookieService.set('access', response['access'], 1, '/', environment.motherShipUrl);
+          this.cookieService.set('refresh', response['refresh'], 30, '/', environment.motherShipUrl);
+          console.log(this.cookieService.getAll());
           return response;
-        }),
-        catchError((error: any) => {
-          return throwError(error);
         })
       );
   }

@@ -11,16 +11,15 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class HttpHeaddersInterceptor implements HttpInterceptor {
+
   constructor(private cookieService: CookieService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    //if request is to the mother ship, add jwt token to the request
     if (request.url.includes(environment.motherShipUrl)) {
-      const jwtToken = this.cookieService.get('access');
-      if (jwtToken) {
+      if (this.cookieService.get('access')) {
         request = request.clone({
           setHeaders: {
-            'Authorization': `Bearer ${jwtToken}`,
+            'Authorization': `Bearer ${this.cookieService.get('access')}`,
           }
         });
       }

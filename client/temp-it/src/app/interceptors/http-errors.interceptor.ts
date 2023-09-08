@@ -7,13 +7,14 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../services/auth/auth.service';
+import { TokenDealerService } from '../services/token-dealer/token-dealer.service';
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {
 
@@ -21,7 +22,8 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
     public store: Store<{global: any}>,
     private cookieService: CookieService,
     private router: Router,
-    private authService:AuthService) {}
+    private authService:AuthService,
+    private tokenService: TokenDealerService) {}
 
   intercept(request: HttpRequest<HttpErrorResponse>, next: HttpHandler): Observable<HttpEvent<HttpErrorResponse>> {
     return next.handle(request).pipe(
@@ -29,16 +31,24 @@ export class HttpErrorsInterceptor implements HttpInterceptor {
         // Handle connection refused error
         if (error.status == 0) {
           error.error.error = 'No connection to server.';
-        } else if (error.status === 401 && !this.cookieService.get('refresh')) {
-          this.router.navigate(['/auth']);
-        } else if (error.status === 401 && this.cookieService.get('refresh')) {
+        } else if ((error.status === 401 && !this.tokenService.isRefreshTokenExpired()) || error.status === 443) {
+          this.cookieService.deleteAll();
+          if (this.router.url != '/auth') this.router.navigate(['/auth']);
+        } else if (error.status === 401 && this.tokenService.isRefreshTokenExpired()) {
           this.authService.refreshToken().subscribe((response: any) => {
-            const newRequest = request.clone({
-              setHeaders: {
-                Authorization: `Bearer ${response['access']}`,
-              },
-            });
-            return next.handle(newRequest);
+            if(response.status == 443){
+              this.cookieService.deleteAll();
+              if (this.router.url != '/auth') this.router.navigate(['/auth']);
+              return throwError(error);
+            } else {
+              //handel request with new cookie value
+              request = request.clone({
+                setHeaders: {
+                  "Authorization": `Bearer ${this.cookieService.get('access')}`,
+                }
+              });
+              return next.handle(request);
+            }
           });
         }
         return throwError(error);

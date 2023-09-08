@@ -24,6 +24,14 @@ from django.utils.encoding import force_bytes, force_str
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from rest_framework_simplejwt.views import TokenRefreshView
+
+class ThTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'error': 'Invalid token or token not found'}, status=443)
 class ThTokenObtainPairView(TokenObtainPairView):
     serializer_class = ThTokenObtainPairSerializer
 
