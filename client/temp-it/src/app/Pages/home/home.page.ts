@@ -71,9 +71,6 @@ export class HomePage implements OnInit {
     });
 
     await modal.present();
-
-    const { data } = await modal.onDidDismiss();
-    console.log(data);
   }
 
   closeModal() {

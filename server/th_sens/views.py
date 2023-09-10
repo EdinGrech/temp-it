@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any
 from requests import Request
 from rest_framework.views import APIView
@@ -18,22 +19,46 @@ from th_auth.models import th_User
 from th_groups.serializer import GroupLinkedSensors, GroupMembers
 
 from django.db.models import QuerySet
+from rest_framework import status
 
 class SensorReadingView(APIView):
-    def post(self, request: Request) -> Response:
-        # check if sensor is authorized to post data
-        access_token: str = request.data.get('access_token')
-        try:
-            sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.get(access_token=access_token)
-        except TemperatureHumiditySensorDetails.DoesNotExist:
-            return Response({'message': 'Sensor does not exist or access token is invalid'})
+    def post(self, request: Request, **kwargs: Any) -> Response:
+        # Check if sensor is authorized to post data
+        access_token = request.data.get('access_token')
+        sensor = TemperatureHumiditySensorDetails.objects.get(access_token=access_token)
+        if not sensor:
+            return Response({'message': 'Sensor does not exist or access token is invalid'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Ensure date_time is in the past and not later than 2 days
+        date_time_str = request.data.get('date_time')
+        if date_time_str:
+            date_time = datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M')
+            now = datetime.now()
+            print(date_time, now)
+            print((now - timedelta(days=2)) <= date_time <= now)
+            if (not(now - timedelta(days=2)) <= date_time <= now):
+                return Response({'message': 'Invalid date_time format'}, status=status.HTTP_400_BAD_REQUEST)
+                
+        
+        # Ensure temperature is between -15 and 50
+        temperature = request.data.get('temperature')
+        # convert temperature integer
+        if temperature is not None and not (-15 <= float(temperature) <= 50):
+            return Response({'message': 'Temperature should be between -15 and 50'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Ensure humidity is between 0 and 100
+        humidity = request.data.get('humidity')
+        if humidity is not None and not (0 <= float(humidity) <= 100):
+            return Response({'message': 'Humidity should be between 0 and 100'}, status=status.HTTP_400_BAD_REQUEST)
+        
         request.data['sensor_id'] = sensor.id
         request.data.pop('access_token', None)
-        serializer: SensorReadingsSerializer = SensorReadingsSerializer(data=request.data)
+        
+        serializer = SensorReadingsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'Success': 'Data saved'}, status=201)
-        return Response(serializer.errors, status=400)
+            return Response({'Success': 'Data saved'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SensorRefreshTokenView(APIView):
     def post(self, request: Request, **kwargs: Any) -> Response:
@@ -51,7 +76,7 @@ class LastDaySensorReadingView(APIView):
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
         if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
-            sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:24 * SENSOR_READINGS_PER_HOUR]
+            sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_created')[:24 * SENSOR_READINGS_PER_HOUR]
             serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensorReadings, many=True)
             return Response(serializer.data)
         else:
@@ -60,7 +85,7 @@ class LastDaySensorReadingView(APIView):
                 for group_id in sensor_group_ids:
                     group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
                     if user.id in group_members.member_id.all():
-                        sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:24 * SENSOR_READINGS_PER_HOUR]
+                        sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_created')[:24 * SENSOR_READINGS_PER_HOUR]
                         serializer: SensorReadingsSerializerWithoutID = SensorReadingsSerializerWithoutID(sensorReadings, many=True)
                         return Response(serializer.data)  
                     else:
@@ -74,8 +99,8 @@ class LastSensorReadingView(APIView):
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
         if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
-            sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:1]
-            serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensorReadings, many=True)
+            sensor_reading = SensorReading.objects.filter(sensor_id=sensor_id).latest('id')
+            serializer = SensorReadingsSerializer(sensor_reading)
             return Response(serializer.data)
         else:
             if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
@@ -83,9 +108,9 @@ class LastSensorReadingView(APIView):
                 for group_id in sensor_group_ids:
                     group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
                     if user.id in group_members.member_id.all():
-                        sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_time')[:1]
-                        serializer: SensorReadingsSerializerWithoutID = SensorReadingsSerializerWithoutID(sensorReadings, many=True)
-                        return Response(serializer.data)  
+                        sensor_reading = SensorReading.objects.filter(sensor_id=sensor_id).latest('id')
+                        serializer = SensorReadingsSerializer(sensor_reading)
+                        return Response(serializer.data)
                     else:
                         return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
             else:

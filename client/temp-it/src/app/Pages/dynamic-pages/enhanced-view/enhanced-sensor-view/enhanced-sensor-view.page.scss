@@ -1,31 +1,51 @@
-.display-flex{
+.display-flex {
+  display: flex;
+  align-items: center;
+  :last-child {
+    padding-left: 10px;
+  }
+}
+
+ion-icon.size-20 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+ion-buttons {
+  flex: 0;
+}
+
+ion-item {
+  flex: 1;
+}
+
+.name-button-pair {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 1500px) {
+  .flex-container {
     display: flex;
-    align-items: center;
-    :last-child{
-        padding-left: 10px;
-    }
-}
-
-ion-icon.size-20{
-    font-size: 20px;
-}
-
-h2{
-    font-size: 20px;
-}
-
-@media only screen and (min-width: 768px) {
-    .flex-container {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .wide-card {
-        flex: 3;
-        max-width: calc(75% + 10px);
-        margin-left: 0px;
-      }
-      .narrow-card {
-        flex: 1;
-        max-width: calc(25%);
-      }
+    flex-wrap: wrap;
+  }
+  .wide-card {
+    flex: 3;
+    max-width: calc(75% + 10px);
+    margin-left: 0px;
+  }
+  .narrow-card {
+    flex: 1;
+    max-width: calc(25%);
+  }
+  ion-buttons {
+    flex: none;
+    padding-left: 10px;
+  }
+  ion-item {
+    flex: none;
+  }
 }

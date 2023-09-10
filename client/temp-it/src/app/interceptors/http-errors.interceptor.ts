@@ -7,52 +7,95 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
 import { AuthService } from '../services/auth/auth.service';
 import { TokenDealerService } from '../services/token-dealer/token-dealer.service';
+import { globalError } from '../state/global/global.actions';
 @Injectable()
 export class HttpErrorsInterceptor implements HttpInterceptor {
 
   constructor(
     public store: Store<{global: any}>,
-    private cookieService: CookieService,
     private router: Router,
     private authService:AuthService,
     private tokenService: TokenDealerService) {}
 
-  intercept(request: HttpRequest<HttpErrorResponse>, next: HttpHandler): Observable<HttpEvent<HttpErrorResponse>> {
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        // Handle connection refused error
-        if (error.status == 0) {
-          error.error.error = 'No connection to server.';
-        } else if ((error.status === 401 && !this.tokenService.isRefreshTokenExpired()) || error.status === 443) {
-          this.cookieService.deleteAll();
-          if (this.router.url != '/auth') this.router.navigate(['/auth']);
-        } else if (error.status === 401 && this.tokenService.isRefreshTokenExpired()) {
-          this.authService.refreshToken().subscribe((response: any) => {
-            if(response.status == 443){
-              this.cookieService.deleteAll();
-              if (this.router.url != '/auth') this.router.navigate(['/auth']);
+    intercept(
+      request: HttpRequest<HttpErrorResponse>,
+      next: HttpHandler
+    ): Observable<HttpEvent<HttpErrorResponse>> {
+      return next.handle(request).pipe(
+        catchError((error: HttpErrorResponse) => {
+          switch (error.status) {
+            case 0:
+              error.error.error = 'No connection to server.';
+              this.store.dispatch(globalError({ error }));
               return throwError(error);
-            } else {
-              //handel request with new cookie value
-              request = request.clone({
-                setHeaders: {
-                  "Authorization": `Bearer ${this.cookieService.get('access')}`,
-                }
-              });
-              return next.handle(request);
-            }
-          });
-        }
-        return throwError(error);
-      })
-    );
-  }
+            case 401:
+              if (this.tokenService.isRefreshTokenExpired()) {
+                this.store.dispatch(globalError({ error }));
+                this.tokenService.removeTokens();
+                if (this.router.url != '/auth')
+                  this.router.navigate(['/auth'], { replaceUrl: true });
+                return throwError(error);
+              } else if (this.tokenService.isAccessTokenExpired()) {
+                if (this.tokenService.isRefreshing()) return this.reRunRequest(request, next);
+                this.tokenService.setRefreshing(true);
+                let thing = this.callRefresh(request, next, error);
+                this.tokenService.setRefreshing(false);
+                return thing;
+              } else {
+                this.store.dispatch(globalError({ error }));
+                return throwError(error);
+              }
+            case 443:
+              this.store.dispatch(globalError({ error }));
+              this.tokenService.removeTokens();
+              if (this.router.url != '/auth')
+                this.router.navigate(['/auth'], { replaceUrl: true });
+              return throwError(error);
+            default:
+              return throwError(error);
+          }
+        })
+      );
+    }
+  
+    callRefresh(
+      request: HttpRequest<HttpErrorResponse>,
+      next: HttpHandler,
+      error: HttpErrorResponse
+    ): Observable<HttpEvent<any>> {
+      return this.authService.refreshToken().pipe(
+        switchMap((response: any) => {
+          if (!response['access'] || !response['refresh']) {
+            console.log('catch two and a half: ', response);
+            this.tokenService.removeTokens();
+            if (this.router.url != '/auth')
+              this.router.navigate(['/auth'], { replaceUrl: true });
+            return throwError(error);
+          } else {
+            return this.reRunRequest(request, next);
+          }
+        })
+      );
+    }
+
+    reRunRequest(request: HttpRequest<HttpErrorResponse>, next: HttpHandler) {
+      console.log(
+        'catch three: ',
+        request.headers.get('Authorization'),
+        'cloning'
+      );
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${localStorage.getItem('refresh')}`,
+        },
+      });
+      console.log(request.headers.get('Authorization'));
+      return next.handle(request);
+    }
   }

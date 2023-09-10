@@ -10,6 +10,7 @@
 <ion-content class="scroll-content" *ngIf="sensor">
   <div class="flex-container">
     <ion-card class="narrow-card">
+      <div class="name-button-pair">
       <ion-item lines="none">
         <ion-label>
           <div class="display-flex">
@@ -19,23 +20,24 @@
           </div>
           <p>{{ sensor.active ? "Active" : "Inactive" }}</p>
         </ion-label>
-        <ion-buttons slot="end">
-          <ion-button color="danger" (click)="deleteSensor()">
-            <ion-label>
-              <h3>
-                Delete <ion-icon name="trash"></ion-icon>
-              </h3>
-            </ion-label>
-          </ion-button>
-          <ion-button color="primary" (click)="editSensor()">
-            <ion-label>
-              <h3>
-                Edit <ion-icon name="create"></ion-icon>
-              </h3>
-            </ion-label>
-          </ion-button>
-        </ion-buttons>
       </ion-item>
+      <ion-buttons>
+        <ion-button color="danger" (click)="deleteSensor()">
+          <ion-label>
+            <h3>
+              Delete <ion-icon name="trash"></ion-icon>
+            </h3>
+          </ion-label>
+        </ion-button>
+        <ion-button color="primary" (click)="editSensor()">
+          <ion-label>
+            <h3>
+              Edit <ion-icon name="create"></ion-icon>
+            </h3>
+          </ion-label>
+        </ion-button>
+      </ion-buttons>
+    </div>
       <ion-card-content>
         <h2>General Info</h2>
         <ion-list>

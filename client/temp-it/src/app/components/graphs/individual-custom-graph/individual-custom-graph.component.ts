@@ -13,6 +13,7 @@ import { default as Annotation } from 'chartjs-plugin-annotation';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { isMobile } from 'src/app/utils/mobile-detection';
 
 @Component({
   selector: 'app-individual-custom-graph',
@@ -37,13 +38,8 @@ export class IndividualCustomGraphComponent
     Chart.register(Annotation);
   }
 
-  isMobile(): boolean {
-    const screenWidth = window.innerWidth;
-    return screenWidth < 768 ? true : false;
-  }
-
   ngAfterViewInit(): void {
-    if (this.isMobile()) {
+    if (isMobile(768)) {
       this.height = 300;
     } else {
       this.height = 145;
@@ -52,7 +48,6 @@ export class IndividualCustomGraphComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['rawGraphData'] && this.rawGraphData) {
-      console.log('rawGraphData changed');
       this.rawToGraphData(this.rawGraphData);
       this.chart?.update();
     }
@@ -60,7 +55,7 @@ export class IndividualCustomGraphComponent
 
   rawToGraphData(rawData: singleSensorData[]): void {
     let dataSkipStep: number;
-    if (this.isMobile()) {
+    if (isMobile(768)) {
       dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
     } else {
       dataSkipStep = Math.round(rawData.length / (window.innerWidth / 30));
@@ -80,7 +75,6 @@ export class IndividualCustomGraphComponent
         })
       )
       .filter((_data, index) => index % dataSkipStep === 0) as string[];
-    //console.log(this.lineChartData)
   }
 
   public lineChartData: ChartConfiguration['data'] = {

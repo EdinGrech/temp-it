@@ -21,7 +21,7 @@ export class AuthService {
       }),
     };
     const body = {
-      refresh: this.cookieService.get('refresh'),
+      refresh: localStorage.getItem('refresh'),
     };
     return this.http
       .post<any>(
@@ -34,10 +34,8 @@ export class AuthService {
       )
       .pipe(
         map((response: any) => {
-          console.log(this.cookieService.getAll());
-          this.cookieService.set('access', response['access'], 1, '/', environment.motherShipUrl);
-          this.cookieService.set('refresh', response['refresh'], 30, '/', environment.motherShipUrl);
-          console.log(this.cookieService.getAll());
+          localStorage.setItem('access', response['access']);
+          localStorage.setItem('refresh', response['refresh']);
           return response;
         })
       );
@@ -58,7 +56,8 @@ export class AuthService {
       email: email,
       password: password,
     };
-    this.cookieService.deleteAll();
+    localStorage.removeItem('access')
+              localStorage.removeItem('refresh')
     return this.http.post<RegisterResponse>(
       environment.motherShipUrl +
         ':' +
@@ -82,7 +81,8 @@ export class AuthService {
       email: email,
       password: password,
     };
-    this.cookieService.deleteAll();
+    localStorage.removeItem('access')
+    localStorage.removeItem('refresh')
     return this.http
       .post<AuthTokens>(
         environment.motherShipUrl +
@@ -94,8 +94,8 @@ export class AuthService {
       )
       .pipe(
         map((response: any) => {
-          this.cookieService.set('access', response['access']);
-          this.cookieService.set('refresh', response['refresh']);
+          localStorage.setItem('access', response['access']);
+          localStorage.setItem('refresh', response['refresh']);
           return response;
         }),
         catchError((error: any) => {
@@ -132,7 +132,8 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     };
-    this.cookieService.deleteAll();
+    localStorage.removeItem('access')
+    localStorage.removeItem('refresh')
     return this.http.post<any>(
       environment.motherShipUrl +
         ':' +

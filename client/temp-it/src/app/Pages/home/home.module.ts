@@ -9,7 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
 
 //components
-import { SensorSummeryCardComponent } from 'src/app/components/sensor-summery-card/sensor-summery-card.component';
+import { SensorSummeryCardComponent } from 'src/app/components/sensor/sensor-summery-card/sensor-summery-card.component';
 
 @NgModule({
     declarations: [HomePage],

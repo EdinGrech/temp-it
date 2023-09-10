@@ -7,6 +7,7 @@ import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
 import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { selectUserSensors } from 'src/app/state/user/user.selectors';
+import { isMobile } from 'src/app/utils/mobile-detection';
 
 @Component({
   selector: 'app-my-sensors',
@@ -55,10 +56,14 @@ export class MySensorsPage implements OnInit {
   }
 
   handleRefresh(event: any) {
-    this.store.dispatch(requestUserSensors());
+    this.mainRefresh();
     setTimeout(() => {
       event.target.complete();
     }, 2000);
+  }
+
+  mainRefresh(){
+    this.store.dispatch(requestUserSensors());
   }
 
   ngOnDestroy(): void {
@@ -71,12 +76,13 @@ export class MySensorsPage implements OnInit {
     });
 
     await modal.present();
-
-    const { data } = await modal.onDidDismiss();
-    console.log(data);
   }
 
   closeModal() {
     this.modalController.dismiss();
+  }
+
+  isMobile_(size:number): boolean{
+    return isMobile(size)
   }
 }

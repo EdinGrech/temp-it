@@ -7,7 +7,7 @@ import { ExploreContainerComponentModule } from '../../explore-container/explore
 
 //components
 import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
-import { SensorSummeryCardComponent } from 'src/app/components/sensor-summery-card/sensor-summery-card.component';
+import { SensorSummeryCardComponent } from 'src/app/components/sensor/sensor-summery-card/sensor-summery-card.component';
 
 import { MySensorsPageRoutingModule } from './my-sensors-routing.module';
 

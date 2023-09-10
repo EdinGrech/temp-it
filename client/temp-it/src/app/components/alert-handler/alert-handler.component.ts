@@ -51,9 +51,14 @@ export class AlertHandlerComponent  implements OnInit {
       if (error && !this.isAlertDisplayed) {
         let errorText: string = '';
         if (error.error.detail) {
-          error.error.detail.forEach((errorObj: { value: string }) => {
-            errorText = errorText + ' ' + errorObj.value;
-          });
+          // check if error is an array of objects
+          if (Array.isArray(error.error.detail)) {
+            error.error.detail.forEach((errorObj: { value: string }) => {
+              errorText = errorText + ' ' + errorObj.value;
+            });
+          } else {
+            errorText = error.error.detail;
+          }
         } else if (error.error) {
           errorText = error.error.error;
         } else {

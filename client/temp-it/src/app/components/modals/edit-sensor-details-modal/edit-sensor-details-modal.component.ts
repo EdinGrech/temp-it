@@ -106,14 +106,12 @@ export class EditSensorDetailsModalComponent implements OnInit {
     if (this.sensorDetailsForm.valid) {
       SensorDetailsUpdatable.id = this.sensorId;
       SensorDetailsUpdatable.updatable = this.sensorDetailsForm.value;
-      this.sensorService.updateSensorDetails(SensorDetailsUpdatable).subscribe((res) => {
-        console.log(res);
+      this.sensorService.updateSensorDetails(SensorDetailsUpdatable).subscribe(() => {
         this.store.dispatch(requestUserSensors());
         this.currentStep = 'done';
       });
     } else {
       this.sensorDetailsForm.markAllAsTouched();
-      console.log(this.sensorDetailsForm);
     }
   }
 

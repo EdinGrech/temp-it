@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { Observable, Subscription, interval } from 'rxjs';
+import { Observable, Subscription, finalize, interval } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 import {
@@ -153,7 +153,6 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     this.testLoading = true;
     this.espSetupService.testConnection().subscribe((res) => {
       this.testLoading = false;
-      console.log(res);
       if (res === 'ok') {
         setTimeout(() => {
           this.connectionTested = true;
@@ -161,8 +160,8 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
             this.wifiForm.value.pin,
             this.wifiForm.value.wifiName,
             this.wifiForm.value.wifiPassword
-          ).subscribe((res) => {
-            console.log(res);
+          ).subscribe(() => {
+            finalize
           });
         }, 1000);
       } else {
@@ -261,15 +260,12 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       SensorDetailsUpdatable.updatable = this.sensorDetailsForm.value;
       this.sensorService
         .updateSensorDetails(SensorDetailsUpdatable)
-        .subscribe((res) => {
-          console.log(res);
+        .subscribe(() => {
           this.store.dispatch(requestUserSensors());
           this.currentStep = 'done';
-          console.log(this.currentStep)
         });
     } else {
       this.sensorDetailsForm.markAllAsTouched();
-      console.log(this.sensorDetailsForm);
     }
   }
 

@@ -124,17 +124,12 @@ export class SensorService {
   }
 
   getUserSensorLastReading(id: number): Observable<singleSensorData> {
-    return this.http.get<singleSensorData[]>(
+    return this.http.get<singleSensorData>(
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
         '/api/temp/sensor/' +
         id + '/last-reading'
-    ).pipe(
-      //return only first item in list
-      map((data: singleSensorData[]) => {
-        return data[0];
-      })
-    );
+    )
   }
 }

@@ -11,6 +11,7 @@ class SensorDetails(models.Model):
     access_token = models.CharField(max_length=50, null=True)
     allow_group_admins_to_edit = models.BooleanField(default=False)
     active_alerts = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
 # temperature and humidity sensor that extends sensor details
 class TemperatureHumiditySensorDetails(SensorDetails):
