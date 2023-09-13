@@ -45,7 +45,7 @@ export class MySensorsPage implements OnInit {
       });
       // Scroll to the target card if the query param is present.
       this.route.params.subscribe(params => {
-        const id = params['id']; // This will contain the value '2'
+        const id = params['id'];
         if (id) {
           // Find and scroll to the target card.
           setTimeout(() => {

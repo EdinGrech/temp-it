@@ -1,6 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 
+export const loadAllBasedSensorReadings = createAction(
+  '[Sensor] Load All Based Sensor Readings',
+  props<{ sensorIds: number[] }>(),
+);
+
 export const loadDateBasedSensorReadings = createAction(
   '[Sensor] Load Last 24 Hour Sensor Readings',
   props<{ sensorId: number }>(),

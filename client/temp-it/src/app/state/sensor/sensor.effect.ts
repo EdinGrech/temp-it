@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, combineLatest, map, mergeMap, of } from 'rxjs';
+import { catchError, combineLatest, map, mergeMap, of, switchMap } from 'rxjs';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import {
+  loadAllBasedSensorReadings,
   loadDateBasedSensorReadings,
   loadDateBasedSensorReadingsFailure,
   loadDateBasedSensorReadingsSuccess,
@@ -48,6 +49,18 @@ export class SensorEffects {
         ),
       ),
     ),
+  );
+
+  loadAllBasedSensorReadings$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadAllBasedSensorReadings),
+      mergeMap((action) =>
+        action.sensorIds.map((sensorId) =>
+          this.store.dispatch(loadDateBasedSensorReadings({ sensorId }))
+        )
+      )
+    ),
+    { dispatch: false }
   );
 
   alertProcessing(

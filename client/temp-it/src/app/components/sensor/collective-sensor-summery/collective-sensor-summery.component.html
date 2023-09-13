@@ -1,1 +1,3 @@
-<p>collective-sensor-summery works!</p>
+<div *ngIf="sensorsData$ | async as sensorsData">
+    <p>{{sensorsData}}</p>
+</div>
