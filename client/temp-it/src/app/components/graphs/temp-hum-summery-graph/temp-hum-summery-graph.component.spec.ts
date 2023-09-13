@@ -9,8 +9,8 @@ describe('TempHumSummeryGraphComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TempHumSummeryGraphComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [TempHumSummeryGraphComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TempHumSummeryGraphComponent);

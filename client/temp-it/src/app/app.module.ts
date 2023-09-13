@@ -29,6 +29,8 @@ import { LoaderOverlayComponent } from './components/loader-overlay/loader-overl
 import { AlertHandlerComponent } from './components/alert-handler/alert-handler.component';
 import { globeReducer } from './state/global/global.reducer';
 import { userAuthReducer } from './state/user/user.reducer';
+import { sensorReducer } from './state/sensor/sensor.reducer';
+import { SensorEffects } from './state/sensor/sensor.effect';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,17 +40,29 @@ import { userAuthReducer } from './state/user/user.reducer';
     BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    StoreModule.forRoot({ auth: userAuthReducer, global: globeReducer }),
-    EffectsModule.forRoot([UserEffects]),
+    StoreModule.forRoot({
+      auth: userAuthReducer,
+      global: globeReducer,
+      sensor: sensorReducer,
+    }),
+    EffectsModule.forRoot([UserEffects, SensorEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
-    LoaderOverlayComponent, 
-    AlertHandlerComponent
+    LoaderOverlayComponent,
+    AlertHandlerComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorsInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpHeaddersInterceptor, multi: true},
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorsInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpHeaddersInterceptor,
+      multi: true,
+    },
     AuthService,
     ColorModeService,
   ],

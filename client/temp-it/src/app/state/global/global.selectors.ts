@@ -5,6 +5,6 @@ import { GlobalState } from './global.reducer';
 export const selectGlobal = (state: AppState) => state.global;
 
 export const selectGlobalError = createSelector(
-    selectGlobal,
+  selectGlobal,
   (state: GlobalState) => state.error,
 );

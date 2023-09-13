@@ -4,6 +4,7 @@ export interface SensorDetails {
   location: string;
   description: string;
   active: boolean;
+  favorite: boolean;
   date_created: string | Date;
   active_alerts: boolean;
   allow_group_admins_to_edit: boolean;
@@ -33,4 +34,13 @@ export interface singleSensorData {
   date_time: string | Date;
   temperature: number;
   humidity: number;
+}
+
+export interface ReducerSensorData {
+  sensorId: number;
+  sensorDataValues: singleSensorData[];
+  alertFailIndexes: number[];
+  alertsIncreasing: boolean;
+  error: any;
+  loading: boolean;
 }

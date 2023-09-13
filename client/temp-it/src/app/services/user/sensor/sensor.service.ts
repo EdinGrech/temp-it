@@ -20,12 +20,12 @@ export class SensorService {
         ':' +
         environment.apiPort +
         '/api/temp/sensor-details/' +
-        id
+        id,
     );
   }
 
   updateSensorDetails(
-    sensorDetails: SensorDetailsUpdatable
+    sensorDetails: SensorDetailsUpdatable,
   ): Observable<HttpResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -41,7 +41,7 @@ export class SensorService {
         sensorDetails.id +
         '/update',
       sensorDetails.updatable,
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -52,7 +52,7 @@ export class SensorService {
           ':' +
           environment.apiPort +
           '/api/temp/sensor/' +
-          id
+          id,
       )
       .pipe(
         map((data: singleSensorData[]) => {
@@ -61,7 +61,7 @@ export class SensorService {
               new Date(a.date_time).getTime() - new Date(b.date_time).getTime()
             );
           });
-        })
+        }),
       );
   }
 
@@ -70,7 +70,7 @@ export class SensorService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/temp/my-sensors'
+        '/api/temp/my-sensors',
     );
   }
 
@@ -79,14 +79,14 @@ export class SensorService {
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
-        '/api/temp/my-sensors-count'
+        '/api/temp/my-sensors-count',
     );
   }
 
   getUserSensorDataCustomRange(
     startDate: string,
     endDate: string,
-    id: number
+    id: number,
   ): Observable<singleSensorData[]> {
     const body = {
       startDate: startDate,
@@ -100,7 +100,7 @@ export class SensorService {
           environment.apiPort +
           '/api/temp/sensor/date-range/' +
           id,
-        body
+        body,
       )
       .pipe(
         map((data: singleSensorData[]) => {
@@ -109,7 +109,7 @@ export class SensorService {
               new Date(a.date_time).getTime() - new Date(b.date_time).getTime()
             );
           });
-        })
+        }),
       );
   }
 
@@ -119,7 +119,7 @@ export class SensorService {
         ':' +
         environment.apiPort +
         '/api/temp/delete-sensor/' +
-        id
+        id,
     );
   }
 
@@ -129,7 +129,20 @@ export class SensorService {
         ':' +
         environment.apiPort +
         '/api/temp/sensor/' +
-        id + '/last-reading'
-    )
+        id +
+        '/last-reading',
+    );
+  }
+
+  favoriteSensor(id: number): Observable<HttpResponse> {
+    return this.http.put<HttpResponse>(
+      environment.motherShipUrl +
+        ':' +
+        environment.apiPort +
+        '/api/temp/sensor/' +
+        id +
+        '/favorite',
+      {},
+    );
   }
 }

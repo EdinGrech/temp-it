@@ -16,7 +16,11 @@ import {
   forgotUserPasswordStatus,
 } from '../../state/user/user.selectors';
 
-import { forgotUserPassword, loginUser, registerUser } from '../../state/user/user.actions';
+import {
+  forgotUserPassword,
+  loginUser,
+  registerUser,
+} from '../../state/user/user.actions';
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -46,13 +50,15 @@ export class AuthPage implements OnInit {
   user$: Observable<User> = this.store.select(selectUserUser);
   loading$: Observable<boolean> = this.store.select(selectUserLoading);
   loggedIn$: Observable<boolean> = this.store.select(selectUserLoggedIn);
-  forgotPskProcess$: Observable<any> = this.store.select(forgotUserPasswordStatus);
+  forgotPskProcess$: Observable<any> = this.store.select(
+    forgotUserPasswordStatus,
+  );
 
   constructor(
     public colorMode: ColorModeService,
     private fb: FormBuilder,
     public store: Store<AppState>,
-    private router: Router
+    private router: Router,
   ) {
     this.signUpFormData = this.fb.group({
       name: ['', [Validators.required]],
@@ -88,7 +94,7 @@ export class AuthPage implements OnInit {
         loginUser({
           email: formData_.get('email'),
           password: formData_.get('password'),
-        })
+        }),
       );
     } else {
       this.loginFormData.markAllAsTouched();
@@ -107,7 +113,7 @@ export class AuthPage implements OnInit {
           username: formData.get('name'),
           email: formData.get('email'),
           password: formData.get('password'),
-        })
+        }),
       );
     } else {
       this.signUpFormData.markAllAsTouched();
@@ -119,7 +125,7 @@ export class AuthPage implements OnInit {
       this.store.dispatch(
         forgotUserPassword({
           email: this.forgotPasswordFormData.get('email')!.value,
-        })
+        }),
       );
     } else {
       this.forgotPasswordFormData.markAllAsTouched();

@@ -1,0 +1,33 @@
+@import "../../../../theme/variables.scss";
+
+.primary-color {
+  color: var(--ion-color-primary);
+  ion-badge {
+    --background: var(--ion-color-primary);
+  }
+}
+
+.danger-high-color {
+  color: var(--ion-color-danger);
+  ion-badge {
+    --background: var(--ion-color-danger) !important;
+  }
+}
+
+.danger-low-color {
+  color: var(--ion-color-warning);
+  ion-badge {
+    --background: var(--ion-color-warning);
+  }
+}
+
+.flex-colum {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 466px) {
+  ion-card-header {
+    max-width: 180px;
+  }
+}

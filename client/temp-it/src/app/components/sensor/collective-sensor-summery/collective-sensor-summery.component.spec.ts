@@ -9,8 +9,8 @@ describe('CollectiveSensorSummeryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollectiveSensorSummeryComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [CollectiveSensorSummeryComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CollectiveSensorSummeryComponent);

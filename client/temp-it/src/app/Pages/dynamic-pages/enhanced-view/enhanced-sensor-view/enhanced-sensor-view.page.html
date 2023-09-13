@@ -11,33 +11,32 @@
   <div class="flex-container">
     <ion-card class="narrow-card">
       <div class="name-button-pair">
-      <ion-item lines="none">
-        <ion-label>
-          <div class="display-flex">
-            <h1>{{ sensor.name ? sensor.name : "Sensor" }}</h1>
-            <ion-icon class="size-20" [color]="sensor.active ? 'success' : 'danger'"
-              [name]="sensor.active ? 'checkmark-circle' : 'close-circle'"></ion-icon>
-          </div>
-          <p>{{ sensor.active ? "Active" : "Inactive" }}</p>
-        </ion-label>
-      </ion-item>
-      <ion-buttons>
-        <ion-button color="danger" (click)="deleteSensor()">
+        <ion-item lines="none">
           <ion-label>
-            <h3>
-              Delete <ion-icon name="trash"></ion-icon>
-            </h3>
+            <div class="display-flex">
+              <h1>{{ sensor.name ? sensor.name : "Sensor" }}</h1>
+              <ion-icon
+                class="size-20"
+                [color]="sensor.active ? 'success' : 'danger'"
+                [name]="sensor.active ? 'checkmark-circle' : 'close-circle'"
+              ></ion-icon>
+            </div>
+            <p>{{ sensor.active ? "Active" : "Inactive" }}</p>
           </ion-label>
-        </ion-button>
-        <ion-button color="primary" (click)="editSensor()">
-          <ion-label>
-            <h3>
-              Edit <ion-icon name="create"></ion-icon>
-            </h3>
-          </ion-label>
-        </ion-button>
-      </ion-buttons>
-    </div>
+        </ion-item>
+        <ion-buttons>
+          <ion-button color="danger" (click)="deleteSensor()">
+            <ion-label>
+              <h3>Delete <ion-icon name="trash"></ion-icon></h3>
+            </ion-label>
+          </ion-button>
+          <ion-button color="primary" (click)="editSensor()">
+            <ion-label>
+              <h3>Edit <ion-icon name="create"></ion-icon></h3>
+            </ion-label>
+          </ion-button>
+        </ion-buttons>
+      </div>
       <ion-card-content>
         <h2>General Info</h2>
         <ion-list>
@@ -98,9 +97,14 @@
         <ion-card-title>Temperature & Humidity Data</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <app-individual-custom-graph [rawGraphData]="rawData"></app-individual-custom-graph>
-        <app-date-range-picker [minDate]="minDate" [maxDate]="maxDate"
-          (valueChange)="datetimeChanged($event)"></app-date-range-picker>
+        <app-individual-custom-graph
+          [rawGraphData]="rawData"
+        ></app-individual-custom-graph>
+        <app-date-range-picker
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          (valueChange)="datetimeChanged($event)"
+        ></app-date-range-picker>
         <ion-button (click)="getSensorReadings()">Get Data</ion-button>
       </ion-card-content>
     </ion-card>

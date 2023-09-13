@@ -6,7 +6,7 @@ import { MySensorsPage } from './my-sensors.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 //components
-import { ThemeSettingComponent } from "../../components/theme-setting/theme-setting.component";
+import { ThemeSettingComponent } from '../../components/theme-setting/theme-setting.component';
 import { SensorSummeryCardComponent } from 'src/app/components/sensor/sensor-summery-card/sensor-summery-card.component';
 
 import { MySensorsPageRoutingModule } from './my-sensors-routing.module';
@@ -19,7 +19,7 @@ import { MySensorsPageRoutingModule } from './my-sensors-routing.module';
     ExploreContainerComponentModule,
     MySensorsPageRoutingModule,
     ThemeSettingComponent,
-    SensorSummeryCardComponent
+    SensorSummeryCardComponent,
   ],
   declarations: [MySensorsPage],
 })

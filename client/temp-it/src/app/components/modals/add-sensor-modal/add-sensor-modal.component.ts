@@ -45,13 +45,13 @@ type currentStep = 'config' | 'waiting' | 'details' | 'done';
         'void',
         style({
           opacity: 0,
-        })
+        }),
       ),
       state(
         '*',
         style({
           opacity: 1,
-        })
+        }),
       ),
       transition('void => *', animate('500ms ease-in-out')),
       transition('* => void', animate('500ms ease-in-out')),
@@ -71,7 +71,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
 
   pinObs: Observable<number | undefined> = this.store.select(userAddSensorPin);
   datePinAddedObs: Observable<Date | undefined> = this.store.select(
-    userAddSensorPinDateAdded
+    userAddSensorPinDateAdded,
   );
   datePinAdded?: Subscription;
   pinSub?: Subscription;
@@ -86,7 +86,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     private modalController: ModalController,
     private store: Store<AppState>,
     private sensorService: SensorService,
-    private espSetupService: EspSetupService
+    private espSetupService: EspSetupService,
   ) {}
 
   ngOnInit() {
@@ -156,13 +156,15 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       if (res === 'ok') {
         setTimeout(() => {
           this.connectionTested = true;
-          this.espSetupService.setWifi(
-            this.wifiForm.value.pin,
-            this.wifiForm.value.wifiName,
-            this.wifiForm.value.wifiPassword
-          ).subscribe(() => {
-            finalize
-          });
+          this.espSetupService
+            .setWifi(
+              this.wifiForm.value.pin,
+              this.wifiForm.value.wifiName,
+              this.wifiForm.value.wifiPassword,
+            )
+            .subscribe(() => {
+              finalize;
+            });
         }, 1000);
       } else {
         this.connectionTested = false;
@@ -181,7 +183,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   checkUserSensorsCountAndStop(
-    condition: (count: number, initialSensorCount: number) => boolean
+    condition: (count: number, initialSensorCount: number) => boolean,
   ): Promise<number> {
     return new Promise<number>((resolve) => {
       this.intervalSubscription = interval(7000).subscribe(() => {
@@ -197,7 +199,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   startCallingFunctionWithInterval(
-    condition: (count: number, initialSensorCount: number) => boolean
+    condition: (count: number, initialSensorCount: number) => boolean,
   ): Promise<number> {
     return this.checkUserSensorsCountAndStop(condition);
   }
@@ -210,14 +212,14 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
     this.store.dispatch(requestUserSensors());
     this.store.select(selectUserSensors).subscribe((sensors) => {
       this.lastSensorId = sensors[sensors.length - 1].id;
-      if(this.currentStep === 'done') return;
+      if (this.currentStep === 'done') return;
       this.currentStep = 'details';
     });
   }
 
   async dispatchBeacon4ESP() {
     const count = await this.startCallingFunctionWithInterval(
-      this.stopCondition
+      this.stopCondition,
     );
     await this.onStopped(count);
   }

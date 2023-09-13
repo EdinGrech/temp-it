@@ -15,8 +15,10 @@
       <ion-card-title>Info</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text class="help-tip">Connect to Sensor's wifi to set it up, you can test if you are connected to it
-        below.</ion-text>
+      <ion-text class="help-tip"
+        >Connect to Sensor's wifi to set it up, you can test if you are
+        connected to it below.</ion-text
+      >
     </ion-card-content>
   </ion-card>
   <ion-card *ngIf="currentStep === 'config'">
@@ -26,7 +28,10 @@
     <ion-card-content>
       <div class="connection-test-results height">
         <!-- spinner while loading -->
-        <ion-text color="danger" *ngIf="!connectionTested && connectionTested !== null">
+        <ion-text
+          color="danger"
+          *ngIf="!connectionTested && connectionTested !== null"
+        >
           <ion-icon name="close-circle-outline"></ion-icon>
           Connection Failed
         </ion-text>
@@ -34,9 +39,15 @@
           <ion-icon name="checkmark-circle-outline"></ion-icon>
           Connection Successful
         </ion-text>
-        <ion-spinner *ngIf="testLoading" name="crescent" color="primary"></ion-spinner>
+        <ion-spinner
+          *ngIf="testLoading"
+          name="crescent"
+          color="primary"
+        ></ion-spinner>
       </div>
-      <ion-button expand="full" shape="round" (click)="testConnection()">Test Connection</ion-button>
+      <ion-button expand="full" shape="round" (click)="testConnection()"
+        >Test Connection</ion-button
+      >
     </ion-card-content>
   </ion-card>
   <ion-card *ngIf="currentStep === 'config'">
@@ -49,7 +60,12 @@
         <ion-spinner name="crescent" color="primary"></ion-spinner>
         <ion-text>Generating Pin</ion-text>
       </div>
-      <form [@formAnimation] *ngIf="wifiForm" [formGroup]="wifiForm" (ngSubmit)="submitForm()">
+      <form
+        [@formAnimation]
+        *ngIf="wifiForm"
+        [formGroup]="wifiForm"
+        (ngSubmit)="submitForm()"
+      >
         <ion-item>
           <ion-label floating>Pin:</ion-label>
           <ion-input type="text" formControlName="pin"></ion-input>
@@ -65,7 +81,9 @@
           <ion-input type="password" formControlName="wifiPassword"></ion-input>
         </ion-item>
 
-        <ion-button class="formButton" expand="full" shape="round" type="submit">Submit</ion-button>
+        <ion-button class="formButton" expand="full" shape="round" type="submit"
+          >Submit</ion-button
+        >
       </form>
     </ion-card-content>
   </ion-card>
@@ -74,18 +92,23 @@
       <ion-card-title>Info</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text class="help-tip">Connect back to your network, the following details we be saved on the
-        cloud.</ion-text>
+      <ion-text class="help-tip"
+        >Connect back to your network, the following details we be saved on the
+        cloud.</ion-text
+      >
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="currentStep==='waiting'">
+  <ion-card *ngIf="currentStep === 'waiting'">
     <ion-card-header>
       <ion-card-title>Waiting for Sensor to Connect</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <div class="connection-test-results">
-          <ion-text class="help-tip">Awaiting sensor to connect to server, this might take a minute. To setup further sensor details please wait.</ion-text>
+        <ion-text class="help-tip"
+          >Awaiting sensor to connect to server, this might take a minute. To
+          setup further sensor details please wait.</ion-text
+        >
         <div class="spinner-div">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
         </div>
@@ -122,7 +145,9 @@
 
           <ion-item>
             <ion-label>Allow group admins to edit details:</ion-label>
-            <ion-checkbox formControlName="allow_group_admins_to_edit"></ion-checkbox>
+            <ion-checkbox
+              formControlName="allow_group_admins_to_edit"
+            ></ion-checkbox>
           </ion-item>
 
           <ion-item>
@@ -132,35 +157,53 @@
 
           <ion-item *ngIf="showAlertDetails">
             <ion-label>Max Temperature threshold:</ion-label>
-            <ion-input type="float" formControlName="high_temp_alert"></ion-input>
+            <ion-input
+              type="float"
+              formControlName="high_temp_alert"
+            ></ion-input>
           </ion-item>
 
           <ion-item *ngIf="showAlertDetails">
             <ion-label>Min Temperature threshold:</ion-label>
-            <ion-input type="float" formControlName="low_temp_alert"></ion-input>
+            <ion-input
+              type="float"
+              formControlName="low_temp_alert"
+            ></ion-input>
           </ion-item>
 
           <ion-item *ngIf="showAlertDetails">
             <ion-label>Max Humidity threshold:</ion-label>
-            <ion-input type="float" formControlName="high_humidity_alert"></ion-input>
+            <ion-input
+              type="float"
+              formControlName="high_humidity_alert"
+            ></ion-input>
           </ion-item>
 
           <ion-item *ngIf="showAlertDetails">
             <ion-label>Min Humidity threshold:</ion-label>
-            <ion-input type="float" formControlName="low_humidity_alert"></ion-input>
+            <ion-input
+              type="float"
+              formControlName="low_humidity_alert"
+            ></ion-input>
           </ion-item>
-
         </ion-list>
-        <ion-button class="formButton" expand="full" shape="round" type="submit">Submit</ion-button>
+        <ion-button class="formButton" expand="full" shape="round" type="submit"
+          >Submit</ion-button
+        >
       </form>
     </ion-card-content>
   </ion-card>
 
   <div class="done" *ngIf="currentStep === 'done'">
     <div class="flex-colum">
-      <ion-text class="help-tip">Sensor will be visible in your home page.</ion-text>
-      <ion-text class="help-tip">You can also edit it's details any time.</ion-text>
-      <ion-button size="large" (click)="done()" expand="half" shape="round">Done
+      <ion-text class="help-tip"
+        >Sensor will be visible in your home page.</ion-text
+      >
+      <ion-text class="help-tip"
+        >You can also edit it's details any time.</ion-text
+      >
+      <ion-button size="large" (click)="done()" expand="half" shape="round"
+        >Done
         <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
       </ion-button>
     </div>

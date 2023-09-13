@@ -12,7 +12,11 @@ import { Store } from '@ngrx/store';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private cookieService: CookieService, public store: Store<{global: any}>,) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+    public store: Store<{ global: any }>,
+  ) {}
 
   refreshToken() {
     const httpOptions = {
@@ -30,21 +34,21 @@ export class AuthService {
           environment.apiPort +
           '/api/auth/token/refresh/',
         body,
-        httpOptions
+        httpOptions,
       )
       .pipe(
         map((response: any) => {
           localStorage.setItem('access', response['access']);
           localStorage.setItem('refresh', response['refresh']);
           return response;
-        })
+        }),
       );
   }
 
   signUp(
     username: string,
     email: string,
-    password: string
+    password: string,
   ): Observable<RegisterResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -56,19 +60,22 @@ export class AuthService {
       email: email,
       password: password,
     };
-    localStorage.removeItem('access')
-              localStorage.removeItem('refresh')
-    return this.http.post<RegisterResponse>(
-      environment.motherShipUrl +
-        ':' +
-        environment.apiPort +
-        '/api/auth/register/',
-      body,
-      httpOptions
-    ).pipe(
-      catchError((error: any) => {
-      return throwError(error);
-    }));
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+    return this.http
+      .post<RegisterResponse>(
+        environment.motherShipUrl +
+          ':' +
+          environment.apiPort +
+          '/api/auth/register/',
+        body,
+        httpOptions,
+      )
+      .pipe(
+        catchError((error: any) => {
+          return throwError(error);
+        }),
+      );
   }
 
   signInWithEmail(email: string, password: string) {
@@ -81,8 +88,8 @@ export class AuthService {
       email: email,
       password: password,
     };
-    localStorage.removeItem('access')
-    localStorage.removeItem('refresh')
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     return this.http
       .post<AuthTokens>(
         environment.motherShipUrl +
@@ -90,7 +97,7 @@ export class AuthService {
           environment.apiPort +
           '/api/auth/login/',
         body,
-        httpOptions
+        httpOptions,
       )
       .pipe(
         map((response: any) => {
@@ -100,7 +107,7 @@ export class AuthService {
         }),
         catchError((error: any) => {
           return throwError(error);
-        })
+        }),
       );
   }
 
@@ -113,17 +120,20 @@ export class AuthService {
     const body = {
       email: email,
     };
-    return this.http.post<any>(
-      environment.motherShipUrl +
-        ':' +
-        environment.apiPort +
-        '/api/auth/forgot-password/',
-      body,
-      httpOptions
-    ).pipe(
-      catchError((error: any) => {
-      return throwError(error);
-    }));
+    return this.http
+      .post<any>(
+        environment.motherShipUrl +
+          ':' +
+          environment.apiPort +
+          '/api/auth/forgot-password/',
+        body,
+        httpOptions,
+      )
+      .pipe(
+        catchError((error: any) => {
+          return throwError(error);
+        }),
+      );
   }
 
   logout() {
@@ -132,15 +142,15 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     };
-    localStorage.removeItem('access')
-    localStorage.removeItem('refresh')
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     return this.http.post<any>(
       environment.motherShipUrl +
         ':' +
         environment.apiPort +
         '/api/auth/logout/',
       {},
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -150,16 +160,19 @@ export class AuthService {
         'Content-Type': 'application/json',
       }),
     };
-    return this.http.get<User>(
-      environment.motherShipUrl +
-        ':' +
-        environment.apiPort +
-        '/api/auth/profile/',
-      httpOptions
-    ).pipe(
-      catchError((error: any) => {
-      return throwError(error);
-    }));
+    return this.http
+      .get<User>(
+        environment.motherShipUrl +
+          ':' +
+          environment.apiPort +
+          '/api/auth/profile/',
+        httpOptions,
+      )
+      .pipe(
+        catchError((error: any) => {
+          return throwError(error);
+        }),
+      );
   }
 
   updateUser(user: User) {
@@ -172,16 +185,19 @@ export class AuthService {
       username: user.username,
       email: user.email,
     };
-    return this.http.put<User>(
-      environment.motherShipUrl +
-        ':' +
-        environment.apiPort +
-        '/api/auth/update/',
-      body,
-      httpOptions
-    ).pipe(
-      catchError((error: any) => {
-      return throwError(error);
-    }));
+    return this.http
+      .put<User>(
+        environment.motherShipUrl +
+          ':' +
+          environment.apiPort +
+          '/api/auth/update/',
+        body,
+        httpOptions,
+      )
+      .pipe(
+        catchError((error: any) => {
+          return throwError(error);
+        }),
+      );
   }
 }

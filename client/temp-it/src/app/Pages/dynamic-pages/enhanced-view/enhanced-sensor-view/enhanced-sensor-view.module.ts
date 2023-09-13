@@ -7,16 +7,16 @@ import { EnhancedSensorViewPageRoutingModule } from './enhanced-sensor-view-rout
 
 import { EnhancedSensorViewPage } from './enhanced-sensor-view.page';
 import { IndividualCustomGraphComponent } from 'src/app/components/graphs/individual-custom-graph/individual-custom-graph.component';
-import { DateRangePickerComponent } from "../../../../components/date-range-picker/date-range-picker.component";
+import { DateRangePickerComponent } from '../../../../components/date-range-picker/date-range-picker.component';
 
 @NgModule({
-    declarations: [EnhancedSensorViewPage],
-    imports: [
-        CommonModule,
-        IonicModule,
-        EnhancedSensorViewPageRoutingModule,
-        IndividualCustomGraphComponent,
-        DateRangePickerComponent
-    ]
+  declarations: [EnhancedSensorViewPage],
+  imports: [
+    CommonModule,
+    IonicModule,
+    EnhancedSensorViewPageRoutingModule,
+    IndividualCustomGraphComponent,
+    DateRangePickerComponent,
+  ],
 })
 export class EnhancedSensorViewPageModule {}

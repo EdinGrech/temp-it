@@ -48,47 +48,49 @@ export class TempHumSummeryGraphComponent implements OnInit {
       dataSkipStep = Math.round(rawData.length / (window.innerWidth / 30));
     }
     dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
-  
+
     const averages: singleSensorData[] = [];
     let sumTemperature = 0;
     let sumHumidity = 0;
     let count = 0;
-  
+
     for (let i = 0; i < rawData.length; i++) {
       const data = rawData[i];
-  
+
       sumTemperature += data.temperature;
       sumHumidity += data.humidity;
       count++;
-  
+
       if (i % dataSkipStep === 0 || i === rawData.length - 1) {
         // Calculate the average values for temperature and humidity
         const averageTemperature = sumTemperature / count;
         const averageHumidity = sumHumidity / count;
-  
+
         // Push the last and average values into the new array
         averages.push({
           temperature: averageTemperature,
           humidity: averageHumidity,
           date_time: data.date_time, // Keep the date_time
         });
-  
+
         sumTemperature = 0;
         sumHumidity = 0;
         count = 0;
       }
     }
-  
+
     // Update the chart data with the calculated averages
-    this.lineChartData.datasets[0].data = averages.map(data => data.temperature);
-    this.lineChartData.datasets[1].data = averages.map(data => data.humidity);
-    this.lineChartData.labels = averages.map(data =>
+    this.lineChartData.datasets[0].data = averages.map(
+      (data) => data.temperature,
+    );
+    this.lineChartData.datasets[1].data = averages.map((data) => data.humidity);
+    this.lineChartData.labels = averages.map((data) =>
       new Date(data.date_time).toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         day: '2-digit',
         month: '2-digit',
-      })
+      }),
     ) as string[];
   }
 

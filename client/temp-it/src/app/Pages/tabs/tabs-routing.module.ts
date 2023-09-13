@@ -15,7 +15,9 @@ const routes: Routes = [
       {
         path: 'my-sensors',
         loadChildren: () =>
-          import('../my-sensors/my-sensors.module').then((m) => m.MySensorsPageModule),
+          import('../my-sensors/my-sensors.module').then(
+            (m) => m.MySensorsPageModule,
+          ),
       },
       {
         path: 'groups',

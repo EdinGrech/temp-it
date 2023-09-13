@@ -15,21 +15,24 @@
   </ion-fab-button>
 </ion-fab>
 
-<ion-content class="scroll-content" [scrollEvents]="true" (ionScroll)="onScroll($event)">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-    <ion-refresher-content> </ion-refresher-content>
-  </ion-refresher>
-  <ion-card *ngIf="!showUserSensors">
+<ion-content
+  class="scroll-content"
+  [scrollEvents]="true"
+  (ionScroll)="onScroll($event)"
+>
+  <div *ngIf="sensors$ | async as sensors" class="display-flex-horizontal">
+    <div *ngFor="let sensor of sensors">
+      <app-micro-sensor-summery [sensor]="sensor"></app-micro-sensor-summery>
+    </div>
+  </div>
+  <ion-card *ngIf="!(sensors$ | async)?.length">
     <ion-card-header>
       <ion-card-title> No Sensors Found </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-text>
-        <p> Please add a sensor to get started </p>
+        <p>Please add a sensor to get started</p>
       </ion-text>
     </ion-card-content>
   </ion-card>
-  <div *ngFor="let sensorDetails of sensorDetailsList">
-    <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
-  </div>
 </ion-content>

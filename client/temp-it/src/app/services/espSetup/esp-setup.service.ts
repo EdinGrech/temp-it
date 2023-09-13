@@ -32,7 +32,7 @@ export class EspSetupService {
           server_url: serverUrl,
           server_port: environment.apiPort,
         },
-        { headers: headers }
+        { headers: headers },
       )
       .pipe(
         map((response: any) => {
@@ -42,7 +42,7 @@ export class EspSetupService {
             return false;
           }
         }),
-        take(1)
+        take(1),
       );
 
     // const headers = new HttpHeaders({

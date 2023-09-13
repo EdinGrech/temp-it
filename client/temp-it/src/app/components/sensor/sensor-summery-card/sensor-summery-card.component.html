@@ -1,4 +1,4 @@
-<ion-card>
+<ion-card [id]="sensorDetails.id">
   <ion-item lines="none">
     <ion-label>
       <div class="display-flex">
@@ -13,7 +13,7 @@
       </div>
       <p *ngIf="sensorDetails.active && (sensorLastReading | async) as reading">
         {{ reading.temperature }}°C {{ reading.humidity }}%
-        {{ reading.date_time | date : "shortTime" }}
+        {{ reading.date_time | date: "shortTime" }}
       </p>
     </ion-label>
     <ion-button slot="end" (click)="editSensor()">
@@ -33,6 +33,7 @@
     <ion-button
       class="ion-align-items-center"
       color="tertiary"
+      [class.favorite]="localFav"
       (click)="favSensor()"
     >
       <ion-icon slot="start" name="star"></ion-icon>

@@ -31,35 +31,33 @@ export const forgotUserPasswordStatus = createSelector(
 
 export const userAddSensorPin = createSelector(
   selectUser,
-  (state: UserState) => state.pin
+  (state: UserState) => state.pin,
 );
 
 export const userAddSensorPinDateAdded = createSelector(
   selectUser,
-  (state: UserState) => state.pinDateAdded
+  (state: UserState) => state.pinDateAdded,
 );
 
 export const selectUserSensors = createSelector(
   selectUser,
-  (state: UserState) => state.sensors
+  (state: UserState) => state.sensors,
 );
 
-export const selectUserSensor = (id: number) => createSelector(
-  selectUserSensors,
-  (data) => data.find((s) => s.id === id),
-);
+export const selectUserSensor = (id: number) =>
+  createSelector(selectUserSensors, (data) => data.find((s) => s.id === id));
 
 export const selectUserSensorsLoading = createSelector(
   selectUser,
-  (state: UserState) => state.loadingSensors
+  (state: UserState) => state.loadingSensors,
 );
 
 export const selectUserSensorsError = createSelector(
   selectUser,
-  (state: UserState) => state.sensorError
+  (state: UserState) => state.sensorError,
 );
 
 export const selectUserSensorsLen = createSelector(
   selectUser,
-  (state: UserState) => state.sensorLen
+  (state: UserState) => state.sensorLen,
 );

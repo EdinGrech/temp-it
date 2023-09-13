@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -21,7 +22,9 @@ export class MySensorsPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private elementRef: ElementRef,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -31,9 +34,26 @@ export class MySensorsPage implements OnInit {
       .subscribe((sensors) => {
         if (sensors.length > 0) {
           this.showUserSensors = true;
-          this.sensorDetailsList = sensors;
+          this.sensorDetailsList = [...sensors].sort((a, b) => {
+            if (a.favorite && !b.favorite) return -1;
+            if (!a.favorite && b.favorite) return 1;
+            return 0;
+          });
         } else {
-          this.showUserSensors = false
+          this.showUserSensors = false;
+        }
+      });
+      // Scroll to the target card if the query param is present.
+      this.route.params.subscribe(params => {
+        const id = params['id']; // This will contain the value '2'
+        if (id) {
+          // Find and scroll to the target card.
+          setTimeout(() => {
+            const cardElement = this.elementRef.nativeElement.querySelector(`[id="${id}"]`);
+            if (cardElement) {
+              cardElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 1000);
         }
       });
   }
@@ -62,7 +82,7 @@ export class MySensorsPage implements OnInit {
     }, 2000);
   }
 
-  mainRefresh(){
+  mainRefresh() {
     this.store.dispatch(requestUserSensors());
   }
 
@@ -82,7 +102,7 @@ export class MySensorsPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  isMobile_(size:number): boolean{
-    return isMobile(size)
+  isMobile_(size: number): boolean {
+    return isMobile(size);
   }
 }

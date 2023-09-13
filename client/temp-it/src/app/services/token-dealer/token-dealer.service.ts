@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TokenDealerService {
-
   constructor() {}
 
   // Check if the refresh token is present in the cookie
   isRefreshTokenAvailable(): boolean {
-     if(localStorage.getItem('refresh')) return true
-     return false;
+    if (localStorage.getItem('refresh')) return true;
+    return false;
   }
 
   // Get the expiration date of the refresh token from the cookie
@@ -57,7 +56,7 @@ export class TokenDealerService {
   // Check if the refresh token is expired
   isRefreshTokenExpired(): boolean {
     const expirationDate = this.getRefreshTokenExpiration();
-    console.log(expirationDate, new Date())
+    console.log(expirationDate, new Date());
     if (expirationDate) {
       return expirationDate <= new Date();
     }
@@ -66,16 +65,16 @@ export class TokenDealerService {
 
   isAccessTokenExpired(): boolean {
     const expirationDate = this.getAccessTokenExpiration();
-    console.log(expirationDate, new Date())
+    console.log(expirationDate, new Date());
     if (expirationDate) {
       return expirationDate <= new Date();
     }
     return true;
   }
 
-  removeTokens(){
-    localStorage.removeItem('access')
-    localStorage.removeItem('refresh')
+  removeTokens() {
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
   }
 
   private refreshing = false;

@@ -9,8 +9,8 @@ describe('IndividualCustomGraphComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ IndividualCustomGraphComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [IndividualCustomGraphComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(IndividualCustomGraphComponent);

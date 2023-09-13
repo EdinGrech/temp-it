@@ -9,8 +9,8 @@ describe('AlertHandlerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AlertHandlerComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [AlertHandlerComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AlertHandlerComponent);

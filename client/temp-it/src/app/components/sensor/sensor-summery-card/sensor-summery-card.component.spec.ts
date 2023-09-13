@@ -9,8 +9,8 @@ describe('SensorSummeryCardComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SensorSummeryCardComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [SensorSummeryCardComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SensorSummeryCardComponent);

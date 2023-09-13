@@ -1,10 +1,10 @@
-@import './../../../theme/variables.scss';
+@import "./../../../theme/variables.scss";
 
-ion-item.invalid{
-    ion-label{
-        color: --ion-color-danger;
-    }
-    button{
-        color: --ion-color-danger;
-    }
+ion-item.invalid {
+  ion-label {
+    color: --ion-color-danger;
+  }
+  button {
+    color: --ion-color-danger;
+  }
 }

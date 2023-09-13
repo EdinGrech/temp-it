@@ -31,7 +31,10 @@ import {
   requestUser24HourDataSuccess,
   requestUser24HourDataFailure,
 } from './user.actions';
-import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import {
+  SensorDetails,
+  singleSensorData,
+} from 'src/app/interfaces/sensor/sensor';
 
 export interface UserState {
   user: User;
@@ -216,5 +219,5 @@ export const userAuthReducer = createReducer(
     ...state,
     sensorError: error,
     loadingSensors: false,
-  }))
+  })),
 );

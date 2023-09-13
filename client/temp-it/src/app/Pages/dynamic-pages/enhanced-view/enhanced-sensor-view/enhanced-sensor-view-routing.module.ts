@@ -6,8 +6,8 @@ import { EnhancedSensorViewPage } from './enhanced-sensor-view.page';
 const routes: Routes = [
   {
     path: '',
-    component: EnhancedSensorViewPage
-  }
+    component: EnhancedSensorViewPage,
+  },
 ];
 
 @NgModule({

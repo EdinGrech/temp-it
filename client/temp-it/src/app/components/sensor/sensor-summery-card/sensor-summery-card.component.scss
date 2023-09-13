@@ -1,41 +1,50 @@
-.display-flex{
-    display: flex;
-    flex-wrap: wrap;
+.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  .children {
+    padding-left: 10px;
+  }
+  :first-child {
+    padding-left: 0;
+  }
+}
+
+ion-icon.size-20 {
+  font-size: 20px;
+}
+
+.card-bottom-buttons {
+  padding: 20px 10px;
+  ion-button {
+    padding-right: 15px;
     align-items: center;
-    .children{
-        padding-left: 10px;
+    font-size: 18px;
+    ion-icon {
+      font-size: 20px;
     }
-    :first-child{
-        padding-left: 0;
-    }
-}
-
-ion-icon.size-20{
-    font-size: 20px;
-}
-
-.card-bottom-buttons{
-    padding: 20px 10px; 
-    ion-button{
-        padding-right: 15px;
-        align-items: center;
-        font-size: 18px;
-        ion-icon{
-            font-size: 20px;
-        }
-    }
+  }
 }
 
 @media (max-width: 767px) {
-    .card-bottom-buttons{
-        padding: 20px 10px; 
-        ion-button{
-            padding-right: 10px;
-            align-items: center;
-            font-size: 1.1em;
-            ion-icon{
-                font-size: 1.2em;
-            }
-        }
+  .card-bottom-buttons {
+    padding: 20px 10px;
+    ion-button {
+      padding-right: 10px;
+      align-items: center;
+      font-size: 1.1em;
+      ion-icon {
+        font-size: 1.2em;
+      }
     }
+  }
+}
+
+.favorite {
+  ion-icon {
+    color: #cbe946;
+  }
+  ion-text {
+    color: #cbe946;
+  }
 }

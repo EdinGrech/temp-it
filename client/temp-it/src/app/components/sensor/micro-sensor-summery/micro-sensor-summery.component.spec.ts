@@ -9,8 +9,8 @@ describe('MicroSensorSummeryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MicroSensorSummeryComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [MicroSensorSummeryComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MicroSensorSummeryComponent);

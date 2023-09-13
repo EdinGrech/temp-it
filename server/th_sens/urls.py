@@ -17,4 +17,6 @@ urlpatterns = [
     path('create-sensor', RegisterSensorView.as_view()),
     path('sensor-details/<int:pk>', SensorDetailsView.as_view()),
     path('sensor-details/<int:pk>/update', EditSensorDetailsView.as_view()),
+
+    path('sensor/<int:pk>/favorite', FavoriteSensorView.as_view()),
 ]

@@ -18,15 +18,18 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./enhanced-sensor-view.page.scss'],
 })
 export class EnhancedSensorViewPage implements OnInit {
-
   sensor?: SensorDetails;
   selectedDatetime?: string;
 
-  dateRange?:{start: string, end: string};
+  dateRange?: { start: string; end: string };
 
   // Set the minDate and maxDate properties
-  minDate: string = new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString();
-  maxDate: string = new Date(new Date().setHours(new Date().getHours() + 2)).toISOString(); // Adjust for GMT+2
+  minDate: string = new Date(
+    new Date().setMonth(new Date().getMonth() - 6),
+  ).toISOString();
+  maxDate: string = new Date(
+    new Date().setHours(new Date().getHours() + 2),
+  ).toISOString(); // Adjust for GMT+2
 
   invalidDates: boolean = true;
   rawData: any;
@@ -38,24 +41,26 @@ export class EnhancedSensorViewPage implements OnInit {
     private store: Store<AppState>,
     private modalController: ModalController,
     private sensorService: SensorService,
-    private alertController: AlertController
-    ) { }
+    private alertController: AlertController,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      let sensorId:number = parseInt(params['id']);
-      if(isNaN(sensorId)) this.router.navigate(['']);
+    this.route.params.subscribe((params) => {
+      let sensorId: number = parseInt(params['id']);
+      if (isNaN(sensorId)) this.router.navigate(['']);
       let called = false;
-      this.store.select(selectUserSensor(sensorId)).subscribe((sensor:SensorDetails|undefined) => {
-        if(!sensor && !called){
-          called = true;
-          this.store.dispatch(requestUserSensors());
-        }
-        this.sensor = sensor;
-        if(this.sensor){
-          this.minDate = new Date(this.sensor!.date_created).toISOString();
-        }
-      });
+      this.store
+        .select(selectUserSensor(sensorId))
+        .subscribe((sensor: SensorDetails | undefined) => {
+          if (!sensor && !called) {
+            called = true;
+            this.store.dispatch(requestUserSensors());
+          }
+          this.sensor = sensor;
+          if (this.sensor) {
+            this.minDate = new Date(this.sensor!.date_created).toISOString();
+          }
+        });
     });
   }
 
@@ -63,55 +68,72 @@ export class EnhancedSensorViewPage implements OnInit {
     const modal = await this.modalController.create({
       component: EditSensorDetailsModalComponent,
       componentProps: {
-        sensorId: (this.sensor!.id as number)
-      }
+        sensorId: this.sensor!.id as number,
+      },
     });
 
     await modal.present();
   }
 
-  async deleteSensor(){
+  async deleteSensor() {
     const alert = await this.alertController.create({
       header: 'Delete Action',
       message: 'Are you sure you want to delete this sensor',
-      buttons: [{
-        text: 'Yes',
-        handler: () => {
-          this.deleteConfirmed()
-        }
-      }, 'Cancel'],
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.deleteConfirmed();
+          },
+        },
+        'Cancel',
+      ],
     });
 
     await alert.present();
 
     await alert.onDidDismiss();
-
   }
 
-  deleteConfirmed(){
-    this.sensorService.deleteUserSensor(this.sensor!.id).pipe(first()).subscribe(data_ => {
-      let data:any = data_
-      if(data.message == 'Sensor deleted'){
-        this.store.dispatch(requestUserSensors());
-        this.router.navigate(['']);
-      }
-      else{
-        this.store.dispatch(globalError({error: (data as any) as HttpErrorResponse}));
-      }
-    });
+  deleteConfirmed() {
+    this.sensorService
+      .deleteUserSensor(this.sensor!.id)
+      .pipe(first())
+      .subscribe((data_) => {
+        let data: any = data_;
+        if (data.message == 'Sensor deleted') {
+          this.store.dispatch(requestUserSensors());
+          this.router.navigate(['']);
+        } else {
+          this.store.dispatch(
+            globalError({ error: data as any as HttpErrorResponse }),
+          );
+        }
+      });
   }
 
-  datetimeChanged(dateRange: {start: string, end: string},) {
+  datetimeChanged(dateRange: { start: string; end: string }) {
     this.dateRange = dateRange;
     this.dateChange4LookUp = true;
   }
 
-  getSensorReadings(){
-    if(this.dateRange?.start && this.dateRange?.end && this.dateChange4LookUp){
-      this.sensorService.getUserSensorDataCustomRange(this.dateRange?.start, this.dateRange?.end, this.sensor!.id).pipe(first()).subscribe(data => {
-        this.rawData = data;
-        this.dateChange4LookUp = false;
-      });
+  getSensorReadings() {
+    if (
+      this.dateRange?.start &&
+      this.dateRange?.end &&
+      this.dateChange4LookUp
+    ) {
+      this.sensorService
+        .getUserSensorDataCustomRange(
+          this.dateRange?.start,
+          this.dateRange?.end,
+          this.sensor!.id,
+        )
+        .pipe(first())
+        .subscribe((data) => {
+          this.rawData = data;
+          this.dateChange4LookUp = false;
+        });
     }
   }
 }

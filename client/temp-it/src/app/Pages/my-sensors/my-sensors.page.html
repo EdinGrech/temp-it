@@ -2,7 +2,12 @@
   <ion-toolbar>
     <div class="display-flex">
       <ion-title> My Sensors </ion-title>
-      <ion-button *ngIf="!isMobile_(768)" color="primary" fill="clear" (click)="mainRefresh()">
+      <ion-button
+        *ngIf="!isMobile_(768)"
+        color="primary"
+        fill="clear"
+        (click)="mainRefresh()"
+      >
         Refresh
       </ion-button>
     </div>
@@ -20,7 +25,11 @@
   </ion-fab-button>
 </ion-fab>
 
-<ion-content class="scroll-content" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+<ion-content
+  class="scroll-content"
+  [scrollEvents]="true"
+  (ionScroll)="onScroll($event)"
+>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
@@ -30,11 +39,13 @@
     </ion-card-header>
     <ion-card-content>
       <ion-text>
-        <p> Please add a sensor to get started </p>
+        <p>Please add a sensor to get started</p>
       </ion-text>
     </ion-card-content>
   </ion-card>
   <div *ngFor="let sensorDetails of sensorDetailsList">
-    <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
+    <app-sensor-summery-card
+      [sensorDetails]="sensorDetails"
+    ></app-sensor-summery-card>
   </div>
 </ion-content>

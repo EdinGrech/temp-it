@@ -12,7 +12,7 @@ from .serializer import (
     SensorReadingsSerializer, 
     SensorDetailsSerializer, 
     SensorReadingsSerializerWithoutID, 
-    UserInteractionSensorDetails
+    UserInteractionTemperatureHumiditySensorDetails
 )
 from rest_framework.permissions import IsAuthenticated
 from th_auth.models import th_User
@@ -228,12 +228,11 @@ class UpdateSensorDetailsView(APIView):
                 else:
                     return Response({'message': 'You are not allowed to edit this sensor'}, status=403) 
         elif sensor_owner:
-            serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
+            serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(UserInteractionTemperatureHumiditySensorDetails().update(sensor, request.data))
             return Response(serializer.data)
         else:
             return Response({'message': 'You are not allowed to edit this sensor'}, status=403)
-
-    
+  
 class SensorDetailsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -247,17 +246,16 @@ class SensorDetailsView(APIView):
                 group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
                 if user.id in group_members.member_id.all():
                     if sensor:
-                        serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensor)
+                        serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensor)
                         return Response(serializer.data)
             return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
 
         if sensor:
-            serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensor)
+            serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensor)
             return Response(serializer.data)
         else:
             return Response({'message': 'Sensor does not exist'}, status=444)
-
-        
+       
 class EditSensorDetailsView(APIView):
     #permission_classes = [IsAuthenticated]
     def put(self, request: Request, **kwargs: Any) -> Response:
@@ -265,7 +263,7 @@ class EditSensorDetailsView(APIView):
         user: th_User = request.user
         sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
         if(TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).exists()):
-            serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
+            serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(UserInteractionTemperatureHumiditySensorDetails().update(sensor, request.data))
             return Response(serializer.data, status=201)
         else:
             if(GroupLinkedSensors.objects.filter(sensor_id=sensor_id).exists()):
@@ -273,7 +271,7 @@ class EditSensorDetailsView(APIView):
                 for group_id in sensor_group_ids:
                     group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
                     if user.id in group_members.member_id.all():
-                        serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(UserInteractionSensorDetails().update(sensor, request.data))
+                        serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(UserInteractionTemperatureHumiditySensorDetails().update(sensor, request.data))
                         return Response({'message': 'Sensor details updated', 'data': serializer.data}, status=201)
                     else:
                         return Response({'message': 'You are not allowed to view this sensor data'}, status=403)
@@ -286,7 +284,7 @@ class MySensorsView(APIView):
         user: th_User = request.user
         sensors: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(user_id_owner=user)
         if(sensors):
-            serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensors, many=True)
+            serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensors, many=True)
             return Response(serializer.data)
         else:
             return Response({'message': 'You have no sensors'}, status=444)
@@ -302,7 +300,7 @@ class AccessibleSensorView(APIView):
                 sensors: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(group_id=group_id.group_id)
                 for sensor in sensors:
                     sensor_details: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(id=sensor.sensor_id)
-                    serializer: UserInteractionSensorDetails = UserInteractionSensorDetails(sensor_details, many=True)
+                    serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensor_details, many=True)
                     return Response(serializer.data)
         else:
             return Response({'message': 'You have no visible group sensors'}, status=444)
@@ -316,3 +314,15 @@ class MyLenSensorsView(APIView):
             return Response({'number_of_sensors': f'{len(sensors)}'})
         else:
             return Response({'message': 'You have no sensors'}, status=444)
+
+class FavoriteSensorView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request: Request, **kwargs: Any) -> Response:
+        sensor_id: int = kwargs.get('pk')
+        user: th_User = request.user
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user).first()
+        if not sensor:
+            return Response({'message': 'Sensor does not exist'}, status=444)
+        sensor.favorite = not sensor.favorite
+        sensor.save()
+        return Response({'message': 'Sensor favorite status updated'}, status=201)

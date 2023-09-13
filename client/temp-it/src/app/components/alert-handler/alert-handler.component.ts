@@ -16,9 +16,9 @@ import { AppState } from 'src/app/state/app.state';
   styleUrls: ['./alert-handler.component.scss'],
   standalone: true,
 })
-export class AlertHandlerComponent  implements OnInit {
-
-  globalError$: Observable<HttpErrorResponse> = this.store.select(selectGlobalError);
+export class AlertHandlerComponent implements OnInit {
+  globalError$: Observable<HttpErrorResponse> =
+    this.store.select(selectGlobalError);
   error$: Observable<HttpErrorResponse> = this.store.select(selectUserError);
 
   private globalErrorSubscription?: Subscription;
@@ -28,46 +28,54 @@ export class AlertHandlerComponent  implements OnInit {
 
   constructor(
     public store: Store<AppState>,
-    private alertController: AlertController ) {}
+    private alertController: AlertController,
+  ) {}
 
   ngOnInit() {
-    this.globalErrorSubscription = this.globalError$.subscribe((error: HttpErrorResponse) => {
-      if (error && !this.isAlertDisplayed) {
-        let errorText: string = '';
-        if (error.error.detail) {
-          error.error.detail.forEach((errorObj: { value: string }) => {
-            errorText = errorText + ' ' + errorObj.value;
-          });
-        } else if (error.error) {
-          errorText = error.error.error;
-        } else {
-          errorText = 'Something went wrong! Please try again!';
-        }
-        this.presentAlert('Error', errorText);
-      }
-    });
-
-    this.errorSubscription = this.error$.subscribe((error: HttpErrorResponse) => {
-      if (error && !this.isAlertDisplayed) {
-        let errorText: string = '';
-        if (error.error.detail) {
-          // check if error is an array of objects
-          if (Array.isArray(error.error.detail)) {
+    this.globalErrorSubscription = this.globalError$.subscribe(
+      (error: HttpErrorResponse) => {
+        if (error && !this.isAlertDisplayed) {
+          let errorText: string = '';
+          if (error.error.detail) {
             error.error.detail.forEach((errorObj: { value: string }) => {
               errorText = errorText + ' ' + errorObj.value;
             });
+          } else if (error.error) {
+            errorText = error.error.error;
           } else {
-            errorText = error.error.detail;
+            errorText = 'Something went wrong! Please try again!';
           }
-        } else if (error.error) {
-          errorText = error.error.error;
-        } else {
-          errorText = 'Something went wrong! Please try again!';
+          this.presentAlert('Error', errorText);
         }
-        this.presentAlert('Error', 'Something went wrong! ' + errorText + ' Please try again!');
-      }
-    });
-  
+      },
+    );
+
+    this.errorSubscription = this.error$.subscribe(
+      (error: HttpErrorResponse) => {
+        if (error && !this.isAlertDisplayed) {
+          let errorText: string = '';
+          if (error.error.detail) {
+            // check if error is an array of objects
+            if (Array.isArray(error.error.detail)) {
+              error.error.detail.forEach((errorObj: { value: string }) => {
+                errorText = errorText + ' ' + errorObj.value;
+              });
+            } else {
+              errorText = error.error.detail;
+            }
+          } else if (error.error) {
+            errorText = error.error.error;
+          } else {
+            errorText = 'Something went wrong! Please try again!';
+          }
+          this.presentAlert(
+            'Error',
+            'Something went wrong! ' + errorText + ' Please try again!',
+          );
+        }
+      },
+    );
+
     // --- to convert potentially ---
     // this.user$.subscribe((user$: User) => {
     //   if (user$.username && user$.email) {
@@ -119,10 +127,10 @@ export class AlertHandlerComponent  implements OnInit {
   }
 
   ngOnDestroy() {
-    if(this.globalErrorSubscription){
+    if (this.globalErrorSubscription) {
       this.globalErrorSubscription.unsubscribe();
     }
-    if(this.errorSubscription){
+    if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
   }
@@ -141,5 +149,4 @@ export class AlertHandlerComponent  implements OnInit {
     await alert.onDidDismiss();
     this.isAlertDisplayed = false;
   }
-  
 }

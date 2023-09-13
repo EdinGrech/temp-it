@@ -8,9 +8,16 @@ const routes: Routes = [
     component: MySensorsPage,
   },
   {
+    path: ':id',
+    component: MySensorsPage,
+  },
+  {
     path: 'enhanced-view/:id',
-    loadChildren: () => import('src/app/Pages/dynamic-pages/enhanced-view/enhanced-sensor-view/enhanced-sensor-view.module').then( m => m.EnhancedSensorViewPageModule)
-  }
+    loadChildren: () =>
+      import(
+        'src/app/Pages/dynamic-pages/enhanced-view/enhanced-sensor-view/enhanced-sensor-view.module'
+      ).then((m) => m.EnhancedSensorViewPageModule),
+  },
 ];
 
 @NgModule({

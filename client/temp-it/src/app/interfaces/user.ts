@@ -15,7 +15,7 @@ export interface UserSignUpResponse {
   password: string | [string];
 }
 
-export interface AuthTokens{
+export interface AuthTokens {
   access: string;
   refresh: string;
 }

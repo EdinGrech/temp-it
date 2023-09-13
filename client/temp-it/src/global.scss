@@ -26,29 +26,30 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 ion-content.scroll-content {
-
-&::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: 5px;
     height: 5px;
-}
+  }
 
-&::-webkit-scrollbar-track {
-    background: var(--ion-toolbar-background, var(--ion-background-color, 
-    #000000)) !important;
-}
+  &::-webkit-scrollbar-track {
+    background: var(
+      --ion-toolbar-background,
+      var(--ion-background-color, #000000)
+    ) !important;
+  }
 
-&::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background: rgb(75, 75, 75);
+  }
+
+  .inner-scroll {
+    scrollbar-width: thin;
+  }
 }
 
- .inner-scroll {
-     scrollbar-width: thin;
- }
-}
-
-.ion-datetime-button-overlay{
-    --border-radius:20px; 
-    .ion-delegate-host{
-        --height: 190px;
-    } 
+.ion-datetime-button-overlay {
+  --border-radius: 20px;
+  .ion-delegate-host {
+    --height: 190px;
+  }
 }

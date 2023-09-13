@@ -72,7 +72,7 @@ export class IndividualCustomGraphComponent
         new Date(data.date_time).toLocaleTimeString('en-US', {
           hour: '2-digit',
           minute: '2-digit',
-        })
+        }),
       )
       .filter((_data, index) => index % dataSkipStep === 0) as string[];
   }
