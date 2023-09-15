@@ -9,7 +9,7 @@ import {
   SensorDetails,
   singleSensorData,
 } from 'src/app/interfaces/sensor/sensor';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { Observable } from 'rxjs';
 
@@ -28,7 +28,6 @@ export class SensorSummeryCardComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private router: Router,
-    private route: ActivatedRoute,
     private sensorService: SensorService,
   ) {}
 
@@ -55,9 +54,7 @@ export class SensorSummeryCardComponent implements OnInit {
   }
 
   viewSensorDetails() {
-    this.router.navigate(['enhanced-view', this.sensorDetails.id], {
-      relativeTo: this.route,
-    });
+    this.router.navigate(['/tabs/my-sensors/enhanced-view', this.sensorDetails.id]);
   }
 
   favSensor() {

@@ -48,32 +48,48 @@ export class CollectiveSensorSummeryComponent implements OnInit, OnChanges {
         let humiditySum = 0;
         let entrySum = 0;
         res?.forEach((sensorData) => {
-          if (
-            this.sensors?.find((sensor) => sensor.id === sensorData.sensorId)
-          ) {
-            if (sensorData.sensorDataValues.length > 0) {
-              temperatureSum +=
-                sensorData.sensorDataValues[
-                  sensorData.sensorDataValues.length - 1
-                ].temperature;
-              humiditySum +=
-                sensorData.sensorDataValues[
-                  sensorData.sensorDataValues.length - 1
-                ].humidity;
-              entrySum++;
-            }
+          if (sensorData.sensorDataValues.length > 0) {
+            temperatureSum +=
+              sensorData.sensorDataValues[
+                sensorData.sensorDataValues.length - 1
+              ].temperature;
+            humiditySum +=
+              sensorData.sensorDataValues[
+                sensorData.sensorDataValues.length - 1
+              ].humidity;
+            entrySum++;
+          }
+          if (sensorData.alertFailIndexes.length > 0){
+            sensorData.alertFailIndexes.slice(-3).forEach((alertIndex) => {
+              let lastAlertRecord = sensorData.sensorDataValues[alertIndex];
+              if (lastAlertRecord) {
+                if (this.lastAlertRecords) {
+                  this.lastAlertRecords.push(lastAlertRecord);
+                } else {
+                  this.lastAlertRecords = [lastAlertRecord];
+                }
+              }
+            });
           }
         });
         this.averageTemperature = temperatureSum / entrySum;
         this.averageHumidity = humiditySum / entrySum;
-        if (this.averageTemperature > 30) {
-          this.averageTemperatureColor = 'danger-high';
-        } else if (this.averageTemperature < 10) {
-          this.averageTemperatureColor = 'danger-low';
-        } else {
-          this.averageTemperatureColor = 'primary';
-        }
+        // if (this.averageTemperature > 30) {
+        //   this.averageTemperatureColor = 'danger-high';
+        // } else if (this.averageTemperature < 10) {
+        //   this.averageTemperatureColor = 'danger-low';
+        // } else {
+        //   this.averageTemperatureColor = 'primary';
+        // }
+        // if (this.averageHumidity > 70) {
+        //   this.averageHumidityColor = 'danger-high';
+        // } else if (this.averageHumidity < 30) {
+        //   this.averageHumidityColor = 'danger-low';
+        // } else {
+        //   this.averageHumidityColor = 'primary';
+        // }
         console.log(
+          "info: ",
           this.averageTemperatureColor,
           this.averageTemperature,
           this.averageHumidity,
@@ -103,5 +119,12 @@ export class CollectiveSensorSummeryComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('info: ', 
+    this.averageTemperatureColor,
+    this.averageTemperature,
+    this.averageHumidity,
+    this.averageAlertColor,
+    this.lastAlertRecords);    
+  }
 }
