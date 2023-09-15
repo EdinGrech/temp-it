@@ -1,0 +1,24 @@
+.custom-flex-layout {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sensor-list {
+    height: 200px;
+    overflow-y: scroll;
+    &.wiggle{
+        animation: wiggle 0.4s ease infinite;
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-3px);
+    }
+    75% {
+      transform: translateY(3px);
+    }
+  }
