@@ -1,21 +1,31 @@
 @import "../../../../theme/variables.scss";
+@import "../../../../styles/mixins.scss";
 
 .primary-color {
-  color: var(--ion-color-primary);
+  //color: var(--ion-color-primary)!important;
+  ion-icon {
+    color: var(--ion-color-primary)!important;
+  }
   ion-badge {
     --background: var(--ion-color-primary);
   }
 }
 
 .danger-high-color {
-  color: var(--ion-color-danger);
+  //color: var(--ion-color-danger);
+  ion-icon {
+    color: var(--ion-color-danger);
+  }
   ion-badge {
     --background: var(--ion-color-danger) !important;
   }
 }
 
 .danger-low-color {
-  color: var(--ion-color-warning);
+  //color: var(--ion-color-warning);
+  ion-icon {
+    color: var(--ion-color-warning);
+  }
   ion-badge {
     --background: var(--ion-color-warning);
   }
@@ -26,7 +36,7 @@
   flex-direction: column;
 }
 
-@media screen and (min-width: 466px) {
+@include home-cards-collapse-media-query{
   ion-card-header {
     max-width: 180px;
   }

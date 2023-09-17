@@ -9,16 +9,14 @@ import {
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { Observable, finalize, map, take } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import {
   ReducerSensorData,
   SensorDetails,
-  singleSensorData,
 } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
 import { loadDateBasedSensorReadings } from 'src/app/state/sensor/sensor.actions';
 import {
-  selectSensorAll,
   selectSensorData,
 } from 'src/app/state/sensor/sensor.selector';
 
