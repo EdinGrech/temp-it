@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'temp-it',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
+    //androidScheme: 'https',
+    cleartext: true
   }
 };
 
