@@ -31,6 +31,7 @@ import { globeReducer } from './state/global/global.reducer';
 import { userAuthReducer } from './state/user/user.reducer';
 import { sensorReducer } from './state/sensor/sensor.reducer';
 import { SensorEffects } from './state/sensor/sensor.effect';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -65,6 +66,7 @@ import { SensorEffects } from './state/sensor/sensor.effect';
     },
     AuthService,
     ColorModeService,
+    { provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent],
 })

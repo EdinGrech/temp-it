@@ -1,9 +1,10 @@
-version: '3'
+version: '3.4'
 
 services:
   django:
     build:
-      context: /server
+      context: .
+      dockerfile: ./server/Dockerfile.debug
       args:
         SUPERUSER_USERNAME: ${SUPERUSER_USERNAME}
         SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
@@ -14,8 +15,10 @@ services:
       - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
     ports:
       - 8000:8000
+      - 5678:5678
     env_file:
       - .env
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000 --nothreading --noreload"]
     depends_on:
       - postgres
       - redis
@@ -47,7 +50,7 @@ services:
       - django
 
 volumes:
-  local_data:  # Local volume for data when SMB is not configured
+  local_data:
     driver: local
   smb_data:
     driver_opts:

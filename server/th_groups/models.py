@@ -3,20 +3,31 @@ from th_sens.models import SensorDetails
 from th_auth.models import th_User
 
 class GroupDetails(models.Model):
-    group_id = models.AutoField(primary_key=True)
-    group_name = models.CharField(max_length=50)
-    group_description = models.CharField(max_length=200)
-    group_creation_date = models.DateTimeField(auto_now_add=True)
-    group_last_update_date = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=200)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 class GroupAdmins(models.Model):
-    group_id = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
-    admins_id = models.ManyToManyField( th_User, related_name='group_admins')
+    group = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
+    admins = models.ManyToManyField(th_User)
+
+    def __str__(self):
+        return self.group.name + " Admins"
 
 class GroupMembers(models.Model):
-    group_id = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
-    member_id = models.ManyToManyField( th_User, related_name='group_members')
+    group = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
+    member = models.ManyToManyField(th_User)
+
+    def __str__(self):
+        return self.group.name + " Members"
 
 class GroupLinkedSensors(models.Model):
-    group_id = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
-    sensor_id = models.ManyToManyField(SensorDetails, related_name='group_linked_sensors')
+    group = models.OneToOneField(GroupDetails, on_delete=models.CASCADE)
+    sensor = models.ManyToManyField(SensorDetails)
+
+    def __str__(self):
+        return self.group.name + " Linked Sensors"

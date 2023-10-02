@@ -3,7 +3,6 @@
 # Run migrations
 python manage.py makemigrations
 python manage.py migrate
-python manage.py collectstatic --noinput
 
 # Create a superuser if it doesn't already exist
 python manage.py shell <<EOF
@@ -13,5 +12,5 @@ if not th_User.objects.filter(username='$SUPERUSER_USERNAME').exists():
 EOF
 
 # Run the server
-# python manage.py runserver 0.0.0.0:8000
-gunicorn temp_it.wsgi:application --bind 0.0.0.0:8000
+# pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000 --nothreading --noreload
+# gunicorn temp_it.wsgi:application --bind 0.0.0.0:8000
