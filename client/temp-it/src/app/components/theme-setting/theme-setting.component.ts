@@ -56,7 +56,7 @@ export class ThemeSettingComponent implements AfterViewInit {
     const delay = 150;
     const initialOpacity = 0;
     const segmentButtonArray = this.segmentButtonElements.toArray();
-    
+
     let leftToRightAnimationArray: Animation[] = [];
     let rightToLeftAnimationArray: Animation[] = [];
 

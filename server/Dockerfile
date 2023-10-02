@@ -33,5 +33,11 @@ RUN dos2unix /setup.sh
 # Make the script executable
 RUN chmod +x /setup.sh
 
+RUN mkdir /static
+RUN useradd -m user
+RUN chown -R user:user /static
+RUN chmod -R 755 /static
+USER user
+
 # Execute the setup.sh script as the entrypoint
 ENTRYPOINT ["/bin/sh","/setup.sh"]

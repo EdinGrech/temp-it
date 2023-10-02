@@ -1,0 +1,18 @@
+ion-fab {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+ion-title {
+  flex: none;
+}
+
+.display-flex {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  ion-fab.show {
+    opacity: 1 !important;
+  }
+}

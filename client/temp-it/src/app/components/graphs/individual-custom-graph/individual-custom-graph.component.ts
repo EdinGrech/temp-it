@@ -13,32 +13,33 @@ import { default as Annotation } from 'chartjs-plugin-annotation';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { isMobile } from 'src/app/utils/mobile-detection';
 
 @Component({
   selector: 'app-individual-custom-graph',
   templateUrl: './individual-custom-graph.component.html',
   styleUrls: ['./individual-custom-graph.component.scss'],
-  imports: [NgChartsModule, CommonModule, IonicModule,],
+  imports: [NgChartsModule, CommonModule, IonicModule],
   providers: [
     { provide: NgChartsConfiguration, useValue: { generateColors: false } },
   ],
   standalone: true,
 })
-export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges {
+export class IndividualCustomGraphComponent
+  implements AfterViewInit, OnChanges
+{
+  @ViewChild(BaseChartDirective) chart!: BaseChartDirective;
   @Input() rawGraphData?: any;
   height!: number;
+
+  public lineChartType: ChartType = 'line';
 
   constructor() {
     Chart.register(Annotation);
   }
 
-  isMobile(): boolean {
-    const screenWidth = window.innerWidth;
-    return screenWidth < 768 ? true : false;
-  }
-
   ngAfterViewInit(): void {
-    if (this.isMobile()) {
+    if (isMobile(768)) {
       this.height = 300;
     } else {
       this.height = 145;
@@ -48,16 +49,18 @@ export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['rawGraphData'] && this.rawGraphData) {
       this.rawToGraphData(this.rawGraphData);
+      this.chart?.update();
     }
   }
 
   rawToGraphData(rawData: singleSensorData[]): void {
     let dataSkipStep: number;
-    if (this.isMobile()) {
-      dataSkipStep = Math.round(rawData.length / 72);
+    if (isMobile(768)) {
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
     } else {
-      dataSkipStep = Math.round(rawData.length / 300);
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 30));
     }
+    dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
     this.lineChartData.datasets[0].data = rawData
       .map((data: singleSensorData) => data.temperature)
       .filter((_data, index) => index % dataSkipStep === 0);
@@ -65,16 +68,13 @@ export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges 
       .map((data: singleSensorData) => data.humidity)
       .filter((_data, index) => index % dataSkipStep === 0);
     this.lineChartData.labels = rawData
-      .map(
-        (data: singleSensorData) =>
-          new Date(data.date_time).getDate() +
-          '/' +
-          new Date(data.date_time).getHours() +
-          ':' +
-          new Date(data.date_time).getMinutes()
+      .map((data: singleSensorData) =>
+        new Date(data.date_time).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       )
       .filter((_data, index) => index % dataSkipStep === 0) as string[];
-    this.chart?.update();
   }
 
   public lineChartData: ChartConfiguration['data'] = {
@@ -124,7 +124,7 @@ export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges 
         },
       },
       y1: {
-        labels: ['Humidity'], 
+        labels: ['Humidity'],
         position: 'left',
       },
     },
@@ -133,8 +133,4 @@ export class IndividualCustomGraphComponent implements AfterViewInit, OnChanges 
       legend: { display: true },
     },
   };
-
-  public lineChartType: ChartType = 'line';
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 }

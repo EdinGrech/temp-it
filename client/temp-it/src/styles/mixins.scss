@@ -1,0 +1,11 @@
+@mixin home-cards-collapse-media-query {
+    @media screen and (min-width: 466px) {
+        @content;
+    }
+}
+
+@mixin home-summery-collapse-media-query {
+    @media screen and (max-width: 1130px) {
+        @content;
+    }
+}

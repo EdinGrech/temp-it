@@ -6,6 +6,7 @@ import { default as Annotation } from 'chartjs-plugin-annotation';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
+import { isMobile } from 'src/app/utils/mobile-detection';
 
 @Component({
   selector: 'app-temp-hum-summery-graph',
@@ -25,13 +26,8 @@ export class TempHumSummeryGraphComponent implements OnInit {
     Chart.register(Annotation);
   }
 
-  isMobile(): boolean {
-    const screenWidth = window.innerWidth;
-    return screenWidth < 600 ? true : false;
-  }
-
   ngOnInit(): void {
-    if (this.isMobile()) {
+    if (isMobile(600)) {
       this.height = 300;
     } else {
       this.height = 100;
@@ -45,36 +41,57 @@ export class TempHumSummeryGraphComponent implements OnInit {
   }
 
   rawToGraphData(rawData: singleSensorData[]): void {
-    //if mobile pick every 2nd data point
-    if (this.isMobile()) {
-      this.lineChartData.datasets[0].data = rawData
-        .map((data: singleSensorData) => data.temperature)
-        .filter((_data, index) => index % 4 === 0);
-      this.lineChartData.datasets[1].data = rawData
-        .map((data: singleSensorData) => data.humidity)
-        .filter((_data, index) => index % 4 === 0);
-      this.lineChartData.labels = rawData
-        .map(
-          (data: singleSensorData) =>
-            new Date(data.date_time).getHours() +
-            ':' +
-            new Date(data.date_time).getMinutes()
-        )
-        .filter((_data, index) => index % 4 === 0) as string[];
+    let dataSkipStep: number;
+    if (isMobile(600)) {
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
     } else {
-      this.lineChartData.datasets[0].data = rawData.map(
-        (data: singleSensorData) => data.temperature
-      );
-      this.lineChartData.datasets[1].data = rawData.map(
-        (data: singleSensorData) => data.humidity
-      );
-      this.lineChartData.labels = rawData.map(
-        (data: singleSensorData) =>
-          new Date(data.date_time).getHours() +
-          ':' +
-          new Date(data.date_time).getMinutes()
-      ) as string[];
+      dataSkipStep = Math.round(rawData.length / (window.innerWidth / 30));
     }
+    dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
+
+    const averages: singleSensorData[] = [];
+    let sumTemperature = 0;
+    let sumHumidity = 0;
+    let count = 0;
+
+    for (let i = 0; i < rawData.length; i++) {
+      const data = rawData[i];
+
+      sumTemperature += data.temperature;
+      sumHumidity += data.humidity;
+      count++;
+
+      if (i % dataSkipStep === 0 || i === rawData.length - 1) {
+        // Calculate the average values for temperature and humidity
+        const averageTemperature = sumTemperature / count;
+        const averageHumidity = sumHumidity / count;
+
+        // Push the last and average values into the new array
+        averages.push({
+          temperature: averageTemperature,
+          humidity: averageHumidity,
+          date_time: data.date_time, // Keep the date_time
+        });
+
+        sumTemperature = 0;
+        sumHumidity = 0;
+        count = 0;
+      }
+    }
+
+    // Update the chart data with the calculated averages
+    this.lineChartData.datasets[0].data = averages.map(
+      (data) => data.temperature,
+    );
+    this.lineChartData.datasets[1].data = averages.map((data) => data.humidity);
+    this.lineChartData.labels = averages.map((data) =>
+      new Date(data.date_time).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+      }),
+    ) as string[];
   }
 
   public lineChartData: ChartConfiguration['data'] = {
@@ -124,34 +141,34 @@ export class TempHumSummeryGraphComponent implements OnInit {
         },
       },
       y1: {
-        labels: ['Humidity'], 
+        labels: ['Humidity'],
         position: 'left',
       },
     },
 
     plugins: {
       legend: { display: true },
-//       annotation: {
-//         annotations: [
-//           {
-//             type: 'line',
-// //            scaleID: 'y1',
-//             yMin: 30,
-//             yMax: 30,
-//             borderColor: 'rgb(255, 99, 132)',
-//             borderWidth: 2,
-//             label: {
-//               display: true,
-//               position: 'center',
-//               color: 'orange',
-//               content: 'LineAnno',
-//               font: {
-//                 weight: 'bold',
-//               },
-//             },
-//           },
-//         ],
-//       },
+      //       annotation: {
+      //         annotations: [
+      //           {
+      //             type: 'line',
+      // //            scaleID: 'y1',
+      //             yMin: 30,
+      //             yMax: 30,
+      //             borderColor: 'rgb(255, 99, 132)',
+      //             borderWidth: 2,
+      //             label: {
+      //               display: true,
+      //               position: 'center',
+      //               color: 'orange',
+      //               content: 'LineAnno',
+      //               font: {
+      //                 weight: 'bold',
+      //               },
+      //             },
+      //           },
+      //         ],
+      //       },
     },
   };
 

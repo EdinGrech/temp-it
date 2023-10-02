@@ -1,11 +1,58 @@
 version: '3'
+
 services:
+  django:
+    build:
+      context: /server
+      args:
+        SUPERUSER_USERNAME: ${SUPERUSER_USERNAME}
+        SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
+        SUPERUSER_EMAIL: ${SUPERUSER_EMAIL}
+    environment:
+      - SUPERUSER_USERNAME=${SUPERUSER_USERNAME}
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
+      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - static:/static
+      - ${DATA_VOLUME}:/app/data
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - ${DATA_VOLUME}:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
   nginx:
     build: ./client
+    ports:
+      - 80:80
+    volumes:
+      - static:/static
     depends_on:
-      - backend
+      - django
 
-# Extend the services from the server-compose.yml file
-extends:
-  file: /server/docker-compose.yml
-  service: backend
+volumes:
+  local_data:  # Local volume for data when SMB is not configured
+    driver: local
+  smb_data:
+    driver_opts:
+      type: cifs
+      o: "username=${SMB_USERNAME:-},password=${SMB_PASSWORD:-}"
+      device: "${SMB_ADDRESS:-}"
+  static:
+

@@ -26,7 +26,6 @@ import { Router } from '@angular/router';
   imports: [IonicModule, RouterLink, RouterLinkActive, CommonModule],
 })
 export class SideBarComponent implements OnInit {
-
   colorModes: ColorMode[] = ['auto', 'dark', 'light'];
   currentColorMode: ColorMode = this.colorMode.getMode();
 
@@ -73,7 +72,7 @@ export class SideBarComponent implements OnInit {
           email: this.email,
           username: this.username,
         },
-      })
+      }),
     );
   }
 

@@ -1,0 +1,113 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ sensor?.name }}</ion-card-title>
+    <ion-card-subtitle>{{ sensor?.location }}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-list *ngIf="sensorData$ | async as sensorData">
+    <ion-item
+      lines="full"
+      [ngClass]="{
+        'primary-color': temperatureColor === 'primary',
+        'danger-high-color': temperatureColor === 'danger-high',
+        'danger-low-color': temperatureColor === 'danger-low'
+      }"
+    >
+      <ion-text
+        >{{
+          sensorData.sensorDataValues[sensorData.sensorDataValues.length - 1]
+            .temperature
+        }}°C</ion-text
+      >
+      <ion-icon [id]="'temperature-icon'+sensor!.name" slot="start" name="thermometer-outline"></ion-icon>
+      <ion-popover [trigger]="'temperature-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Average Sensor Temperature</ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+    <ion-item
+      lines="full"
+      [ngClass]="{
+        'primary-color': humidityColor === 'primary',
+        'danger-high-color': humidityColor === 'danger-high',
+        'danger-low-color': humidityColor === 'danger-low'
+      }"
+    >
+      <ion-text
+        >{{
+          sensorData.sensorDataValues[sensorData.sensorDataValues.length - 1]
+            .humidity
+        }}%</ion-text
+      >
+      <ion-icon [id]="'humidity-icon'+sensor!.name" slot="start" name="water-outline"></ion-icon>
+      <ion-popover [trigger]="'humidity-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Average Sensor Humidity</ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+    <ion-item
+      [disabled]="!sensor!.active_alerts"
+      lines="full"
+      [ngClass]="{
+        'primary-color': alertColor === 'primary',
+        'danger-high-color': alertColor === 'danger-high',
+        'danger-low-color': alertColor === 'danger-low'
+      }"
+    >
+      <ion-badge>{{ sensorData.alertFailIndexes.length }}</ion-badge>
+      <ion-icon [id]="'alert-icon'+sensor!.name" slot="start" name="alert-outline"></ion-icon>
+      <ion-popover [trigger]="'alert-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Number of alerts in the last 24 hours</ion-content>
+        </ng-template>
+      </ion-popover>
+      <ion-icon
+        *ngIf="sensorData.alertsIncreasing && sensor!.active_alerts && sensorData.alertFailIndexes.length > 0"
+        slot="end"
+        color="danger"
+        name="trending-up-outline"
+        [id]="'trending-up-icon'+sensor!.name"
+      ></ion-icon>
+      <ion-popover [trigger]="'trending-up-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Number of alerts is higher in the last 12 hours then the previous 12</ion-content>
+        </ng-template>
+      </ion-popover>
+      <ion-icon
+        *ngIf="!sensorData.alertsIncreasing && sensor!.active_alerts && sensorData.alertFailIndexes.length > 0"
+        slot="end"
+        color="primary"
+        name="trending-down-outline"
+        [id]="'trending-down-icon'+sensor!.name"
+      ></ion-icon>
+      <ion-popover [trigger]="'trending-down-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Number of alerts is lower in the last 12 hours then the previous 12</ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+    <ion-item
+      lines="full"
+      [ngClass]="{
+        'primary-color': sensor!.active,
+        'danger-high-color': !sensor!.active
+      }"
+    >
+      <div class="flex-colum">
+        <ion-text>{{
+          sensorData.sensorDataValues[sensorData.sensorDataValues.length - 1]
+            .date_time | date: "HH:mm dd/MM/yyyy"
+        }}</ion-text>
+        <ion-note *ngIf="!sensor!.active">Sensor is not active</ion-note>
+      </div>
+      <ion-icon [id]="'time-icon'+sensor!.name" slot="start" name="time-outline"></ion-icon>
+      <ion-popover [trigger]="'time-icon'+sensor!.name" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">Time of last record received</ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-item>
+  </ion-list>
+  <ion-button fill="clear" (click)="navigateToCard(sensor?.id)">View Graph</ion-button>
+</ion-card>

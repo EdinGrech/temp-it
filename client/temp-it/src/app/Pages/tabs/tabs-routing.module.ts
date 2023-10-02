@@ -13,9 +13,11 @@ const routes: Routes = [
           import('../home/home.module').then((m) => m.HomePageModule),
       },
       {
-        path: 'analytics',
+        path: 'my-sensors',
         loadChildren: () =>
-          import('../analytics/analytics.module').then((m) => m.AnalyticsPageModule),
+          import('../my-sensors/my-sensors.module').then(
+            (m) => m.MySensorsPageModule,
+          ),
       },
       {
         path: 'groups',

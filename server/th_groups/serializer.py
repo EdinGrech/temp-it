@@ -2,24 +2,33 @@ from rest_framework import serializers
 from .models import GroupDetails, GroupAdmins, GroupMembers, GroupLinkedSensors
 
 class GroupDetailsSerializer(serializers.ModelSerializer):
-    group_id = serializers.IntegerField(read_only=True)
-    group_creation_date = serializers.DateTimeField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
+    creation_date = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = GroupDetails
-        fields = ['group_id', 'group_name', 'group_description', 'group_creation_date']
+        fields = ['name', 'description', 'creation_date']
 
 class GroupAdminsSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupAdmins
-        fields = ['group_id', 'admins_id']
+        fields = ['group', 'admins']
 
 class GroupMembersSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupMembers
-        fields = ['group_id', 'member_id']
+        fields = ['group', 'member']
 
 class GroupLinkedSensorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupLinkedSensors
-        fields = ['group_id', 'sensor_id']
+        fields = ['group', 'sensor']
+
+# Serializer to return user groups with group details
+class UserGroupsSerializer(serializers.ModelSerializer):
+    group_details = GroupDetailsSerializer()
+
+    class Meta:
+        model = GroupDetails
+        fields = ['group', 'group_details']

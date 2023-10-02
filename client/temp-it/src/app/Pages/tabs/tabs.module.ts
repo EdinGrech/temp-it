@@ -11,7 +11,14 @@ import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { ThemeSettingComponent } from '../../components/theme-setting/theme-setting.component';
 
 @NgModule({
-  imports: [IonicModule, CommonModule, FormsModule, TabsPageRoutingModule, SideBarComponent, ThemeSettingComponent],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    TabsPageRoutingModule,
+    SideBarComponent,
+    ThemeSettingComponent,
+  ],
   declarations: [TabsPage],
 })
 export class TabsPageModule {}

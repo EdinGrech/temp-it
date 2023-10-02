@@ -1,0 +1,15 @@
+{
+  "configurations": [
+    {
+      "name": "Python: Remote Attach Django Only",
+      "type": "python",
+      "preLaunchTask": "Start Django Containers",
+      "request": "attach",
+      "connect": { "host": "localhost", "port": 5678 },
+      "pathMappings": [
+        { "localRoot": "${workspaceFolder}", "remoteRoot": "." }
+      ],
+      "justMyCode": true
+    }
+  ]
+}

@@ -1,19 +1,19 @@
-.text-center{
-    ion-text{
-        height: 100%;
-        align-items: center;
-        display: flex;
-        text-align: center;
-        justify-content: center;
-    }
+.text-center {
+  ion-text {
+    height: 100%;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 @media only screen and (max-width: 768px) {
-    #noData{
-        height:460px;
-    }
+  #noData {
+    height: 460px;
+  }
 }
 
-#noData{
-    height:300px;
+#noData {
+  height: 300px;
 }

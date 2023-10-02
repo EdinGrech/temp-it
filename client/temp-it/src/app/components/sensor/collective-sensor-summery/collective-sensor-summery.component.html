@@ -1,0 +1,60 @@
+<ion-card>
+    <ion-card-header><ion-card-title>Sensor 24 hour activity summery</ion-card-title></ion-card-header>
+    <ion-card-content>
+        <div class="display-flex">
+            <ion-list class="general-sensor-list" lines="full">
+                <ion-item>
+                    <ion-icon color="success" name="checkmark-circle" slot="start"></ion-icon>
+                    <ion-label class="custom-flex-layout">
+                        <div>Online sensors</div>
+                        <div>{{onlineSensors}}</div>
+                    </ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-icon color="danger" name="close-circle" slot="start"></ion-icon>
+                    <ion-label class="custom-flex-layout">
+                        <div>Offline sensors</div>
+                        <div>{{offlineSensors}}</div>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+            
+            <ion-list class="general-sensor-list" lines="full">
+                <ion-item>
+                    <ion-icon color="primary" name="thermometer" slot="start"></ion-icon>
+                    <ion-label class="custom-flex-layout">
+                        <div>Temperature average</div>
+                        <div>{{averageTemperature}}°C</div>
+                    </ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-icon color="primary" name="water" slot="start"></ion-icon>
+                    <ion-label class="custom-flex-layout">
+                        <div>Humidity average</div>
+                        <div>{{averageHumidity}}%</div>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+            <div>
+                <div class="sensor-list" #sensorList>
+                    <ion-list lines="full" *ngFor="let section of lastAlertRecords;">
+                        <ion-list-header class="alert-list-section">
+                          Last alerts from {{ section.sensorName }} 
+                        </ion-list-header>
+                        <ion-item *ngFor="let item of section.singleSensorData">
+                          <ion-label class="label-adjust">
+                            Time: {{ item.date_time | date: "HH:mm" }}
+                          </ion-label>
+                          <ion-label class="label-adjust">
+                              {{ item.temperature }}°C
+                          </ion-label>
+                          <ion-label class="label-adjust">
+                              {{ item.humidity }}%
+                          </ion-label>
+                        </ion-item>
+                      </ion-list>
+                </div>
+            </div>
+        </div>
+    </ion-card-content>
+</ion-card>

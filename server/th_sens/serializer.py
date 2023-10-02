@@ -1,6 +1,6 @@
 import random
 import string
-from .models import SensorReading, SensorDetails
+from .models import SensorReading, TemperatureHumiditySensorDetails
 from rest_framework import serializers
 
 class SensorReadingsSerializer(serializers.ModelSerializer):
@@ -13,7 +13,6 @@ class SensorReadingsSerializer(serializers.ModelSerializer):
         fields = ['sensor_id', 'date_time', 'temperature', 'humidity']
 
         extra_kwargs = {
-            'sensor_id': {'required':True, 'help_text':'Sensor ID'},
             'date_time': {'required':True, 'help_text':'Date and time of measurement'},
             'temperature': {'required':True, 'help_text':'Temperature in Celsius'},
             'humidity': {'required':True, 'help_text':'Humidity in %'},
@@ -41,15 +40,17 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
     location = serializers.CharField(max_length=50)
     description = serializers.CharField(max_length=200)
     active = serializers.BooleanField(default=False)
+    favorite = serializers.BooleanField(default=False)
 
     class Meta:
-        model = SensorDetails
-        fields = ['access_token', 'date_created', 'name', 'location', 'description', 'active']
+        model = TemperatureHumiditySensorDetails
+        fields = ['access_token', 'date_created', 'name', 'location', 'description', 'active', 'favorite']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},
-            'description': {'required': True, 'help_text': 'Description of the sensor'},
+            'description': {'required': False, 'help_text': 'Description of the sensor'},
             'active': {'required': True, 'help_text': 'Is the sensor active?'},
+            'favorite': {'required': False, 'help_text': 'Is the sensor a favorite?'},
         }
 
     def generate_token(self, instance):
@@ -66,7 +67,7 @@ class SensorDetailsSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class UserInteractionSensorDetails(serializers.ModelSerializer):
+class UserInteractionTemperatureHumiditySensorDetails(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     date_created = serializers.DateTimeField(read_only=True)
     name = serializers.CharField(max_length=50)
@@ -79,10 +80,11 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
     low_humidity_alert = serializers.FloatField()
     allow_group_admins_to_edit = serializers.BooleanField(default=False)
     active_alerts = serializers.BooleanField()
+    favorite = serializers.BooleanField(default=False)
 
     class Meta:
-        model = SensorDetails
-        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'allow_group_admins_to_edit', 'active_alerts', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
+        model = TemperatureHumiditySensorDetails
+        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'allow_group_admins_to_edit', 'active_alerts', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert', 'favorite']
         extra_kwargs = {
             'name': {'required': True, 'help_text': 'Name of the sensor'},
             'location': {'required': True, 'help_text': 'Location of the sensor'},
@@ -94,9 +96,10 @@ class UserInteractionSensorDetails(serializers.ModelSerializer):
             'low_temp_alert': {'required': True, 'help_text': 'Low temperature alert'},
             'high_humidity_alert': {'required': True, 'help_text': 'High humidity alert'},
             'low_humidity_alert': {'required': True, 'help_text': 'Low humidity alert'},
+            'favorite': {'required': False, 'help_text': 'Is the sensor a favorite?'},
         }
     
-    def update(self, instance: SensorDetails, validated_data: dict) -> SensorDetails:
+    def update(self, instance: TemperatureHumiditySensorDetails, validated_data: dict) -> TemperatureHumiditySensorDetails:
         print(instance)
         instance.name = validated_data.get('name', instance.name)
         instance.location = validated_data.get('location', instance.location)

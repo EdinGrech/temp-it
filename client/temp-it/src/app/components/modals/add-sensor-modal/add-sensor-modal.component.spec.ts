@@ -9,8 +9,8 @@ describe('AddSensorModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddSensorModalComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [AddSensorModalComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddSensorModalComponent);

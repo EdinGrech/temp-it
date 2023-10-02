@@ -1,12 +1,12 @@
 //when screen mobile display none
 @media (max-width: 767px) {
-    .sidebar-visable-page-links {
-        display: none;
-    }
+  .sidebar-visable-page-links {
+    display: none;
+  }
 }
 
 @media (min-width: 767px) {
-    ion-tab-bar {
-        display: none;
-    }
+  ion-tab-bar {
+    display: none;
+  }
 }

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { SensorSummeryCardComponent } from './sensor-summery-card.component';
+import { GroupCardComponent } from './group-card.component';
 
-describe('SensorSummeryCardComponent', () => {
-  let component: SensorSummeryCardComponent;
-  let fixture: ComponentFixture<SensorSummeryCardComponent>;
+describe('GroupCardComponent', () => {
+  let component: GroupCardComponent;
+  let fixture: ComponentFixture<GroupCardComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SensorSummeryCardComponent ],
+      declarations: [ GroupCardComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SensorSummeryCardComponent);
+    fixture = TestBed.createComponent(GroupCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

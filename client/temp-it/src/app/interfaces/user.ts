@@ -14,3 +14,15 @@ export interface UserSignUpResponse {
   username: string | [string];
   password: string | [string];
 }
+
+export interface AuthTokens {
+  access: string;
+  refresh: string;
+}
+
+export interface RegisterResponse extends AuthTokens {
+  user_data: {
+    email: string;
+    username: string;
+  };
+}

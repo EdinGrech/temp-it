@@ -3,23 +3,27 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class HttpHeaddersInterceptor implements HttpInterceptor {
-  constructor(private cookieService: CookieService) {}
+  constructor() {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const jwtToken = this.cookieService.get('jwt');
-    if (jwtToken) {
-      request = request.clone({
-        setHeaders: {
-          'Authorization': `Bearer ${jwtToken}`,
-        }
-      });
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
+    if (request.url.includes(environment.motherShipUrl)) {
+      if (localStorage.getItem('access')) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`,
+          },
+        });
+      }
     }
     return next.handle(request);
   }

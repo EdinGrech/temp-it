@@ -21,43 +21,44 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from rest_framework_simplejwt.views import TokenRefreshView
+
+class ThTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'error': 'Invalid token or token not found'}, status=443)
+class ThTokenObtainPairView(TokenObtainPairView):
+    serializer_class = ThTokenObtainPairSerializer
+
 @api_view(['POST'])
 def register(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        
+        # Generate access token
+        access_token_serializer = ThTokenObtainPairSerializer(data={
+            'email': request.data.get('email'),
+            'password': request.data.get('password')
+        })
+        if access_token_serializer.is_valid():
+            access_token = access_token_serializer.validated_data['access']
+
+            refresh_token = RefreshToken.for_user(user)
+
+            response_data = {
+                'access': str(access_token),
+                'refresh': str(refresh_token),
+                'user_data': serializer.data
+            }            
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-from rest_framework_simplejwt.tokens import RefreshToken
-
-@api_view(['POST'])
-def login_view(request):
-    email_or_username = request.data.get('emailOrUsername')
-    password = request.data.get('password')
-
-    try:
-        if "@" in email_or_username:
-            user_obj = th_User.objects.filter(email = email_or_username).first()
-        else:
-            user_obj = th_User.objects.filter(username = email_or_username).first()
-        user = authenticate(username=user_obj, password=password)
-    except:
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    if user is not None:
-        login(request, user)
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        response_data = {
-            'username': user.username,
-            'email': user.email,
-            'token': access_token
-        }
-        return Response(response_data)
-    else:
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
     
 @api_view(['POST'])
 def forgot_password(request):
@@ -102,28 +103,25 @@ def password_reset(request, uidb64, token):
 def locked_endpoint(request):
     return Response({'message': 'Access granted to the locked endpoint'})
 
-# from rest_framework.authentication import SessionAuthentication
-# from rest_framework.permissions import IsAuthenticated
-# class MyLockedView(APIView):
-#     authentication_classes = [SessionAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-
 @api_view(['POST'])
-def logout_view(request):
-    logout(request)
-    return Response({'success': 'User logged out successfully'})
-
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        # Blacklist the refresh token, which will also invalidate the associated access token
+        token = RefreshToken(request.data['refresh'])
+        token.blacklist()
+        return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': 'Invalid token or token not found'}, status=status.HTTP_400_BAD_REQUEST)
 
 # view for generating a new access token for a sensor
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def generate_new_pin(request):
-    # create a randome pin, save it to the user and return it
+    # create a random pin, save it to the user and return it
     user:th_User = request.user
     # create a new pin
-    pin = random.randint(100000, 999999)
+    pin = random.randint(10000000, 99999999)
     # save the pin to the user
     user.set_pin(pin)
     # return the pin

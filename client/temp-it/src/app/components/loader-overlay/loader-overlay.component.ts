@@ -20,7 +20,7 @@ export class LoaderOverlayComponent implements OnInit {
 
   constructor(
     public store: Store<AppState>,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
   ) {
     this.loading$.subscribe((loading) => {
       if (loading) {

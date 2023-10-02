@@ -37,16 +37,20 @@ import {
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PinService } from 'src/app/services/user/pin/pin.service';
-import { SensorDetails, singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import {
+  SensorDetails,
+  singleSensorData,
+} from 'src/app/interfaces/sensor/sensor';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
 @Injectable()
 export class UserEffects {
   constructor(
-    private actions$: Actions, 
-    private authService: AuthService, 
+    private actions$: Actions,
+    private authService: AuthService,
     private pinService: PinService,
-    private sensorService: SensorService,) {}
+    private sensorService: SensorService,
+  ) {}
 
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -54,10 +58,10 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.getUser().pipe(
           map((user: any) => loadUserSuccess({ user: user })),
-          catchError((error) => of(loadUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error) => of(loadUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   loginUser$ = createEffect(() =>
@@ -66,10 +70,12 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.signInWithEmail(action.email, action.password).pipe(
           map((user: any) => loginUserSuccess({ user })),
-          catchError((error: HttpErrorResponse) => of(loginUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: HttpErrorResponse) =>
+            of(loginUserFailure({ error })),
+          ),
+        ),
+      ),
+    ),
   );
 
   registerUser$ = createEffect(() =>
@@ -80,10 +86,10 @@ export class UserEffects {
           .signUp(action.username, action.email, action.password)
           .pipe(
             map((user: any) => registerUserSuccess({ user })),
-            catchError((error: any) => of(registerUserFailure({ error })))
-          )
-      )
-    )
+            catchError((error: any) => of(registerUserFailure({ error }))),
+          ),
+      ),
+    ),
   );
 
   updateUser$ = createEffect(() =>
@@ -92,10 +98,10 @@ export class UserEffects {
       mergeMap((action) =>
         this.authService.updateUser(action.user).pipe(
           map((user: any) => updateUserSuccess({ user })),
-          catchError((error: any) => of(updateUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(updateUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   logoutUser$ = createEffect(() =>
@@ -104,10 +110,10 @@ export class UserEffects {
       mergeMap(() =>
         this.authService.logout().pipe(
           map(() => logoutUserSuccess()),
-          catchError((error: any) => of(logoutUserFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(logoutUserFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   forgotUserPassword$ = createEffect(() =>
@@ -115,11 +121,13 @@ export class UserEffects {
       ofType(forgotUserPassword),
       mergeMap((action) =>
         this.authService.forgotPassword(action.email).pipe(
-          map((forgotPskState: any) => forgotUserPasswordSuccess({ forgotPskState })),
-          catchError((error: any) => of(forgotUserPasswordFailure({ error })))
-        )
-      )
-    )
+          map((forgotPskState: any) =>
+            forgotUserPasswordSuccess({ forgotPskState }),
+          ),
+          catchError((error: any) => of(forgotUserPasswordFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   requestUserPin$ = createEffect(() =>
@@ -128,10 +136,10 @@ export class UserEffects {
       mergeMap(() =>
         this.pinService.getUserPin().pipe(
           map((pin: number) => requestUserPinSuccess({ pin })),
-          catchError((error: any) => of(requestUserPinFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(requestUserPinFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   requestUserSensors$ = createEffect(() =>
@@ -140,10 +148,10 @@ export class UserEffects {
       mergeMap(() =>
         this.sensorService.getUserSensors().pipe(
           map((sensors: any) => requestUserSensorsSuccess({ sensors })),
-          catchError((error: any) => of(requestUserSensorsFailure({ error })))
-        )
-      )
-    )
+          catchError((error: any) => of(requestUserSensorsFailure({ error }))),
+        ),
+      ),
+    ),
   );
 
   requestUserSensorLen$ = createEffect(() =>
@@ -151,11 +159,15 @@ export class UserEffects {
       ofType(requestUserSensorLen),
       mergeMap(() =>
         this.sensorService.getUserSensorsCount().pipe(
-          map((sensorLen: number) => requestUserSensorLenSuccess({ sensorLen })),
-          catchError((error: any) => of(requestUserSensorLenFailure({ error })))
-        )
-      )
-    )
+          map((sensorLen: number) =>
+            requestUserSensorLenSuccess({ sensorLen }),
+          ),
+          catchError((error: any) =>
+            of(requestUserSensorLenFailure({ error })),
+          ),
+        ),
+      ),
+    ),
   );
 
   requestUser24HourData$ = createEffect(() =>
@@ -163,10 +175,14 @@ export class UserEffects {
       ofType(requestUser24HourData),
       mergeMap((action) =>
         this.sensorService.getSensorLast24Hours(action.sensorId).pipe(
-          map((sensorData: singleSensorData[]) => requestUser24HourDataSuccess({ sensorData })),
-          catchError((error: any) => of(requestUser24HourDataFailure({ error })))
-        )
-      )
-    )
+          map((sensorData: singleSensorData[]) =>
+            requestUser24HourDataSuccess({ sensorData }),
+          ),
+          catchError((error: any) =>
+            of(requestUser24HourDataFailure({ error })),
+          ),
+        ),
+      ),
+    ),
   );
 }

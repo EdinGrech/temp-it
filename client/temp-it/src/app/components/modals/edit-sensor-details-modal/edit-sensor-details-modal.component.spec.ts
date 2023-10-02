@@ -9,8 +9,8 @@ describe('EditSensorDetailsModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditSensorDetailsModalComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [EditSensorDetailsModalComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditSensorDetailsModalComponent);
