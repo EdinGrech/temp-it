@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
-from temp_it.settings import DEFAULT_FROM_EMAIL
+from temp_it.settings.prod import DEFAULT_FROM_EMAIL
 
 from .serializer import *
 

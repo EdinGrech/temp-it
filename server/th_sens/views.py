@@ -4,7 +4,7 @@ from requests import Request
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
-from temp_it.settings import SENSOR_READINGS_PER_HOUR
+from temp_it.settings.prod import SENSOR_READINGS_PER_HOUR
 
 from th_groups.models import GroupAdmins
 from .models import SensorReading, TemperatureHumiditySensorDetails

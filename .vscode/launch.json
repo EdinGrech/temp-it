@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Django",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\server\\manage.py",
+      "args": ["runserver", "--noreload", "--nothreading","--settings=temp_it.settings.debug"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
       "name": "Python: Remote Attach",
       "type": "python",
       "preLaunchTask": "Start Django Containers",

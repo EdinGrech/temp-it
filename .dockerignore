@@ -1,5 +1,6 @@
 **/__pycache__
-**/.venv
+**/server/venv
+**/venv
 **/.classpath
 **/.dockerignore
 
