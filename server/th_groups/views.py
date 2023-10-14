@@ -190,7 +190,8 @@ def get_user_groups(request):
     # get the user
     user = request.user
     # Get the groups the user is a member of along with their details
-    groups = GroupMembers.objects.filter(member=user)
+    groups:GroupMembers = GroupMembers.objects.filter(member=user)
+    groups:GroupDetails = [group.group for group in groups]
     # Serialize the group memberships along with their details
     serializer = UserGroupsSerializer(groups, many=True)
     return Response(serializer.data)

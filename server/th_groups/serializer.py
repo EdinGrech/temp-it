@@ -27,8 +27,6 @@ class GroupLinkedSensorsSerializer(serializers.ModelSerializer):
 
 # Serializer to return user groups with group details
 class UserGroupsSerializer(serializers.ModelSerializer):
-    group_details = GroupDetailsSerializer()
-
     class Meta:
         model = GroupDetails
-        fields = ['group', 'group_details']
+        fields = ['id', 'name', 'description']
