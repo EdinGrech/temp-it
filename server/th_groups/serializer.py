@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from th_auth.models import th_User
 from .models import GroupDetails, GroupAdmins, GroupMembers, GroupLinkedSensors
 
 class GroupDetailsSerializer(serializers.ModelSerializer):
@@ -30,3 +32,13 @@ class UserGroupsSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupDetails
         fields = ['id', 'name', 'description']
+
+class UserTHUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = th_User
+        fields = ['username', 'email']
+
+class UserGroupDetailedData(serializers.Serializer):
+    group = GroupDetailsSerializer()
+    admins = UserTHUserSerializer(many=True)
+    members = UserTHUserSerializer(many=True)

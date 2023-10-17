@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from th_auth.models import th_User
 from th_sens.models import SensorDetails
+from typing import List
 
 from .serializer import *
 
@@ -38,19 +39,31 @@ def create_group(request):
 # view for getting the details of a group
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_group_details(request, group):
+def get_group_details(request, group_id):
     # get the group details
-    group = GroupDetails.objects.get(group=group)
+    group = GroupDetails.objects.get(id=group_id)
+    admins = GroupAdmins.objects.filter(group=group).values('admins')
+    admins = th_User.objects.filter(id__in=admins)
+    admins = UserTHUserSerializer(admins, many=True).data
+    members = GroupMembers.objects.filter(group=group).values('member')
+    members = th_User.objects.filter(id__in=members)
+    members = UserTHUserSerializer(members, many=True).data
+    
+    data = {
+        'group': group,
+        'admins': admins,
+        'members': members
+    }
     # return the group details
-    serializer = GroupDetailsSerializer(group)
+    serializer:UserGroupDetailedData = UserGroupDetailedData(data)
     return Response(serializer.data)
 
 # view for updating the details of a group
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def update_group_details(request, group):
+def update_group_details(request, group__id):
     # get the group details
-    group = GroupDetails.objects.get(group=group)
+    group = GroupDetails.objects.get(group=group__id)
     # update the group details
     group.name = request.data.get('name')
     group.description = request.data.get('description')
@@ -76,9 +89,9 @@ def delete_group(request, group):
 # view for adding an admin to a group (only admins can add an admin to a group)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def add_admin(request, group):
+def add_admin(request, group_id):
     # get the group details
-    group = GroupDetails.objects.get(group=group)
+    group = GroupDetails.objects.get(id=group_id)
     # check if the user is an admin of the group
     if request.user in group.groupadmins.admins.all():
         # get the username of the admin to be added

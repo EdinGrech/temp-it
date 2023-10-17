@@ -17,7 +17,21 @@
         "--settings=temp_it.settings.debug"
       ],
       "django": true,
-      "justMyCode": true
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Django fast start",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\server\\manage.py",
+      "args": [
+        "runserver",
+        "--noreload",
+        "--nothreading",
+        "--settings=temp_it.settings.debug"
+      ],
+      "django": true,
+      "justMyCode": false
     },
     {
       "name": "Python: Django - Create Super User",
