@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -98,7 +99,14 @@ def add_admin(request, group_id):
         # get the user object of the admin to be added
         user = th_User.objects.get(username=username)
         # add the user as an admin of the group
-        group_admins = GroupAdmins.objects.get(group=group)
+        if GroupMembers.objects.filter(group=group, member=user).exists():
+            # remove the user as a member of the group
+            group_member = get_object_or_404(GroupMembers, group_id=group_id, member_id=user.id)
+            group_member.delete()
+        if GroupAdmins.objects.filter(group=group, admins=user).exists():
+            return Response({'error': 'User is already a admin of the group'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        group_admins = GroupAdmins.objects.create(group=group)
         group_admins.admins.add(user)
         return Response({'success': 'Admin added successfully'})
     else:
@@ -114,11 +122,19 @@ def remove_admin(request, group_id):
     if request.user == group.owner:
         # get the username of the admin to be removed
         username = request.data.get('username')
-        # get the user object of the admin to be removed
-        user = th_User.objects.get(username=username)
+        user = get_object_or_404(th_User, username=username)
+
+        if user == group.owner:
+            return Response({'error': 'You cannot remove the owner of the group'}, status=status.HTTP_400_BAD_REQUEST)
+        
         # remove the user as an admin of the group
-        group_admins = GroupAdmins.objects.get(group=group)
-        group_admins.admins.remove(user)
+        group_admins = get_object_or_404(GroupAdmins, group=group, admins=user)
+        group_admins.delete()
+
+        # make user a member of the group
+        group_members = GroupMembers.objects.create(group=group)
+        group_members.member.add(user)
+
         return Response({'success': 'Admin removed successfully'})
     else:
         return Response({'error': 'You are not the owner of this group'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -138,6 +154,8 @@ def add_member_to_group_with_username(request, group_id):
         # get the user object of the member to be added
         user = th_User.objects.get(username=username)
         # add the user as a member of the group
+        if GroupMembers.objects.filter(group=group, member=user).exists() or GroupAdmins.objects.filter(group=group, admins=user).exists():
+            return Response({'error': 'User is already in the group'}, status=status.HTTP_400_BAD_REQUEST)
         group_members = GroupMembers.objects.create(group=group)
         group_members.member.add(user)
         return Response({'success': 'Member added successfully'})
@@ -159,8 +177,8 @@ def remove_member_from_group_with_username(request, group_id):
         # get the user object of the member to be removed
         user = th_User.objects.get(username=username)
         # remove the user as a member of the group
-        group_members = GroupMembers.objects.get(group=group)
-        group_members.member.remove(user)
+        group_member = get_object_or_404(GroupMembers, group=group, member=user)
+        group_member.delete()
         return Response({'success': 'Member removed successfully'})
     else:
         return Response({'error': 'You are not an admin of this group'}, status=status.HTTP_401_UNAUTHORIZED)
