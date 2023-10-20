@@ -239,11 +239,13 @@ class SensorDetailsView(APIView):
     def get(self, request: Request, **kwargs: Any) -> Response:
         sensor_id: int = kwargs.get('pk')
         user: th_User = request.user
-        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=user.id).first()
+        if not TemperatureHumiditySensorDetails.objects.filter(id=sensor_id).exists():
+            return Response({'message': 'Sensor does not exist'}, status=204)
+        sensor: TemperatureHumiditySensorDetails = TemperatureHumiditySensorDetails.objects.get(id=sensor_id, user_id_owner=user.id)
         if not sensor:
-            sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor_id=sensor_id)
+            sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(id=sensor_id)
             for group_id in sensor_group_ids:
-                group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group_id=group_id.group_id)
+                group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(id=group_id)
                 if user.id in group_members.member_id.all():
                     if sensor:
                         serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensor)
@@ -282,12 +284,12 @@ class MySensorsView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request: Request) -> Response:
         user: th_User = request.user
-        sensors: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(user_id_owner=user)
+        sensors: QuerySet[TemperatureHumiditySensorDetails] = TemperatureHumiditySensorDetails.objects.filter(user_id_owner=user.pk)
         if(sensors):
             serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensors, many=True)
             return Response(serializer.data)
         else:
-            return Response({'message': 'You have no sensors'}, status=444)
+            return Response({'message': 'You have no sensors'}, status=204)
 
 class AccessibleSensorView(APIView):
     permission_classes = [IsAuthenticated]
