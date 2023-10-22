@@ -18,7 +18,7 @@ export class EspSetupService {
 
   setWifi(pin: number, ssid: string, password: string): Observable<boolean> {
     //remove http:// or https:// from environment.motherShipUrl
-    const serverUrl = environment.motherShipUrl.replace(/(^\w+:|^)\/\//, '');
+    const serverUrl = environment.espMotherShipUrl.replace(/(^\w+:|^)\/\//, '');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });

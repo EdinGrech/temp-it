@@ -17,6 +17,61 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "makemigrations",
+      "dependsOn": ["venv-list"],
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["server/manage.py", "makemigrations"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "migrate",
+      "dependsOn": ["makemigrations"],
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "server/manage.py",
+        "migrate",
+        "--settings=temp_it.settings.debug"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "venv-list",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "pip", "list"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "create-superuser",
+      "dependsOn": ["migrate"],
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "server/manage.py",
+        "shell",
+        "--settings=temp_it.settings.debug",
+        "-c",
+        "from th_auth.models import th_User; th_User.objects.create_superuser(chr(97)+chr(100)+chr(109)+chr(105)+chr(110),chr(97)+chr(100)+chr(109)+chr(105)+chr(110)+chr(64)+chr(97)+chr(100)+chr(109)+chr(105)+chr(110)+chr(46)+chr(99)+chr(111)+chr(109),chr(97)+chr(100)+chr(109)+chr(105)+chr(110)+chr(112)+chr(97)+chr(115)+chr(115)+chr(33)+chr(45)) if not th_User.objects.filter(username=chr(97)+chr(100)+chr(109)+chr(105)+chr(110)).exists()else None"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
     }
   ]
 }

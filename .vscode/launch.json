@@ -5,6 +5,50 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Django",
+      "type": "python",
+      "preLaunchTask": "create-superuser",
+      "request": "launch",
+      "program": "${workspaceFolder}\\server\\manage.py",
+      "args": [
+        "runserver",
+        "--noreload",
+        "--nothreading",
+        "--settings=temp_it.settings.debug"
+      ],
+      "django": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Django fast start",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\server\\manage.py",
+      "args": [
+        "runserver",
+        "--noreload",
+        "--nothreading",
+        "--settings=temp_it.settings.debug"
+      ],
+      "django": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Django - Create Super User",
+      "type": "python",
+      "preLaunchTask": "migrate",
+      "request": "launch",
+      "program": "${workspaceFolder}\\server\\manage.py",
+      "args": [
+        "shell",
+        "-c",
+        "from th_auth.models import th_User; th_User.objects.create_superuser('admin', 'admin@admin.com', 'adminpass!-') if not th_User.objects.filter(username='admin').exists() else None",
+        "--settings=temp_it.settings.debug"
+      ],
+      "django": true,
+      "justMyCode": true
+    },
+    {
       "name": "Python: Remote Attach",
       "type": "python",
       "preLaunchTask": "Start Django Containers",
