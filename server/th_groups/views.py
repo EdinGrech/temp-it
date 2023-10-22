@@ -144,15 +144,15 @@ def remove_admin(request, group_id):
 @permission_classes([IsAuthenticated])
 def add_member_to_group_with_username(request, group_id):
     # get the group details
-    group = GroupDetails.objects.get(id=group_id)
+    group = get_object_or_404(GroupDetails, id=group_id)
     admins = GroupAdmins.objects.filter(group=group).values('admins')
-    admins = th_User.objects.filter(id__in=admins)
+    admins = get_list_or_404(th_User, id__in=admins)
     # check if the user is an admin of the group
     if request.user in admins:
         # get the username of the member to be added
         username = request.data.get('username')
         # get the user object of the member to be added
-        user = th_User.objects.get(username=username)
+        user = get_object_or_404(th_User, username=username)
         # add the user as a member of the group
         if GroupMembers.objects.filter(group=group, member=user).exists() or GroupAdmins.objects.filter(group=group, admins=user).exists():
             return Response({'error': 'User is already in the group'}, status=status.HTTP_400_BAD_REQUEST)
@@ -167,9 +167,9 @@ def add_member_to_group_with_username(request, group_id):
 @permission_classes([IsAuthenticated])
 def remove_member_from_group_with_username(request, group_id):
     # get the group details
-    group = GroupDetails.objects.get(id=group_id)
+    group = get_object_or_404(GroupDetails, id=group_id)
     admins = GroupAdmins.objects.filter(group=group).values('admins')
-    admins = th_User.objects.filter(id__in=admins)
+    admins = get_list_or_404(th_User, id__in=admins)
     # check if the user is an admin of the group
     if request.user in admins:
         # get the username of the member to be removed
@@ -188,9 +188,9 @@ def remove_member_from_group_with_username(request, group_id):
 @permission_classes([IsAuthenticated])
 def add_sensor_to_group(request, group_id, sensor_id):
     # get the group details
-    group = GroupDetails.objects.get(id=group_id)
+    group = get_object_or_404(GroupDetails, id=group_id)
     admins = GroupAdmins.objects.filter(group=group).values('admins')
-    admins = th_User.objects.filter(id__in=admins)
+    admins = get_list_or_404(th_User, id__in=admins)
     # check if the user is an admin of the group
     if request.user in admins:
         # get the sensor details
@@ -209,9 +209,9 @@ def add_sensor_to_group(request, group_id, sensor_id):
 @permission_classes([IsAuthenticated])
 def remove_sensor_from_group(request, group_id, sensor_id):
     # get the group details
-    group = GroupDetails.objects.get(id=group_id)
+    group = get_object_or_404(GroupDetails, id=group_id)
     admins = GroupAdmins.objects.filter(group=group).values('admins')
-    admins = th_User.objects.filter(id__in=admins)
+    admins = get_list_or_404(th_User, id__in=admins)
     # check if the user is an admin of the group
     if request.user in admins or request.user in TemperatureHumiditySensorDetails.objects.get(id=sensor_id).sensor_owner.all():
         # get the sensor details
