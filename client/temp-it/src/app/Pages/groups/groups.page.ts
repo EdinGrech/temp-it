@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-groups',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['groups.page.scss'],
 })
 export class GroupsPage {
-  constructor() {}
+  constructor(private store: Store) {}
 }
