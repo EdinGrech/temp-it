@@ -1,98 +1,218 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, combineLatest, map, mergeMap, of, switchMap } from 'rxjs';
-import { SensorService } from 'src/app/services/user/sensor/sensor.service';
-import {
-  loadAllBasedSensorReadings,
-  loadDateBasedSensorReadings,
-  loadDateBasedSensorReadingsFailure,
-  loadDateBasedSensorReadingsSuccess,
-} from './sensor.actions';
-import { selectUserSensor } from '../user/user.selectors';
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.state';
-import {
-  SensorDetails,
-  singleSensorData,
-} from 'src/app/interfaces/sensor/sensor';
+import { GroupService } from 'src/app/services/user/group/group.service';
+import { GroupActionGroup } from './group.actions';
+import { GroupsSummery } from 'src/app/interfaces/group/group';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
-export class SensorEffects {
+export class GroupEffects {
   constructor(
     private store: Store<AppState>,
     private actions$: Actions,
-    private sensorService: SensorService,
+    private groupService: GroupService,
   ) {}
 
-  loadDateBasedSensorReadings$ = createEffect(() =>
+  getGroupsSummery$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(loadDateBasedSensorReadings),
-      mergeMap((action) =>
-        combineLatest([
-          this.store.select(selectUserSensor(action.sensorId)),
-          this.sensorService.getSensorLast24Hours(action.sensorId),
-        ]).pipe(
-          map(([sensorDetails, sensorDataValues]) =>
-            this.alertProcessing(sensorDataValues, sensorDetails),
+      ofType(GroupActionGroup.getGroups),
+      mergeMap(() =>
+        this.groupService.getGroups().pipe(
+          map((groups: GroupsSummery) =>
+            GroupActionGroup.getGroupsSuccess({ groups }),
           ),
-          map((result) =>
-            loadDateBasedSensorReadingsSuccess({
-              sensorDataValues: result.sensorDataValues,
-              sensorId: action.sensorId,
-              alertFailIndexes: result.alertFailIndexes,
-              alertsIncreasing: result.alertsIncreasing,
-            }),
-          ),
-          catchError((error) =>
-            of(loadDateBasedSensorReadingsFailure({ error })),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.getGroupsFailure({ error })),
           ),
         ),
       ),
     ),
   );
 
-  loadAllBasedSensorReadings$ = createEffect(() =>
+  getGroup$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(loadAllBasedSensorReadings),
+      ofType(GroupActionGroup.getGroup),
       mergeMap((action) =>
-        action.sensorIds.map((sensorId) =>
-          this.store.dispatch(loadDateBasedSensorReadings({ sensorId }))
-        )
-      )
+        this.groupService.getGroup(action.groupId).pipe(
+          map((group) =>
+            GroupActionGroup.getGroupSuccess({
+              group: group,
+              groupId: action.groupId,
+            }),
+          ),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.getGroupFailure({ groupId: action.groupId })),
+          ),
+        ),
+      ),
     ),
-    { dispatch: false }
   );
 
-  alertProcessing(
-    sensorDataValues: singleSensorData[],
-    sensorDetails: SensorDetails | undefined,
-  ) {
-    let alertFailIndexes: number[] = [];
-    if (sensorDetails?.active_alerts) {
-      const midpoint = Math.floor(sensorDataValues.length / 2);
-      let underCounter = 0;
-      sensorDataValues.forEach((sensorDataValue, index) => {
-        if (
-          sensorDataValue.temperature >= sensorDetails.high_temp_alert! ||
-          sensorDataValue.temperature < sensorDetails.low_temp_alert! ||
-          sensorDataValue.humidity >= sensorDetails.high_humidity_alert! ||
-          sensorDataValue.humidity < sensorDetails.low_humidity_alert!
-        ) {
-          alertFailIndexes.push(index);
-          if (index < midpoint) {
-            underCounter++;
-          }
-        }
-      });
-      let alertsIncreasing = true;
-      if (underCounter > alertFailIndexes.length / 2) {
-        alertsIncreasing = false;
-      } else {
-        alertsIncreasing = true;
-      }
-      return { sensorDataValues, alertFailIndexes, alertsIncreasing };
-    } else {
-      return { sensorDataValues, alertFailIndexes, alertsIncreasing: false };
-    }
-  }
+  createGroup$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.createGroup),
+      mergeMap((action) =>
+        this.groupService.createGroup(action.group).pipe(
+          map((group) => {
+            this.store.dispatch(GroupActionGroup.getGroups());
+            return GroupActionGroup.createGroupSuccess({ group });
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.createGroupFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  updateGroup$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.updateGroup),
+      mergeMap((action) =>
+        this.groupService.updateGroup(action.groupId, action.group).pipe(
+          map((group) => {
+            this.store.dispatch(GroupActionGroup.getGroups());
+            return GroupActionGroup.updateGroupSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.updateGroupFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  deleteGroup$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.deleteGroup),
+      mergeMap((action) =>
+        this.groupService.deleteGroup(action.groupId).pipe(
+          map((group) => {
+            this.store.dispatch(GroupActionGroup.getGroups());
+            return GroupActionGroup.deleteGroupSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.deleteGroupFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  addMember$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.addMember),
+      mergeMap((action) =>
+        this.groupService.addMember(action.groupId, action.username).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.addMemberSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.addMemberFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  removeMember$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.removeMember),
+      mergeMap((action) =>
+        this.groupService.deleteMember(action.groupId, action.username).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.removeMemberSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.removeMemberFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  addAdmin$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.addAdmin),
+      mergeMap((action) =>
+        this.groupService.addAdmin(action.groupId, action.username).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.addAdminSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.addAdminFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  removeAdmin$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.removeAdmin),
+      mergeMap((action) =>
+        this.groupService.deleteAdmin(action.groupId, action.username).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.removeAdminSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.removeAdminFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  addSensor$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.addSensor),
+      mergeMap((action) =>
+        this.groupService.addSensor(action.groupId, action.sensorId).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.addSensorSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.addSensorFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  removeSensor$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GroupActionGroup.removeSensor),
+      mergeMap((action) =>
+        this.groupService.deleteSensor(action.groupId, action.sensorId).pipe(
+          map((group) => {
+            this.store.dispatch(
+              GroupActionGroup.getGroup({ groupId: action.groupId }),
+            );
+            return GroupActionGroup.removeSensorSuccess();
+          }),
+          catchError((error: HttpErrorResponse) =>
+            of(GroupActionGroup.removeSensorFailure(error)),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -32,6 +32,7 @@ import { userAuthReducer } from './state/user/user.reducer';
 import { sensorReducer } from './state/sensor/sensor.reducer';
 import { SensorEffects } from './state/sensor/sensor.effect';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { GroupEffects } from './state/group/group.effect';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,7 +47,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
       global: globeReducer,
       sensor: sensorReducer,
     }),
-    EffectsModule.forRoot([UserEffects, SensorEffects]),
+    EffectsModule.forRoot([UserEffects, SensorEffects, GroupEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     StoreRouterConnectingModule.forRoot({ routerState: RouterState.Minimal }),
     LoaderOverlayComponent,
@@ -66,7 +67,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     },
     AuthService,
     ColorModeService,
-    { provide: LocationStrategy, useClass: HashLocationStrategy}
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })
