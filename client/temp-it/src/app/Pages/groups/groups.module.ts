@@ -6,6 +6,7 @@ import { GroupsPage } from './groups.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 import { GroupsPageRoutingModule } from './groups-routing.module';
+import { GroupSummeryCardComponent } from 'src/app/components/group/group-summery-card/group-summery-card.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { GroupsPageRoutingModule } from './groups-routing.module';
     ExploreContainerComponentModule,
     GroupsPageRoutingModule,
   ],
-  declarations: [GroupsPage],
+  declarations: [GroupsPage, GroupSummeryCardComponent],
 })
 export class GroupsPageModule {}

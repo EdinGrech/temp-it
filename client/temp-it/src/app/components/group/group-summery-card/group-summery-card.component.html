@@ -1,0 +1,8 @@
+<div *ngIf="groupSummery$ | async as groupSummery">
+  <div>
+    {{groupSummery.data?.admin_groups}}
+  </div>
+  <div>
+    {{groupSummery.data?.member_groups}}
+  </div>
+</div>
