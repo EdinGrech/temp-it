@@ -7,6 +7,13 @@ const routes: Routes = [
     path: '',
     component: GroupsPage,
   },
+  {
+    path: 'group/:id',
+    loadChildren: () =>
+      import('src/app/Pages/dynamic-pages/group-view/group-view.module').then(
+        (m) => m.GroupViewPageModule,
+      ),
+  },
 ];
 
 @NgModule({

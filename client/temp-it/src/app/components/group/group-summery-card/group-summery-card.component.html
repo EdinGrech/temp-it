@@ -1,8 +1,19 @@
-<div *ngIf="groupSummery$ | async as groupSummery">
-  <div>
-    {{groupSummery.data?.admin_groups}}
-  </div>
-  <div>
-    {{groupSummery.data?.member_groups}}
-  </div>
-</div>
+<ion-item>
+  <ion-label lines="none">
+    <h3>
+      {{ group.name }}
+    </h3>
+    <p>
+      {{ group.description }}
+    </p>
+  </ion-label>
+  <ion-button
+    slot="end"
+    fill="clear"
+    color="primary"
+    size="large"
+    [routerLink]="['group', group.id]"
+  >
+    <ion-icon name="chevron-forward-outline"></ion-icon>
+  </ion-button>
+</ion-item>
