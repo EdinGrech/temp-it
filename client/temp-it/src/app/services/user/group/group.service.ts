@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class GroupService {
-  url = environment.motherShipUrl + ':' + environment.apiPort + '/api/group/';
+  url = environment.motherShipUrl + ':' + environment.apiPort + '/api/groups/';
   constructor(private http: HttpClient) {}
 
   createGroup(groupData: GroupBase): Observable<GroupCreateResponse> {
@@ -32,7 +32,7 @@ export class GroupService {
   }
 
   getGroups(): Observable<GroupsSummery> {
-    return this.http.get<GroupsSummery>(this.url + 'get-groups/');
+    return this.http.get<GroupsSummery>(this.url + 'get-groups');
   }
 
   getGroup(groupId: number): Observable<Group> {

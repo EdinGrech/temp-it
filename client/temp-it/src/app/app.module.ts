@@ -33,6 +33,7 @@ import { sensorReducer } from './state/sensor/sensor.reducer';
 import { SensorEffects } from './state/sensor/sensor.effect';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { GroupEffects } from './state/group/group.effect';
+import { groupReducer } from './state/group/group.reducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,6 +47,7 @@ import { GroupEffects } from './state/group/group.effect';
       auth: userAuthReducer,
       global: globeReducer,
       sensor: sensorReducer,
+      group: groupReducer,
     }),
     EffectsModule.forRoot([UserEffects, SensorEffects, GroupEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
