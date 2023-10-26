@@ -1,19 +1,13 @@
 <ion-item>
   <ion-label lines="none">
-    <h3>
+    <h2 class="title">
       {{ group.name }}
-    </h3>
+    </h2>
     <p>
       {{ group.description }}
     </p>
   </ion-label>
-  <ion-button
-    slot="end"
-    fill="clear"
-    color="primary"
-    size="large"
-    [routerLink]="['group', group.id]"
-  >
+  <ion-button slot="end" fill="clear" color="primary" size="large" [routerLink]="['group', group.id]">
     <ion-icon name="chevron-forward-outline"></ion-icon>
   </ion-button>
 </ion-item>

@@ -70,7 +70,7 @@ export const groupReducer = createReducer(
   }),
   // ! SINGLE GROUP GETTERS
   on(GroupActionGroup.getGroup, (state, { groupId }): GroupState => {
-    const detailGroups = state.detailGroups || [];
+    const detailGroups = [...state.detailGroups || []];
     detailGroups.push({
       [groupId]: {
         state: 'LOADING' as CacheContentState,

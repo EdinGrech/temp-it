@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Create Sensor</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scroll-content">
+  <ion-card *ngIf="currentStep === 'details'" [@formAnimation]>
+    <ion-card-header>
+      <ion-card-title>Group Details</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="createGroupForm" (ngSubmit)="submitDetailsForm()">
+        <ion-list>
+          <ion-item>
+            <ion-label floating>Group Name:</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label floating>Description:</ion-label>
+            <ion-input type="text" formControlName="description"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button class="formButton" expand="full" shape="round" type="submit">Submit</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="currentStep === 'pending'" [@formAnimation]>
+    <ion-card-content>
+      <div *ngIf="actionState === 'LOADING'" class="display-flex">
+        <h3 class="padding-right">
+          Creating group
+        </h3>
+        <ion-spinner></ion-spinner>
+      </div>
+      <div *ngIf="actionState === 'ERROR'">
+        <ion-text color="danger">Something went wrong, please try again later.</ion-text>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="done" *ngIf="currentStep === 'done'" [@formAnimation]>
+    <div class="flex-colum">
+      <ion-text class="help-tip">Group will be visible in your group tab.</ion-text>
+      <ion-text class="help-tip">You can also edit it's details any time.</ion-text>
+      <ion-button size="large" (click)="close()" expand="half" shape="round">Done
+        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

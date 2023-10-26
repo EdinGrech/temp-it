@@ -1,12 +1,22 @@
-<div *ngIf="groupSummery$ | async as groupSummery">
-  <div *ngIf="(groupSummery.data?.admin_groups)!.length > 0">
+<ion-list *ngIf="groupSummery$ | async as groupSummery">
+  <ion-item-group *ngIf="(groupSummery.data?.admin_groups)!.length > 0">
+    <ion-item-divider>
+      <h1>
+        Admin Groups
+      </h1>
+    </ion-item-divider>
     <ion-list *ngFor="let group of groupSummery.data?.admin_groups">
       <app-group-summery-card [group]="group"></app-group-summery-card>
     </ion-list>
-  </div>
-  <div *ngIf="(groupSummery.data?.member_groups)!.length > 0">
+  </ion-item-group>
+  <ion-item-group *ngIf="(groupSummery.data?.member_groups)!.length > 0">
+    <ion-item-divider>
+      <h1>
+        Member Groups
+      </h1>
+    </ion-item-divider>
     <ion-list *ngFor="let group of groupSummery.data?.member_groups">
       <app-group-summery-card [group]="group"></app-group-summery-card>
     </ion-list>
-  </div>
-</div>
+  </ion-item-group>
+</ion-list>
