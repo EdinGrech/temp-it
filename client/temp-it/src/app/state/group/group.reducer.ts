@@ -14,7 +14,7 @@ import { GroupActionGroup } from './group.actions';
 
 export interface GroupState {
   groupsSummery: ContentCache<GroupsSummery>;
-  detailGroups?: { [groupId: string]: ContentCache<Group> }[];
+  detailGroups?: { groupId: string; data: ContentCache<Group> }[];
 
   groupActions?: {
     createGroup?: RequestState;
@@ -70,9 +70,10 @@ export const groupReducer = createReducer(
   }),
   // ! SINGLE GROUP GETTERS
   on(GroupActionGroup.getGroup, (state, { groupId }): GroupState => {
-    const detailGroups = [...state.detailGroups || []];
+    const detailGroups = [...(state.detailGroups || [])];
     detailGroups.push({
-      [groupId]: {
+      groupId,
+      data: {
         state: 'LOADING' as CacheContentState,
       },
     });
@@ -85,9 +86,10 @@ export const groupReducer = createReducer(
     GroupActionGroup.getGroupSuccess,
     (state, { group, groupId }): GroupState => {
       const detailGroups = (state.detailGroups || []).map((detailGroup) => {
-        if (detailGroup[groupId]) {
+        if (detailGroup.groupId === groupId) {
           return {
-            [groupId]: {
+            groupId,
+            data: {
               state: 'LOADED' as CacheContentState,
               data: group,
             },
@@ -103,9 +105,10 @@ export const groupReducer = createReducer(
   ),
   on(GroupActionGroup.getGroupFailure, (state, { groupId }): GroupState => {
     const detailGroups = (state.detailGroups || []).map((detailGroup) => {
-      if (detailGroup[groupId]) {
+      if (detailGroup.groupId === groupId) {
         return {
-          [groupId]: {
+          groupId,
+          data: {
             state: 'ERROR' as CacheContentState,
           },
         };

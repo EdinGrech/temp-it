@@ -15,20 +15,25 @@ import { Group } from 'src/app/state/group/group.selector';
 })
 export class GroupViewPage implements OnInit {
   groupId?: string | null;
-  groupData$?: Observable<{ [groupId: string]: ContentCache<GroupInterface> } | null>
-  constructor(private store: Store<AppState>, private route: ActivatedRoute) {
-
-  }
+  groupData$?: Observable<ContentCache<GroupInterface> | null>;
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit() {
     this.groupId = this.route.snapshot.paramMap.get('id');
     if (this.groupId && +this.groupId) {
-      this.store.dispatch(GroupActionGroup.getGroup({ groupId: +this.groupId }));
-      this.groupData$ = this.store.select(Group(+this.groupId));
+      this.groupData$ = this.store.select(Group(this.groupId));
       this.groupData$.subscribe((data) => {
-        console.log(data);
-      })
+        console.log(data, this.groupId);
+        if ((data === undefined || data === null) && this.groupId) {
+          console.log('dispatched');
+          this.store.dispatch(
+            GroupActionGroup.getGroup({ groupId: this.groupId }),
+          );
+        }
+      });
     }
   }
-
 }

@@ -35,15 +35,15 @@ export class GroupService {
     return this.http.get<GroupsSummery>(this.url + 'get-groups');
   }
 
-  getGroup(groupId: number): Observable<Group> {
+  getGroup(groupId: string): Observable<Group> {
     return this.http.get<Group>(this.url + 'get-group/' + groupId + '/');
   }
 
-  deleteGroup(groupId: number): Observable<any> {
+  deleteGroup(groupId: string): Observable<any> {
     return this.http.delete<any>(this.url + 'delete-group/' + groupId + '/');
   }
 
-  updateGroup(groupId: number, groupData: GroupBase): Observable<GroupBase> {
+  updateGroup(groupId: string, groupData: GroupBase): Observable<GroupBase> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export class GroupService {
     );
   }
 
-  addMember(groupId: number, username: string): Observable<BackendResponse> {
+  addMember(groupId: string, username: string): Observable<BackendResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -75,13 +75,13 @@ export class GroupService {
     );
   }
 
-  deleteMember(groupId: number, username: string): Observable<BackendResponse> {
+  deleteMember(groupId: string, username: string): Observable<BackendResponse> {
     return this.http.delete<BackendResponse>(
       this.url + 'remove-member/' + groupId + '/' + username + '/',
     );
   }
 
-  addAdmin(groupId: number, username: string): Observable<BackendResponse> {
+  addAdmin(groupId: string, username: string): Observable<BackendResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -99,13 +99,13 @@ export class GroupService {
     );
   }
 
-  deleteAdmin(groupId: number, username: string): Observable<BackendResponse> {
+  deleteAdmin(groupId: string, username: string): Observable<BackendResponse> {
     return this.http.delete<BackendResponse>(
       this.url + 'remove-admin/' + groupId + '/' + username + '/',
     );
   }
 
-  addSensor(groupId: number, sensorId: number): Observable<BackendResponse> {
+  addSensor(groupId: string, sensorId: number): Observable<BackendResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export class GroupService {
     );
   }
 
-  deleteSensor(groupId: number, sensorId: number): Observable<BackendResponse> {
+  deleteSensor(groupId: string, sensorId: number): Observable<BackendResponse> {
     return this.http.delete<BackendResponse>(
       this.url + 'remove-sensor/' + groupId + '/' + sensorId + '/',
     );

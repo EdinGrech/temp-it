@@ -18,14 +18,14 @@ export const GroupActionGroup = {
     props<{ error: any }>(),
   ),
 
-  getGroup: createAction('[Group] Get Group', props<{ groupId: number }>()),
+  getGroup: createAction('[Group] Get Group', props<{ groupId: string }>()),
   getGroupSuccess: createAction(
     '[Group] Get Group Success',
-    props<{ group: Group; groupId: number }>(),
+    props<{ group: Group; groupId: string }>(),
   ),
   getGroupFailure: createAction(
     '[Group] Get Group Failure',
-    props<{ groupId: number }>(),
+    props<{ groupId: string }>(),
   ),
 
   createGroup: createAction(
@@ -43,7 +43,7 @@ export const GroupActionGroup = {
 
   updateGroup: createAction(
     '[Group] Update Group',
-    props<{ groupId: number; group: GroupBase }>(),
+    props<{ groupId: string; group: GroupBase }>(),
   ),
   updateGroupSuccess: createAction('[Group] Update Group Success'),
   updateGroupFailure: createAction(
@@ -52,7 +52,7 @@ export const GroupActionGroup = {
   ),
   deleteGroup: createAction(
     '[Group] Delete Group',
-    props<{ groupId: number }>(),
+    props<{ groupId: string }>(),
   ),
   deleteGroupSuccess: createAction('[Group] Delete Group Success'),
   deleteGroupFailure: createAction(
@@ -62,7 +62,7 @@ export const GroupActionGroup = {
 
   addAdmin: createAction(
     '[Group] Add Admin',
-    props<{ groupId: number; username: string }>(),
+    props<{ groupId: string; username: string }>(),
   ),
   addAdminSuccess: createAction('[Group] Add Admin Success'),
   addAdminFailure: createAction(
@@ -72,7 +72,7 @@ export const GroupActionGroup = {
 
   removeAdmin: createAction(
     '[Group] Remove Admin',
-    props<{ groupId: number; username: string }>(),
+    props<{ groupId: string; username: string }>(),
   ),
   removeAdminSuccess: createAction('[Group] Remove Admin Success'),
   removeAdminFailure: createAction(
@@ -82,7 +82,7 @@ export const GroupActionGroup = {
 
   addMember: createAction(
     '[Group] Add Member',
-    props<{ groupId: number; username: string }>(),
+    props<{ groupId: string; username: string }>(),
   ),
   addMemberSuccess: createAction('[Group] Add Member Success'),
   addMemberFailure: createAction(
@@ -92,7 +92,7 @@ export const GroupActionGroup = {
 
   removeMember: createAction(
     '[Group] Remove Member',
-    props<{ groupId: number; username: string }>(),
+    props<{ groupId: string; username: string }>(),
   ),
   removeMemberSuccess: createAction('[Group] Remove Member Success'),
   removeMemberFailure: createAction(
@@ -102,7 +102,7 @@ export const GroupActionGroup = {
 
   addSensor: createAction(
     '[Group] Add Sensor',
-    props<{ groupId: number; sensorId: number }>(),
+    props<{ groupId: string; sensorId: number }>(),
   ),
   addSensorSuccess: createAction('[Group] Add Sensor Success'),
   addSensorFailure: createAction(
@@ -112,7 +112,7 @@ export const GroupActionGroup = {
 
   removeSensor: createAction(
     '[Group] Remove Sensor',
-    props<{ groupId: number; sensorId: number }>(),
+    props<{ groupId: string; sensorId: number }>(),
   ),
   removeSensorSuccess: createAction('[Group] Remove Sensor Success'),
   removeSensorFailure: createAction(

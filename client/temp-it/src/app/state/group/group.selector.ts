@@ -10,10 +10,11 @@ export const GroupSummery = createSelector(
   (state) => state.groupsSummery,
 );
 
-export const Group = (id: number) =>
-  createSelector(selectGroup, (state):null|ContentCache<GroupInterface> => {
-    if (!state.detailGroups) return null;
-    return state.detailGroups[id][id];   
+export const Group = (id: string) =>
+  createSelector(selectGroup, (state): null | ContentCache<GroupInterface> => {
+    return (
+      state.detailGroups?.find((group) => group.groupId === id)?.data || null
+    );
   });
 
 export const GroupActions = createSelector(
