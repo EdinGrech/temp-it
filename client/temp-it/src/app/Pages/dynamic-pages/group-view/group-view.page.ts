@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AddSensorToGroupComponent } from 'src/app/components/modals/add-sensor-to-group/add-sensor-to-group.component';
 import { ContentCache } from 'src/app/interfaces/cache/cache';
 import { Group as GroupInterface } from 'src/app/interfaces/group/group';
 import { AppState } from 'src/app/state/app.state';
@@ -19,6 +21,7 @@ export class GroupViewPage implements OnInit {
   constructor(
     private store: Store<AppState>,
     private route: ActivatedRoute,
+    private modalController: ModalController,
   ) {}
 
   ngOnInit() {
@@ -37,7 +40,11 @@ export class GroupViewPage implements OnInit {
     }
   }
 
-  addSensor() {
-    console.log('add sensor');
+  async addSensor() {
+    const modal = await this.modalController.create({
+      component: AddSensorToGroupComponent,
+    });
+
+    await modal.present();
   }
 }

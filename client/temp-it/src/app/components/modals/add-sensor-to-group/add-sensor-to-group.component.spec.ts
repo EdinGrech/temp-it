@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddSensotToGroupModalComponent } from './add-sensot-to-group-modal.component';
+import { AddSensorToGroupComponent } from './add-sensor-to-group.component';
 
-describe('AddSensotToGroupModalComponent', () => {
-  let component: AddSensotToGroupModalComponent;
-  let fixture: ComponentFixture<AddSensotToGroupModalComponent>;
+describe('AddSensorToGroupComponent', () => {
+  let component: AddSensorToGroupComponent;
+  let fixture: ComponentFixture<AddSensorToGroupComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddSensotToGroupModalComponent ],
+      declarations: [ AddSensorToGroupComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddSensotToGroupModalComponent);
+    fixture = TestBed.createComponent(AddSensorToGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

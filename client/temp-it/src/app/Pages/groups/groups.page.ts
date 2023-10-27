@@ -19,7 +19,8 @@ export class GroupsPage implements OnDestroy {
   groupSummerySub?: Subscription;
   constructor(
     private modalController: ModalController,
-    private store: Store<AppState>) {
+    private store: Store<AppState>,
+  ) {
     this.store.dispatch(GroupActionGroup.getGroups());
     this.groupSummery$ = this.store.select(GroupSummery);
     this.groupSummerySub = this.groupSummery$.subscribe((groupSummery) => {
@@ -27,13 +28,12 @@ export class GroupsPage implements OnDestroy {
     });
   }
 
-  async addGroup(){
-    console.log('add group');
-    const modal2 = await this.modalController.create({
+  async addGroup() {
+    const modal = await this.modalController.create({
       component: AddGroupModalComponent,
     });
 
-    await modal2.present();
+    await modal.present();
   }
 
   ngOnDestroy(): void {
