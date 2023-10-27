@@ -36,4 +36,8 @@ export class GroupViewPage implements OnInit {
       });
     }
   }
+
+  addSensor() {
+    console.log('add sensor');
+  }
 }
