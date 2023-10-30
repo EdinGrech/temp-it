@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs';
 import { AddSensorModalComponent } from 'src/app/components/modals/add-sensor-modal/add-sensor-modal.component';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
-import { requestUserSensors } from 'src/app/state/user/user.actions';
-import { selectUserSensors } from 'src/app/state/user/user.selectors';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
+import { selectSensorsSummary } from 'src/app/state/sensor/sensor.selector';
 import { isMobile } from 'src/app/utils/mobile-detection';
 
 @Component({
@@ -28,34 +28,38 @@ export class MySensorsPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(requestUserSensors());
+    this.store.dispatch(SensorActionGroup.requestSensorsSummary());
     this.sensorSub = this.store
-      .select(selectUserSensors)
+      .select(selectSensorsSummary)
       .subscribe((sensors) => {
-        if (sensors.length > 0) {
-          this.showUserSensors = true;
-          this.sensorDetailsList = [...sensors].sort((a, b) => {
-            if (a.favorite && !b.favorite) return -1;
-            if (!a.favorite && b.favorite) return 1;
-            return 0;
-          });
-        } else {
-          this.showUserSensors = false;
+        if (sensors.state === 'LOADED') {
+          if (sensors.data!.length > 0) {
+            this.showUserSensors = true;
+            this.sensorDetailsList = [...sensors.data!].sort((a, b) => {
+              if (a.favorite && !b.favorite) return -1;
+              if (!a.favorite && b.favorite) return 1;
+              return 0;
+            });
+          } else {
+            this.showUserSensors = false;
+          }
         }
       });
-      // Scroll to the target card if the query param is present.
-      this.route.params.subscribe(params => {
-        const id = params['id'];
-        if (id) {
-          // Find and scroll to the target card.
-          setTimeout(() => {
-            const cardElement = this.elementRef.nativeElement.querySelector(`[id="${id}"]`);
-            if (cardElement) {
-              cardElement.scrollIntoView({ behavior: 'smooth' });
-            }
+    // Scroll to the target card if the query param is present.
+    this.route.params.subscribe((params) => {
+      const id = params['id'];
+      if (id) {
+        // Find and scroll to the target card.
+        setTimeout(() => {
+          const cardElement = this.elementRef.nativeElement.querySelector(
+            `[id="${id}"]`,
+          );
+          if (cardElement) {
+            cardElement.scrollIntoView({ behavior: 'smooth' });
+          }
         }, 1000);
-        }
-      });
+      }
+    });
   }
 
   @ViewChild(IonContent) content!: IonContent;
@@ -83,7 +87,7 @@ export class MySensorsPage implements OnInit {
   }
 
   mainRefresh() {
-    this.store.dispatch(requestUserSensors());
+    this.store.dispatch(SensorActionGroup.requestSensorsSummary());
   }
 
   ngOnDestroy(): void {

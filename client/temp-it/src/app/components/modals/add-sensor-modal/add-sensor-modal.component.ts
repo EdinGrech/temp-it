@@ -18,19 +18,17 @@ import { Observable, Subscription, finalize, interval } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 import {
-  selectUserSensors,
   userAddSensorPin,
   userAddSensorPinDateAdded,
 } from 'src/app/state/user/user.selectors';
-import {
-  requestUserPin,
-  requestUserSensors,
-} from 'src/app/state/user/user.actions';
+import { requestUserPin } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { AppState } from 'src/app/state/app.state';
 
 import { SensorDetailsUpdatable } from 'src/app/interfaces/sensor/sensor';
 import { EspSetupService } from 'src/app/services/espSetup/esp-setup.service';
+import { selectSensorsSummary } from 'src/app/state/sensor/sensor.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 
 type currentStep = 'config' | 'waiting' | 'details' | 'done';
 @Component({
@@ -107,8 +105,8 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
         });
       }
     });
-    this.store.select(selectUserSensors).subscribe((sensors) => {
-      this.initialSensorCount = sensors.length;
+    this.store.select(selectSensorsSummary).subscribe((sensors) => {
+      this.initialSensorCount = sensors.data ? sensors.data.length : 0;
     });
     this.sensorDetailsForm = this.formBuilder.group({
       name: ['', [Validators.required]],
@@ -209,9 +207,12 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
   }
 
   async onStopped(count: number) {
-    this.store.dispatch(requestUserSensors());
-    this.store.select(selectUserSensors).subscribe((sensors) => {
-      this.lastSensorId = sensors[sensors.length - 1].id;
+    this.store.dispatch(SensorActionGroup.requestSensorsSummary());
+    this.store.select(selectSensorsSummary).subscribe((sensors) => {
+      // ! subject to errors with new changes
+      if (!sensors.data) this.lastSensorId = undefined;
+      this.lastSensorId = sensors.data![sensors.data!.length - 1].id;
+
       if (this.currentStep === 'done') return;
       this.currentStep = 'details';
     });
@@ -263,7 +264,7 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       this.sensorService
         .updateSensorDetails(SensorDetailsUpdatable)
         .subscribe(() => {
-          this.store.dispatch(requestUserSensors());
+          this.store.dispatch(SensorActionGroup.requestSensorsSummary());
           this.currentStep = 'done';
         });
     } else {

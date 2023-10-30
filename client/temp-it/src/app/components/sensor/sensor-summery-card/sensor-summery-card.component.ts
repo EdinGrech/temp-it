@@ -7,7 +7,7 @@ import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-
 import { TempHumSummeryGraphComponent } from 'src/app/components/graphs/temp-hum-summery-graph/temp-hum-summery-graph.component';
 import {
   SensorDetails,
-  singleSensorData,
+  SensorReadingData,
 } from 'src/app/interfaces/sensor/sensor';
 import { Router } from '@angular/router';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
@@ -23,7 +23,7 @@ import { Observable } from 'rxjs';
 export class SensorSummeryCardComponent implements OnInit {
   @Input() sensorDetails!: SensorDetails;
   localFav?: boolean;
-  sensorLastReading: Observable<singleSensorData> | undefined;
+  sensorLastReading: Observable<SensorReadingData> | undefined;
 
   constructor(
     private modalController: ModalController,

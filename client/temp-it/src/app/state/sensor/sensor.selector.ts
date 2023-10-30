@@ -9,8 +9,9 @@ export const selectSensorAll = createSelector(
 );
 
 export const selectSensorData = (id: number) =>
-  createSelector(selectSensor, (state) =>
-    state.sensors.find((s) => s.sensorId === id),
+  createSelector(
+    selectSensor,
+    (state) => state.sensors.data?.find((s) => s.sensorId === id),
   );
 
 export const selectSensorDataValues = (id: number) =>
@@ -21,3 +22,14 @@ export const selectSensorAlertFailIndexes = (id: number) =>
 
 export const selectSensorAlertsIncreasing = (id: number) =>
   createSelector(selectSensorData(id), (state) => state?.alertsIncreasing);
+
+export const selectSensorsSummary = createSelector(
+  selectSensor,
+  (state) => state.sensors_summery,
+);
+
+export const selectSensorSummary = (id: number) =>
+  createSelector(
+    selectSensorsSummary,
+    (data) => data.data?.find((s) => s.id === id),
+  );

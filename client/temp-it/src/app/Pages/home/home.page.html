@@ -15,20 +15,16 @@
   </ion-fab-button>
 </ion-fab>
 
-<ion-content
-  class="scroll-content"
-  [scrollEvents]="true"
-  (ionScroll)="onScroll($event)"
->
+<ion-content class="scroll-content" [scrollEvents]="true" (ionScroll)="onScroll($event)">
   <div *ngIf="sensors$ | async as sensors">
-    <app-collective-sensor-summery [sensors]="sensors"></app-collective-sensor-summery>
+    <app-collective-sensor-summery [sensors]="sensors.data"></app-collective-sensor-summery>
   </div>
   <div *ngIf="sensors$ | async as sensors" class="display-flex-horizontal">
-    <div *ngFor="let sensor of sensors">
+    <div *ngFor="let sensor of sensors.data">
       <app-micro-sensor-summery [sensor]="sensor"></app-micro-sensor-summery>
     </div>
   </div>
-  <ion-card *ngIf="!(sensors$ | async)?.length">
+  <ion-card *ngIf="!(sensors$ | async)?.data?.length">
     <ion-card-header>
       <ion-card-title> No Sensors Found </ion-card-title>
     </ion-card-header>

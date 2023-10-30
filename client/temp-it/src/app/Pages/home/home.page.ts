@@ -3,10 +3,11 @@ import { IonContent, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { AddSensorModalComponent } from 'src/app/components/modals/add-sensor-modal/add-sensor-modal.component';
+import { ContentCache } from 'src/app/interfaces/cache/cache';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
-import { requestUserSensors } from 'src/app/state/user/user.actions';
-import { selectUserSensors } from 'src/app/state/user/user.selectors';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
+import { selectSensorsSummary } from 'src/app/state/sensor/sensor.selector';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,7 @@ import { selectUserSensors } from 'src/app/state/user/user.selectors';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  sensors$?: Observable<SensorDetails[]>;
+  sensors$?: Observable<ContentCache<SensorDetails[]>>;
 
   constructor(
     private modalController: ModalController,
@@ -22,8 +23,8 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(requestUserSensors());
-    this.sensors$ = this.store.select(selectUserSensors);
+    this.store.dispatch(SensorActionGroup.requestSensorsSummary());
+    this.sensors$ = this.store.select(selectSensorsSummary);
   }
 
   @ViewChild(IonContent) content!: IonContent;
@@ -44,7 +45,7 @@ export class HomePage implements OnInit {
   }
 
   handleRefresh(event: any) {
-    this.store.dispatch(requestUserSensors());
+    this.store.dispatch(SensorActionGroup.requestSensorsSummary());
     setTimeout(() => {
       event.target.complete();
     }, 2000);

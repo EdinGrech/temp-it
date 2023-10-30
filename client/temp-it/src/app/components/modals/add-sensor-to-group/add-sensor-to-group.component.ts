@@ -17,7 +17,11 @@ import { IonicModule, ModalController } from '@ionic/angular';
 
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
-import { selectUserSensors } from 'src/app/state/user/user.selectors';
+import { selectSensorsSummary } from 'src/app/state/sensor/sensor.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
+import { Observable } from 'rxjs';
+import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
+import { ContentCache } from 'src/app/interfaces/cache/cache';
 
 @Component({
   selector: 'app-add-sensor-to-group',
@@ -45,13 +49,17 @@ import { selectUserSensors } from 'src/app/state/user/user.selectors';
   ],
 })
 export class AddSensorToGroupComponent implements OnInit {
+  sensorsSummary$: Observable<ContentCache<SensorDetails[]>>;
   constructor(
     private formBuilder: FormBuilder,
     private modalController: ModalController,
     private store: Store<AppState>,
   ) {
-    this.store.select(selectUserSensors).subscribe((sensors) => {
+    this.sensorsSummary$ = this.store.select(selectSensorsSummary);
+    this.sensorsSummary$.subscribe((sensors) => {
       console.log(sensors);
+      if (sensors.state === 'EMPTY')
+        this.store.dispatch(SensorActionGroup.requestSensorsSummary());
     });
   }
 

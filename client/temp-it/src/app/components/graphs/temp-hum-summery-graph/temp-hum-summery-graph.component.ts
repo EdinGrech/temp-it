@@ -4,7 +4,7 @@ import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
-import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { SensorReadingData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 import { isMobile } from 'src/app/utils/mobile-detection';
 
@@ -34,13 +34,13 @@ export class TempHumSummeryGraphComponent implements OnInit {
     }
     this.sensorService
       .getSensorLast24Hours(this.userSensorId)
-      .subscribe((_data: singleSensorData[]) => {
+      .subscribe((_data: SensorReadingData[]) => {
         this.rawToGraphData(_data);
         this.chart?.update();
       });
   }
 
-  rawToGraphData(rawData: singleSensorData[]): void {
+  rawToGraphData(rawData: SensorReadingData[]): void {
     let dataSkipStep: number;
     if (isMobile(600)) {
       dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
@@ -49,7 +49,7 @@ export class TempHumSummeryGraphComponent implements OnInit {
     }
     dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
 
-    const averages: singleSensorData[] = [];
+    const averages: SensorReadingData[] = [];
     let sumTemperature = 0;
     let sumHumidity = 0;
     let count = 0;

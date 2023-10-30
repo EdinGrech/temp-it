@@ -12,13 +12,14 @@ import {
 import { IonicModule } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, map, take } from 'rxjs';
+import { ContentCache } from 'src/app/interfaces/cache/cache';
 import {
   ReducerSensorData,
   SensorDetails,
-  singleSensorData,
+  SensorReadingData,
 } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
-import { loadAllBasedSensorReadings } from 'src/app/state/sensor/sensor.actions';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 import { selectSensorAll } from 'src/app/state/sensor/sensor.selector';
 
 @Component({
@@ -43,7 +44,7 @@ export class CollectiveSensorSummeryComponent
   averageHumidity: number = 0;
   lastAlertRecords?: {
     sensorName: string;
-    singleSensorData: singleSensorData[];
+    singleSensorData: SensorReadingData[];
   }[];
 
   @ViewChild('sensorList', { static: true }) sensorList?: ElementRef;
@@ -62,7 +63,6 @@ export class CollectiveSensorSummeryComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['sensors']) {
-      console.log(this.sensors);
       this.onlineSensors = 0;
       this.offlineSensors = 0;
       let sensorIds: number[] = [];
@@ -74,11 +74,14 @@ export class CollectiveSensorSummeryComponent
           this.offlineSensors++;
         }
       });
-      this.store.dispatch(loadAllBasedSensorReadings({ sensorIds: sensorIds }));
+      this.store.dispatch(
+        SensorActionGroup.loadAllBasedSensorReadings({ sensorIds: sensorIds }),
+      );
       this.store
         .select(selectSensorAll)
         .pipe(
-          map((res: ReducerSensorData[]) => {
+          map((res: ContentCache<ReducerSensorData[]>) => {
+            if (res.state != 'LOADED') return res;
             this.averageTemperature = 0;
             this.averageHumidity = 0;
 
@@ -86,7 +89,7 @@ export class CollectiveSensorSummeryComponent
             let temperatureSum = 0;
             let humiditySum = 0;
             let entrySum = 0;
-            res?.forEach((sensorData) => {
+            res?.data?.forEach((sensorData) => {
               if (sensorData.sensorDataValues.length > 0) {
                 temperatureSum +=
                   sensorData.sensorDataValues[
@@ -99,7 +102,7 @@ export class CollectiveSensorSummeryComponent
                 entrySum++;
               }
               if (sensorData.alertFailIndexes.length > 0) {
-                let sensorLastAlertRecords: singleSensorData[] = [];
+                let sensorLastAlertRecords: SensorReadingData[] = [];
                 sensorData.alertFailIndexes.slice(-3).forEach((alertIndex) => {
                   let lastAlertRecord = sensorData.sensorDataValues[alertIndex];
                   if (lastAlertRecord) {
@@ -110,7 +113,7 @@ export class CollectiveSensorSummeryComponent
                   if (this.lastAlertRecords) {
                     this.lastAlertRecords.push({
                       sensorName: this.sensors?.find(
-                        (sensor) => sensor.id === sensorData.sensorId
+                        (sensor) => sensor.id === sensorData.sensorId,
                       )?.name as string,
                       singleSensorData: sensorLastAlertRecords,
                     });
@@ -118,7 +121,7 @@ export class CollectiveSensorSummeryComponent
                     this.lastAlertRecords = [
                       {
                         sensorName: this.sensors?.find(
-                          (sensor) => sensor.id === sensorData.sensorId
+                          (sensor) => sensor.id === sensorData.sensorId,
                         )?.name as string,
                         singleSensorData: sensorLastAlertRecords,
                       },
@@ -130,12 +133,11 @@ export class CollectiveSensorSummeryComponent
             });
             this.averageTemperature =
               Math.round(
-                ((temperatureSum / entrySum + this.averageTemperature)) *
-                  100
+                (temperatureSum / entrySum + this.averageTemperature) * 100,
               ) / 100;
             this.averageHumidity =
               Math.round(
-                ((humiditySum / entrySum + this.averageTemperature)) * 100
+                (humiditySum / entrySum + this.averageTemperature) * 100,
               ) / 100;
             // if (this.averageTemperature > 30) {
             //   this.averageTemperatureColor = 'danger-high';
@@ -153,7 +155,7 @@ export class CollectiveSensorSummeryComponent
             // }
             return res;
           }),
-          take(this.sensors!.length + 1)
+          take(this.sensors ? this.sensors.length : 1),
         )
         .subscribe();
     }

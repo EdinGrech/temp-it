@@ -30,7 +30,7 @@ export interface SensorDetailsUpdatable {
   };
 }
 
-export interface singleSensorData {
+export interface SensorReadingData {
   date_time: string | Date;
   temperature: number;
   humidity: number;
@@ -38,9 +38,7 @@ export interface singleSensorData {
 
 export interface ReducerSensorData {
   sensorId: number;
-  sensorDataValues: singleSensorData[];
+  sensorDataValues: SensorReadingData[];
   alertFailIndexes: number[];
   alertsIncreasing: boolean;
-  error: any;
-  loading: boolean;
 }

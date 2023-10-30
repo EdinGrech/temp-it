@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import {
   SensorDetails,
   SensorDetailsUpdatable,
-  singleSensorData,
+  SensorReadingData,
 } from 'src/app/interfaces/sensor/sensor';
 import { HttpResponse } from '@capacitor/core';
 @Injectable({
@@ -45,9 +45,9 @@ export class SensorService {
     );
   }
 
-  getSensorLast24Hours(id: number): Observable<singleSensorData[]> {
+  getSensorLast24Hours(id: number): Observable<SensorReadingData[]> {
     return this.http
-      .get<singleSensorData[]>(
+      .get<SensorReadingData[]>(
         environment.motherShipUrl +
           ':' +
           environment.apiPort +
@@ -55,7 +55,7 @@ export class SensorService {
           id,
       )
       .pipe(
-        map((data: singleSensorData[]) => {
+        map((data: SensorReadingData[]) => {
           return data.sort((a, b) => {
             return (
               new Date(a.date_time).getTime() - new Date(b.date_time).getTime()
@@ -87,14 +87,14 @@ export class SensorService {
     startDate: string,
     endDate: string,
     id: number,
-  ): Observable<singleSensorData[]> {
+  ): Observable<SensorReadingData[]> {
     const body = {
       startDate: startDate,
       endDate: endDate,
     };
 
     return this.http
-      .post<singleSensorData[]>(
+      .post<SensorReadingData[]>(
         environment.motherShipUrl +
           ':' +
           environment.apiPort +
@@ -103,7 +103,7 @@ export class SensorService {
         body,
       )
       .pipe(
-        map((data: singleSensorData[]) => {
+        map((data: SensorReadingData[]) => {
           return data.sort((a, b) => {
             return (
               new Date(a.date_time).getTime() - new Date(b.date_time).getTime()
@@ -123,8 +123,8 @@ export class SensorService {
     );
   }
 
-  getUserSensorLastReading(id: number): Observable<singleSensorData> {
-    return this.http.get<singleSensorData>(
+  getUserSensorLastReading(id: number): Observable<SensorReadingData> {
+    return this.http.get<SensorReadingData>(
       environment.motherShipUrl +
         ':' +
         environment.apiPort +

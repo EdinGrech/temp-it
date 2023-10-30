@@ -4,13 +4,13 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
-import { selectUserSensor } from 'src/app/state/user/user.selectors';
 import { EditSensorDetailsModalComponent } from 'src/app/components/modals/edit-sensor-details-modal/edit-sensor-details-modal.component';
-import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 import { first } from 'rxjs';
 import { globalError } from 'src/app/state/global/global.actions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { selectSensorSummary } from 'src/app/state/sensor/sensor.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 
 @Component({
   selector: 'app-enhanced-sensor-view',
@@ -50,11 +50,11 @@ export class EnhancedSensorViewPage implements OnInit {
       if (isNaN(sensorId)) this.router.navigate(['']);
       let called = false;
       this.store
-        .select(selectUserSensor(sensorId))
+        .select(selectSensorSummary(sensorId))
         .subscribe((sensor: SensorDetails | undefined) => {
           if (!sensor && !called) {
             called = true;
-            this.store.dispatch(requestUserSensors());
+            this.store.dispatch(SensorActionGroup.requestSensorsSummary());
           }
           this.sensor = sensor;
           if (this.sensor) {
@@ -102,7 +102,7 @@ export class EnhancedSensorViewPage implements OnInit {
       .subscribe((data_) => {
         let data: any = data_;
         if (data.message == 'Sensor deleted') {
-          this.store.dispatch(requestUserSensors());
+          this.store.dispatch(SensorActionGroup.requestSensorsSummary());
           this.router.navigate(['']);
         } else {
           this.store.dispatch(

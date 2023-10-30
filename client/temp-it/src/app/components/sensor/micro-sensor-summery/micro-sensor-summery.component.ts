@@ -15,10 +15,8 @@ import {
   SensorDetails,
 } from 'src/app/interfaces/sensor/sensor';
 import { AppState } from 'src/app/state/app.state';
-import { loadDateBasedSensorReadings } from 'src/app/state/sensor/sensor.actions';
-import {
-  selectSensorData,
-} from 'src/app/state/sensor/sensor.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
+import { selectSensorData } from 'src/app/state/sensor/sensor.selector';
 
 @Component({
   selector: 'app-micro-sensor-summery',
@@ -34,12 +32,17 @@ export class MicroSensorSummeryComponent implements OnInit, OnChanges {
   humidityColor: string = 'primary';
   alertColor: string = 'primary';
 
-  constructor(private store: Store<AppState>, private router: Router) { }
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['sensor']) {
       this.store.dispatch(
-        loadDateBasedSensorReadings({ sensorId: this.sensor!.id as number }),
+        SensorActionGroup.loadDateBasedSensorReadings({
+          sensorId: this.sensor!.id as number,
+        }),
       );
       this.sensorData$ = this.store
         .select(selectSensorData(this.sensor!.id))
@@ -89,8 +92,7 @@ export class MicroSensorSummeryComponent implements OnInit, OnChanges {
 
   navigateToCard(id?: number) {
     if (id) {
-      this.router.navigate([`/tabs/my-sensors/${id}`])
+      this.router.navigate([`/tabs/my-sensors/${id}`]);
     }
   }
-
 }

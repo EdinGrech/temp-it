@@ -22,9 +22,9 @@ import {
   SensorDetails,
   SensorDetailsUpdatable,
 } from 'src/app/interfaces/sensor/sensor';
-import { selectUserSensor } from 'src/app/state/user/user.selectors';
-import { requestUserSensors } from 'src/app/state/user/user.actions';
 import { AppState } from 'src/app/state/app.state';
+import { selectSensorSummary } from 'src/app/state/sensor/sensor.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 
 type currentStep = 'details' | 'done';
 
@@ -70,7 +70,7 @@ export class EditSensorDetailsModalComponent implements OnInit {
 
   ngOnInit() {
     this.store
-      .select(selectUserSensor(this.sensorId))
+      .select(selectSensorSummary(this.sensorId))
       .subscribe((sensor: SensorDetails | undefined) => {
         this.showAlertDetails = sensor?.active_alerts as boolean;
         this.sensorDetailsForm = this.formBuilder.group({
@@ -125,7 +125,7 @@ export class EditSensorDetailsModalComponent implements OnInit {
       this.sensorService
         .updateSensorDetails(SensorDetailsUpdatable)
         .subscribe(() => {
-          this.store.dispatch(requestUserSensors());
+          this.store.dispatch(SensorActionGroup.requestSensorsSummary());
           this.currentStep = 'done';
         });
     } else {

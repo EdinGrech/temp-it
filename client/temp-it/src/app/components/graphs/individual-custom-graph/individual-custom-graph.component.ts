@@ -10,7 +10,7 @@ import { Chart, ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
 import { BaseChartDirective, NgChartsConfiguration } from 'ng2-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { default as Annotation } from 'chartjs-plugin-annotation';
-import { singleSensorData } from 'src/app/interfaces/sensor/sensor';
+import { SensorReadingData } from 'src/app/interfaces/sensor/sensor';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { isMobile } from 'src/app/utils/mobile-detection';
@@ -53,7 +53,7 @@ export class IndividualCustomGraphComponent
     }
   }
 
-  rawToGraphData(rawData: singleSensorData[]): void {
+  rawToGraphData(rawData: SensorReadingData[]): void {
     let dataSkipStep: number;
     if (isMobile(768)) {
       dataSkipStep = Math.round(rawData.length / (window.innerWidth / 26));
@@ -62,13 +62,13 @@ export class IndividualCustomGraphComponent
     }
     dataSkipStep = dataSkipStep === 0 ? 1 : dataSkipStep;
     this.lineChartData.datasets[0].data = rawData
-      .map((data: singleSensorData) => data.temperature)
+      .map((data: SensorReadingData) => data.temperature)
       .filter((_data, index) => index % dataSkipStep === 0);
     this.lineChartData.datasets[1].data = rawData
-      .map((data: singleSensorData) => data.humidity)
+      .map((data: SensorReadingData) => data.humidity)
       .filter((_data, index) => index % dataSkipStep === 0);
     this.lineChartData.labels = rawData
-      .map((data: singleSensorData) =>
+      .map((data: SensorReadingData) =>
         new Date(data.date_time).toLocaleTimeString('en-US', {
           hour: '2-digit',
           minute: '2-digit',

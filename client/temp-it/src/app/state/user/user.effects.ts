@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import {
@@ -25,23 +25,23 @@ import {
   requestUserPin,
   requestUserPinFailure,
   requestUserPinSuccess,
-  requestUserSensors,
-  requestUserSensorsSuccess,
-  requestUserSensorsFailure,
-  requestUserSensorLen,
-  requestUserSensorLenSuccess,
-  requestUserSensorLenFailure,
-  requestUser24HourData,
-  requestUser24HourDataSuccess,
-  requestUser24HourDataFailure,
+  // requestUserSensors,
+  // requestUserSensorsSuccess,
+  // requestUserSensorsFailure,
+  // requestUserSensorLen,
+  // requestUserSensorLenSuccess,
+  // requestUserSensorLenFailure,
+  // requestUser24HourData,
+  // requestUser24HourDataSuccess,
+  // requestUser24HourDataFailure,
 } from './user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PinService } from 'src/app/services/user/pin/pin.service';
-import {
-  SensorDetails,
-  singleSensorData,
-} from 'src/app/interfaces/sensor/sensor';
-import { SensorService } from 'src/app/services/user/sensor/sensor.service';
+// import {
+//   SensorDetails,
+//   SensorReadingData,
+// } from 'src/app/interfaces/sensor/sensor';
+// import { SensorService } from 'src/app/services/user/sensor/sensor.service';
 
 @Injectable()
 export class UserEffects {
@@ -49,8 +49,8 @@ export class UserEffects {
     private actions$: Actions,
     private authService: AuthService,
     private pinService: PinService,
-    private sensorService: SensorService,
-  ) {}
+  ) //private sensorService: SensorService,
+  {}
 
   loadUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -137,50 +137,6 @@ export class UserEffects {
         this.pinService.getUserPin().pipe(
           map((pin: number) => requestUserPinSuccess({ pin })),
           catchError((error: any) => of(requestUserPinFailure({ error }))),
-        ),
-      ),
-    ),
-  );
-
-  requestUserSensors$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(requestUserSensors),
-      mergeMap(() =>
-        this.sensorService.getUserSensors().pipe(
-          map((sensors: any) => requestUserSensorsSuccess({ sensors })),
-          catchError((error: any) => of(requestUserSensorsFailure({ error }))),
-        ),
-      ),
-    ),
-  );
-
-  requestUserSensorLen$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(requestUserSensorLen),
-      mergeMap(() =>
-        this.sensorService.getUserSensorsCount().pipe(
-          map((sensorLen: number) =>
-            requestUserSensorLenSuccess({ sensorLen }),
-          ),
-          catchError((error: any) =>
-            of(requestUserSensorLenFailure({ error })),
-          ),
-        ),
-      ),
-    ),
-  );
-
-  requestUser24HourData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(requestUser24HourData),
-      mergeMap((action) =>
-        this.sensorService.getSensorLast24Hours(action.sensorId).pipe(
-          map((sensorData: singleSensorData[]) =>
-            requestUser24HourDataSuccess({ sensorData }),
-          ),
-          catchError((error: any) =>
-            of(requestUser24HourDataFailure({ error })),
-          ),
         ),
       ),
     ),
