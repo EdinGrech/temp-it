@@ -64,7 +64,7 @@ def get_group_details(request, group_id):
 @permission_classes([IsAuthenticated])
 def update_group_details(request, group_id):
     # get the group details
-    group = GroupDetails.objects.get(id=group_id)
+    group = get_object_or_404(GroupDetails, id=group_id)
     # update the group details
     group.name = request.data.get('name')
     group.description = request.data.get('description')
@@ -196,6 +196,8 @@ def add_sensor_to_group(request, group_id, sensor_id):
         # get the sensor details
         if not TemperatureHumiditySensorDetails.objects.filter(id=sensor_id, user_id_owner=request.user.id).exists():
             return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        if GroupLinkedSensors.objects.filter(group=group, sensor=sensor_id).exists():
+            return Response({'error': 'Sensor is already in the group'}, status=status.HTTP_400_BAD_REQUEST)
         sensor = TemperatureHumiditySensorDetails.objects.get(id=sensor_id, user_id_owner=request.user.id)
         # add the sensor to the group
         group_linked_sensors = GroupLinkedSensors.objects.create(group=group)
@@ -215,10 +217,10 @@ def remove_sensor_from_group(request, group_id, sensor_id):
     # check if the user is an admin of the group
     if request.user in admins or request.user in TemperatureHumiditySensorDetails.objects.get(id=sensor_id).sensor_owner.all():
         # get the sensor details
-        sensor = TemperatureHumiditySensorDetails.objects.get(id=sensor_id)
+        sensor = get_object_or_404(TemperatureHumiditySensorDetails, id=sensor_id)
         # remove the sensor from the group
-        group_linked_sensors = GroupLinkedSensors.objects.get(group=group)
-        group_linked_sensors.sensor.remove(sensor)
+        group_linked_sensors = get_object_or_404(GroupLinkedSensors, group=group, sensor=sensor)
+        group_linked_sensors.delete()
         return Response({'success': 'Sensor removed successfully'})
     else:
         return Response({'error': 'You are not an admin of this group or the owner of the sensor'}, status=status.HTTP_401_UNAUTHORIZED)
