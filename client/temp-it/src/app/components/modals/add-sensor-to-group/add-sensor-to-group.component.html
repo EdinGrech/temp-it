@@ -9,4 +9,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="scroll-content"> </ion-content>
+<ion-content class="scroll-content">
+  <div *ngIf="sensorsData$ | async as sensors">
+    <div *ngFor="let sensor of sensors">
+      <ion-item>
+        <ion-label>{{ sensor.sensor.name }}</ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="sensor.selected"></ion-checkbox>
+      </ion-item>
+    </div>
+    <ion-button expand="block" (click)="submit()">Add</ion-button>
+  </div>
+</ion-content>

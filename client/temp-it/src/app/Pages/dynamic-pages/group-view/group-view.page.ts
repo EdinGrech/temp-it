@@ -29,9 +29,7 @@ export class GroupViewPage implements OnInit {
     if (this.groupId && +this.groupId) {
       this.groupData$ = this.store.select(Group(this.groupId));
       this.groupData$.subscribe((data) => {
-        console.log(data, this.groupId);
         if ((data === undefined || data === null) && this.groupId) {
-          console.log('dispatched');
           this.store.dispatch(
             GroupActionGroup.getGroup({ groupId: this.groupId }),
           );
@@ -43,6 +41,9 @@ export class GroupViewPage implements OnInit {
   async addSensor() {
     const modal = await this.modalController.create({
       component: AddSensorToGroupComponent,
+      componentProps: {
+        groupId: this.groupId,
+      },
     });
 
     await modal.present();
