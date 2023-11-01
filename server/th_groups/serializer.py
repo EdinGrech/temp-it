@@ -36,7 +36,7 @@ class UserTHUserSerializer(serializers.ModelSerializer):
 class TemperatureHumiditySensorDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemperatureHumiditySensorDetails
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'date_created', 'name', 'location', 'description', 'active', 'active_alerts', 'high_temp_alert', 'low_temp_alert', 'high_humidity_alert', 'low_humidity_alert']
     
 
 class UserGroupDetailedData(serializers.Serializer):
