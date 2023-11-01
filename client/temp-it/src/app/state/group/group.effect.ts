@@ -165,9 +165,9 @@ export class GroupEffects {
       mergeMap((action) =>
         this.groupService.deleteAdmin(action.groupId, action.username).pipe(
           map((group) => {
-            this.store.dispatch(
-              GroupActionGroup.getGroup({ groupId: action.groupId }),
-            );
+            // this.store.dispatch(
+            //   GroupActionGroup.getGroup({ groupId: action.groupId }),
+            // );
             return GroupActionGroup.removeAdminSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
@@ -184,9 +184,9 @@ export class GroupEffects {
       mergeMap((action) =>
         this.groupService.addSensor(action.groupId, action.sensorId).pipe(
           map((group) => {
-            this.store.dispatch(
-              GroupActionGroup.getGroup({ groupId: action.groupId }),
-            );
+            // this.store.dispatch(
+            //   GroupActionGroup.getGroup({ groupId: action.groupId }),
+            // );
             return GroupActionGroup.addSensorSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
@@ -203,9 +203,9 @@ export class GroupEffects {
       mergeMap((action) =>
         this.groupService.deleteSensor(action.groupId, action.sensorId).pipe(
           map((group) => {
-            this.store.dispatch(
-              GroupActionGroup.getGroup({ groupId: action.groupId }),
-            );
+            // this.store.dispatch(
+            //   GroupActionGroup.getGroup({ groupId: action.groupId }),
+            // );
             return GroupActionGroup.removeSensorSuccess();
           }),
           catchError((error: HttpErrorResponse) =>

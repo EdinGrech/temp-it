@@ -1,3 +1,5 @@
+import { SensorDetails } from '../sensor/sensor';
+
 export interface Group {
   group: {
     name: string;
@@ -7,18 +9,12 @@ export interface Group {
   };
   admins: GroupUser[];
   members: GroupUser[];
-  sensors: GroupSensor[];
+  sensors: SensorDetails[];
 }
 
 export interface GroupUser {
   username: string;
   email: string;
-}
-
-export interface GroupSensor {
-  id: number;
-  name: string;
-  description: string;
 }
 
 export interface GroupBase {

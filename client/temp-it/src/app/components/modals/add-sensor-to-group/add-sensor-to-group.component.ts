@@ -17,12 +17,8 @@ import { ContentCache } from 'src/app/interfaces/cache/cache';
 import { SensorDetails } from 'src/app/interfaces/sensor/sensor';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GroupActionGroup } from 'src/app/state/group/group.actions';
-import { ActivatedRoute } from '@angular/router';
 import { Group } from 'src/app/state/group/group.selector';
-import {
-  Group as GroupInterface,
-  GroupSensor,
-} from 'src/app/interfaces/group/group';
+import { Group as GroupInterface } from 'src/app/interfaces/group/group';
 import { selectSensorsSummary } from 'src/app/state/sensor/sensor.selector';
 
 @Component({
@@ -58,9 +54,11 @@ export class AddSensorToGroupComponent {
     { sensor: SensorDetails; selected: boolean }[] | null
   >(null);
   sensorsData$ = this.sensorsDataBehavior.asObservable();
-  sensorData?: GroupSensor[];
+  sensorDataUserHas?: SensorDetails[];
   groupId?: string;
   groupDetails$: Observable<ContentCache<GroupInterface> | null>;
+
+  sensorListInGroup: SensorDetails[] | undefined;
 
   retryCounter: {
     max: number;
@@ -78,7 +76,6 @@ export class AddSensorToGroupComponent {
     this.groupDetails$ = this.store.select(Group(this.groupId));
     this.sensors$ = this.store.select(selectSensorsSummary);
     this.sensors$.subscribe((sensors) => {
-      console.log(sensors);
       if (sensors.state === 'EMPTY')
         this.store.dispatch(SensorActionGroup.requestSensorsSummary());
       else if (sensors.state === 'ERROR') {
@@ -87,22 +84,24 @@ export class AddSensorToGroupComponent {
           this.retryCounter.current++;
         }
       } else if (sensors.state === 'LOADED') {
-        this.sensorData = sensors.data;
-        let sensorList: GroupSensor[] | undefined;
+        this.sensorDataUserHas = sensors.data;
+        let sensorListInGroup: SensorDetails[] | undefined;
         this.groupDetails$.subscribe(
           (_group: ContentCache<GroupInterface> | null) => {
-            sensorList = _group?.data?.sensors;
+            sensorListInGroup = _group?.data?.sensors;
           },
         );
+        this.sensorListInGroup = sensorListInGroup;
         let selected: boolean = false;
         this.sensorsDataBehavior.next(
           sensors.data!.map((sensor) => {
             if (
-              sensorList!.find(
-                (_sensor: GroupSensor) => _sensor.id === sensor.id,
+              sensorListInGroup!.find(
+                (_sensor: SensorDetails) => _sensor.id === sensor.id,
               )
             )
               selected = true;
+            else selected = false;
             return {
               sensor,
               selected,
@@ -116,30 +115,42 @@ export class AddSensorToGroupComponent {
   submit() {
     if (!this.groupId) return;
     this.sensorsDataBehavior
-      .value!.filter((sensor) => sensor.selected)
-      .map((sensor) =>
+      .value!.filter((sensor) => {
+        return (
+          sensor.selected &&
+          !this.sensorListInGroup?.find((s) => s.id === sensor.sensor.id)
+        );
+      })
+      .map((sensor) => {
         this.store.dispatch(
           GroupActionGroup.addSensor({
             groupId: this.groupId!,
             sensorId: sensor.sensor.id,
           }),
-        ),
-      );
+        );
+      });
     this.sensorsDataBehavior
-      .value!.filter(
-        (sensor) =>
+      .value!.filter((sensor) => {
+        if (
           !sensor.selected &&
-          this.sensorData?.find((s) => s.id === sensor.sensor.id) !== undefined,
-      )
-      .map((sensor) =>
+          this.sensorListInGroup?.find((s) => s.id === sensor.sensor.id)
+        )
+          return true;
+        return false;
+      })
+      .map((sensor) => {
         this.store.dispatch(
           GroupActionGroup.removeSensor({
             groupId: this.groupId!,
             sensorId: sensor.sensor.id,
           }),
-        ),
+        );
+      });
+    setTimeout(() => {
+      this.store.dispatch(
+        GroupActionGroup.getGroup({ groupId: this.groupId! }),
       );
-
+    }, 100);
     this.modalController.dismiss();
   }
 

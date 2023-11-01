@@ -10,25 +10,42 @@
   </ion-toolbar>
 </ion-header>
 
-<div *ngIf="groupData$ | async as groupData">
-  <div [ngSwitch]="groupData.state">
-    <div *ngSwitchCase="'LOADING'"></div>
-    <div *ngSwitchCase="'LOADED'">
-      <div *ngIf="groupData.data; else noDataBlock">
-        <ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content> </ion-refresher-content>
+  </ion-refresher>
+  <div *ngIf="groupData$ | async as groupData">
+    <div [ngSwitch]="groupData.state">
+      <div *ngSwitchCase="'LOADING'"></div>
+      <div *ngSwitchCase="'LOADED'">
+        <div *ngIf="groupData.data; else noDataBlock">
+
+          <ion-card *ngIf="groupData.data.sensors.length <= 0">
+            <ion-card-header>
+              <ion-card-title> No Sensors Found </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-text>
+                <p>Please add a sensor to get started</p>
+              </ion-text>
+            </ion-card-content>
+          </ion-card>
+          <div *ngFor="let sensorDetails of groupData.data.sensors">
+            <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
+          </div>
           <ion-fab vertical="bottom" horizontal="end" slot="fixed">
             <ion-fab-button color="primary" (click)="addSensor()">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
           </ion-fab>
-        </ion-content>
-      </div>
-      <!-- no group data logic below -->
-      <ng-template #noDataBlock>
+        </div>
+        <!-- no group data logic below -->
+        <ng-template #noDataBlock>
 
-      </ng-template>
+        </ng-template>
+      </div>
+      <div *ngSwitchCase="'ERROR'"></div>
+      <div *ngSwitchCase="'EMPTY'"></div>
     </div>
-    <div *ngSwitchCase="'ERROR'"></div>
-    <div *ngSwitchCase="'EMPTY'"></div>
   </div>
-</div>
+</ion-content>

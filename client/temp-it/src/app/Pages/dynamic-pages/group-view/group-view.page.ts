@@ -9,6 +9,7 @@ import { Group as GroupInterface } from 'src/app/interfaces/group/group';
 import { AppState } from 'src/app/state/app.state';
 import { GroupActionGroup } from 'src/app/state/group/group.actions';
 import { Group } from 'src/app/state/group/group.selector';
+import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 
 @Component({
   selector: 'app-group-view',
@@ -18,6 +19,7 @@ import { Group } from 'src/app/state/group/group.selector';
 export class GroupViewPage implements OnInit {
   groupId?: string | null;
   groupData$?: Observable<ContentCache<GroupInterface> | null>;
+
   constructor(
     private store: Store<AppState>,
     private route: ActivatedRoute,
@@ -47,5 +49,16 @@ export class GroupViewPage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  handleRefresh(event: any) {
+    this.mainRefresh();
+    setTimeout(() => {
+      event.target.complete();
+    }, 2000);
+  }
+
+  mainRefresh() {
+    this.store.dispatch(GroupActionGroup.getGroup({ groupId: this.groupId! }));
   }
 }

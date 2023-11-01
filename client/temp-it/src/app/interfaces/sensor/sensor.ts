@@ -4,10 +4,10 @@ export interface SensorDetails {
   location: string;
   description: string;
   active: boolean;
-  favorite: boolean;
+  favorite?: boolean;
   date_created: string | Date;
   active_alerts: boolean;
-  allow_group_admins_to_edit: boolean;
+  allow_group_admins_to_edit?: boolean;
   high_temp_alert?: number;
   low_temp_alert?: number;
   high_humidity_alert?: number;
