@@ -5,39 +5,32 @@
         <h1 class="children">
           {{ sensorDetails.name ? sensorDetails.name : "Sensor" }}
         </h1>
-        <ion-icon
-          class="size-20 children"
-          [color]="sensorDetails.active ? 'success' : 'danger'"
-          [name]="sensorDetails.active ? 'checkmark-circle' : 'close-circle'"
-        ></ion-icon>
+        <ion-icon class="size-20 children" [color]="sensorDetails.active ? 'success' : 'danger'"
+          [name]="sensorDetails.active ? 'checkmark-circle' : 'close-circle'"></ion-icon>
       </div>
       <p *ngIf="sensorDetails.active && (sensorLastReading | async) as reading">
         {{ reading.temperature }}°C {{ reading.humidity }}%
         {{ reading.date_time | date: "shortTime" }}
       </p>
     </ion-label>
-    <ion-button slot="end" (click)="editSensor()">
+    <ion-button *ngIf="allowEdit" slot="end" (click)="editSensor()">
       Edit
       <ion-icon name="create"></ion-icon>
     </ion-button>
   </ion-item>
   <div>
-    <app-temp-hum-summery-graph
-      [userSensorId]="sensorDetails.id"
-    ></app-temp-hum-summery-graph>
+    <app-temp-hum-summery-graph [userSensorId]="sensorDetails.id"></app-temp-hum-summery-graph>
   </div>
-  <ion-buttons class="card-bottom-buttons">
+  <ion-buttons *ngIf="!groupView; else latestSummary" class="card-bottom-buttons">
     <ion-button color="primary" (click)="viewSensorDetails()">
       <ion-text>Enhanced View</ion-text>
     </ion-button>
-    <ion-button
-      class="ion-align-items-center"
-      color="tertiary"
-      [class.favorite]="localFav"
-      (click)="favSensor()"
-    >
+    <ion-button class="ion-align-items-center" color="tertiary" [class.favorite]="localFav" (click)="favSensor()">
       <ion-icon slot="start" name="star"></ion-icon>
       <ion-text>Favorite</ion-text>
     </ion-button>
   </ion-buttons>
+  <ng-template #latestSummary>
+
+  </ng-template>
 </ion-card>

@@ -68,11 +68,13 @@ export class IndividualCustomGraphComponent
       .map((data: SensorReadingData) => data.humidity)
       .filter((_data, index) => index % dataSkipStep === 0);
     this.lineChartData.labels = rawData
-      .map((data: SensorReadingData) =>
-        new Date(data.date_time).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+      .map((data: SensorReadingData, index) =>
+        index === 0
+          ? ''
+          : new Date(data.date_time).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
       )
       .filter((_data, index) => index % dataSkipStep === 0) as string[];
   }

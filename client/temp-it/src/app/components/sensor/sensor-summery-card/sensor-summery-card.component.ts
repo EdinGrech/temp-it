@@ -11,7 +11,7 @@ import {
 } from 'src/app/interfaces/sensor/sensor';
 import { Router } from '@angular/router';
 import { SensorService } from 'src/app/services/user/sensor/sensor.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-sensor-summery-card',
@@ -22,6 +22,8 @@ import { Observable } from 'rxjs';
 })
 export class SensorSummeryCardComponent implements OnInit {
   @Input() sensorDetails!: SensorDetails;
+  @Input() groupView: boolean = false;
+  @Input() allowEdit: boolean = true;
   localFav?: boolean;
   sensorLastReading: Observable<SensorReadingData> | undefined;
 
@@ -32,9 +34,17 @@ export class SensorSummeryCardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sensorLastReading = this.sensorService.getUserSensorLastReading(
-      this.sensorDetails.id as number,
-    );
+    this.sensorLastReading = this.sensorService
+      .getUserSensorLastReading(this.sensorDetails.id as number)
+      .pipe(
+        map((reading) => {
+          return {
+            date_time: reading.date_time,
+            temperature: parseFloat(reading.temperature.toFixed(1)),
+            humidity: parseFloat(reading.humidity.toFixed(1)),
+          };
+        }),
+      );
     this.localFav = this.sensorDetails.favorite;
   }
 
@@ -54,7 +64,10 @@ export class SensorSummeryCardComponent implements OnInit {
   }
 
   viewSensorDetails() {
-    this.router.navigate(['/tabs/my-sensors/enhanced-view', this.sensorDetails.id]);
+    this.router.navigate([
+      '/tabs/my-sensors/enhanced-view',
+      this.sensorDetails.id,
+    ]);
   }
 
   favSensor() {

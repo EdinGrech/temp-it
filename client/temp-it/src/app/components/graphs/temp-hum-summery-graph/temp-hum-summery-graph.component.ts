@@ -84,13 +84,15 @@ export class TempHumSummeryGraphComponent implements OnInit {
       (data) => data.temperature,
     );
     this.lineChartData.datasets[1].data = averages.map((data) => data.humidity);
-    this.lineChartData.labels = averages.map((data) =>
-      new Date(data.date_time).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        day: '2-digit',
-        month: '2-digit',
-      }),
+    this.lineChartData.labels = averages.map((data, index) =>
+      index === 0
+        ? ''
+        : new Date(data.date_time).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+          }),
     ) as string[];
   }
 

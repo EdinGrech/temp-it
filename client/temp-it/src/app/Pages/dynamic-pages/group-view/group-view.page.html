@@ -10,7 +10,13 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button color="primary" (click)="addSensor()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-content [fullscreen]="false">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
@@ -31,13 +37,9 @@
             </ion-card-content>
           </ion-card>
           <div *ngFor="let sensorDetails of groupData.data.sensors">
-            <app-sensor-summery-card [sensorDetails]="sensorDetails"></app-sensor-summery-card>
+            <app-sensor-summery-card [groupView]="true" [allowEdit]="false"
+              [sensorDetails]="sensorDetails"></app-sensor-summery-card>
           </div>
-          <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-            <ion-fab-button color="primary" (click)="addSensor()">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
-          </ion-fab>
         </div>
         <!-- no group data logic below -->
         <ng-template #noDataBlock>
