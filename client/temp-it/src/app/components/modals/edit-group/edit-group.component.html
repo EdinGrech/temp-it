@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Group Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scroll-content">
+  <div *ngIf="groupDetails$ | async as groupDetails">
+    <form
+      *ngIf="groupDetailForm"
+      [formGroup]="groupDetailForm"
+      (ngSubmit)="submit()"
+    >
+      <ion-item>
+        <ion-label>Group Name</ion-label>
+        <ion-input formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Group Description</ion-label>
+        <ion-input formControlName="description"></ion-input>
+      </ion-item>
+      <ion-button class="formButton" expand="full" type="submit"
+        >Submit</ion-button
+      >
+    </form>
+    <ion-item-divider></ion-item-divider>
+    <ion-button expand="block" color="tertiary" (click)="editMembers()"
+      >Edit Members</ion-button
+    >
+    <ion-button expand="block" color="tertiary" (click)="editAdmins()"
+      >Edit Admins</ion-button
+    >
+    <ion-button expand="block" color="tertiary" (click)="editSensors()"
+      >Edit Sensors</ion-button
+    >
+  </div>
+</ion-content>

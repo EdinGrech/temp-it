@@ -4,12 +4,12 @@ import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AddSensorToGroupComponent } from 'src/app/components/modals/add-sensor-to-group/add-sensor-to-group.component';
+import { EditGroupComponent } from 'src/app/components/modals/edit-group/edit-group.component';
 import { ContentCache } from 'src/app/interfaces/cache/cache';
 import { Group as GroupInterface } from 'src/app/interfaces/group/group';
 import { AppState } from 'src/app/state/app.state';
 import { GroupActionGroup } from 'src/app/state/group/group.actions';
 import { Group } from 'src/app/state/group/group.selector';
-import { SensorActionGroup } from 'src/app/state/sensor/sensor.actions';
 
 @Component({
   selector: 'app-group-view',
@@ -43,6 +43,17 @@ export class GroupViewPage implements OnInit {
   async addSensor() {
     const modal = await this.modalController.create({
       component: AddSensorToGroupComponent,
+      componentProps: {
+        groupId: this.groupId,
+      },
+    });
+
+    await modal.present();
+  }
+
+  async editGroup() {
+    const modal = await this.modalController.create({
+      component: EditGroupComponent,
       componentProps: {
         groupId: this.groupId,
       },

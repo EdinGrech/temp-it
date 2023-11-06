@@ -271,29 +271,4 @@ export class AddSensorModalComponent implements OnInit, OnDestroy {
       this.sensorDetailsForm.markAllAsTouched();
     }
   }
-
-  // submitDetailsForm() {
-  //   let formValue;
-  //   if (this.sensorDetailsForm.valid) {
-  //     if (this.sensorDetailsForm.value.allowNotifications) {
-  //       formValue = this.sensorDetailsForm.value;
-  //     } else {
-  //       formValue = {
-  //         // all of the form values except allowNotifications
-  //         sensorName: this.sensorDetailsForm.value.sensorName,
-  //         sensorLocation: this.sensorDetailsForm.value.sensorLocation,
-  //         description: this.sensorDetailsForm.value.description,
-  //         active: this.sensorDetailsForm.value.active,
-  //         allowAdminsToEdit: this.sensorDetailsForm.value.allowAdminsToEdit,
-  //       };
-  //     }
-  //     this.currentStep = 'done';
-  //   } else {
-  //     this.sensorDetailsForm.markAllAsTouched();
-  //   }
-  // }
-
-  done() {
-    this.modalController.dismiss(this.wifiForm.value);
-  }
 }

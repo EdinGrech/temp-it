@@ -45,7 +45,7 @@
           color="primary"
         ></ion-spinner>
       </div>
-      <ion-button expand="full" shape="round" (click)="testConnection()"
+      <ion-button expand="full" (click)="testConnection()"
         >Test Connection</ion-button
       >
     </ion-card-content>
@@ -81,7 +81,7 @@
           <ion-input type="password" formControlName="wifiPassword"></ion-input>
         </ion-item>
 
-        <ion-button class="formButton" expand="full" shape="round" type="submit"
+        <ion-button class="formButton" expand="full" type="submit"
           >Submit</ion-button
         >
       </form>
@@ -187,7 +187,7 @@
             ></ion-input>
           </ion-item>
         </ion-list>
-        <ion-button class="formButton" expand="full" shape="round" type="submit"
+        <ion-button class="formButton" expand="full" type="submit"
           >Submit</ion-button
         >
       </form>
@@ -202,7 +202,7 @@
       <ion-text class="help-tip"
         >You can also edit it's details any time.</ion-text
       >
-      <ion-button size="large" (click)="done()" expand="half" shape="round"
+      <ion-button size="large" (click)="close()" expand="half"
         >Done
         <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
       </ion-button>

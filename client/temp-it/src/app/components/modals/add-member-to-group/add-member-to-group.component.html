@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Group Members</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scroll-content">
+  <div *ngIf="groupDetails$ | async as groupDetails">
+    <div *ngFor="let member of groupDetails.data!.members">
+      <ion-item>
+        <ion-label>{{ member.username }}</ion-label>
+        <p>{{ member.email }}</p>
+        <ion-icon
+          slot="end"
+          name="close-outline"
+          (click)="removeMember(member.username)"
+        ></ion-icon>
+      </ion-item>
+    </div>
+    <div>
+      <ion-item>
+        <ion-label>Username</ion-label>
+        <ion-input [(ngModel)]="usernameInForm"></ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="submit()">Add member</ion-button>
+    </div>
+  </div>
+</ion-content>

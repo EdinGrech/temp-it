@@ -1,11 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar *ngIf="groupData$ | async as groupData">
-    <ion-title *ngIf="groupData.data; else defaultTitle">{{groupData.data.group.name}}</ion-title>
+    <ion-title *ngIf="groupData.data; else defaultTitle"
+      >{{groupData.data.group.name}}</ion-title
+    >
     <ng-template #defaultTitle>
       <ion-title>Group</ion-title>
     </ng-template>
     <ion-buttons slot="end">
       <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-button (click)="editGroup()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -25,7 +32,6 @@
       <div *ngSwitchCase="'LOADING'"></div>
       <div *ngSwitchCase="'LOADED'">
         <div *ngIf="groupData.data; else noDataBlock">
-
           <ion-card *ngIf="groupData.data.sensors.length <= 0">
             <ion-card-header>
               <ion-card-title> No Sensors Found </ion-card-title>
@@ -37,14 +43,15 @@
             </ion-card-content>
           </ion-card>
           <div *ngFor="let sensorDetails of groupData.data.sensors">
-            <app-sensor-summery-card [groupView]="true" [allowEdit]="false"
-              [sensorDetails]="sensorDetails"></app-sensor-summery-card>
+            <app-sensor-summery-card
+              [groupView]="true"
+              [allowEdit]="false"
+              [sensorDetails]="sensorDetails"
+            ></app-sensor-summery-card>
           </div>
         </div>
         <!-- no group data logic below -->
-        <ng-template #noDataBlock>
-
-        </ng-template>
+        <ng-template #noDataBlock> </ng-template>
       </div>
       <div *ngSwitchCase="'ERROR'"></div>
       <div *ngSwitchCase="'EMPTY'"></div>

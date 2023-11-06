@@ -27,7 +27,9 @@
             <ion-input type="text" formControlName="description"></ion-input>
           </ion-item>
         </ion-list>
-        <ion-button class="formButton" expand="full" shape="round" type="submit">Submit</ion-button>
+        <ion-button class="formButton" expand="full" type="submit"
+          >Submit</ion-button
+        >
       </form>
     </ion-card-content>
   </ion-card>
@@ -35,22 +37,27 @@
   <ion-card *ngIf="currentStep === 'pending'" [@formAnimation]>
     <ion-card-content>
       <div *ngIf="actionState === 'LOADING'" class="display-flex">
-        <h3 class="padding-right">
-          Creating group
-        </h3>
+        <h3 class="padding-right">Creating group</h3>
         <ion-spinner></ion-spinner>
       </div>
       <div *ngIf="actionState === 'ERROR'">
-        <ion-text color="danger">Something went wrong, please try again later.</ion-text>
+        <ion-text color="danger"
+          >Something went wrong, please try again later.</ion-text
+        >
       </div>
     </ion-card-content>
   </ion-card>
 
   <div class="done" *ngIf="currentStep === 'done'" [@formAnimation]>
     <div class="flex-colum">
-      <ion-text class="help-tip">Group will be visible in your group tab.</ion-text>
-      <ion-text class="help-tip">You can also edit it's details any time.</ion-text>
-      <ion-button size="large" (click)="close()" expand="half" shape="round">Done
+      <ion-text class="help-tip"
+        >Group will be visible in your group tab.</ion-text
+      >
+      <ion-text class="help-tip"
+        >You can also edit it's details any time.</ion-text
+      >
+      <ion-button size="large" (click)="close()" expand="half"
+        >Done
         <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
       </ion-button>
     </div>
