@@ -101,7 +101,7 @@ def add_admin(request, group_id):
         # add the user as an admin of the group
         if GroupMembers.objects.filter(group=group, member=user).exists():
             # remove the user as a member of the group
-            group_member = get_object_or_404(GroupMembers, group_id=group_id, member_id=user.id)
+            group_member = get_object_or_404(GroupMembers, group=group_id, member=user.pk)
             group_member.delete()
         if GroupAdmins.objects.filter(group=group, admins=user).exists():
             return Response({'error': 'User is already a admin of the group'}, status=status.HTTP_400_BAD_REQUEST)

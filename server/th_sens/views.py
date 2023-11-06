@@ -84,9 +84,8 @@ class LastDaySensorReadingView(APIView):
                 sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
                 for group in sensor_group_ids:
                     group_members = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                    for member in group_members:
-                        print(member)
-                    if user.pk in group_members:
+                    group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                    if user.pk in group_members or user.pk in group_admins:
                         sensorReadings: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id).order_by('-date_created')[:24 * SENSOR_READINGS_PER_HOUR]
                         serializer: SensorReadingsSerializerWithoutID = SensorReadingsSerializerWithoutID(sensorReadings, many=True)
                         return Response(serializer.data)  
@@ -108,7 +107,8 @@ class LastSensorReadingView(APIView):
                 sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
                 for group in sensor_group_ids:
                     group_members = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                    if user.pk in group_members:
+                    group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                    if user.pk in group_members or user.pk in group_admins:
                         sensor_reading = SensorReading.objects.filter(sensor_id=sensor_id).latest('id')
                         serializer = SensorReadingsSerializer(sensor_reading)
                         return Response(serializer.data)
@@ -134,7 +134,8 @@ class depDateRangeSensorReadingView(APIView):
                 sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
                 for group in sensor_group_ids:
                     group_members = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                    if user.pk in group_members:
+                    group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                    if user.pk in group_members or user.pk in group_admins:
                         sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
                         serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
                         return Response(serializer.data)  
@@ -160,7 +161,8 @@ class DateRangeSensorReadingView(APIView):
                 sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
                 for group in sensor_group_ids:
                     group_members = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                    if user.pk in group_members:
+                    group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                    if user.pk in group_members or user.pk in group_admins:
                         sensor: QuerySet[SensorReading] = SensorReading.objects.filter(sensor_id=sensor_id, date_time__range=[start_date, end_date]).order_by('-date_time')
                         serializer: SensorReadingsSerializer = SensorReadingsSerializer(sensor, many=True)
                         return Response(serializer.data)  
@@ -220,8 +222,8 @@ class UpdateSensorDetailsView(APIView):
             # check if user is a member of the group where the sensor is shared
             sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
             for group_id in sensor_group_ids:
-                group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group_id=group_id.group_id)
-                if user.id in group_admins.admins_id.all(): # <-- to check
+                group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group_id=group_id.group_id).values_list('admins', flat=True)
+                if user.pk in group_admins: # <-- to check
                     break  
                 else:
                     return Response({'message': 'You are not allowed to edit this sensor'}, status=403) 
@@ -244,7 +246,8 @@ class SensorDetailsView(APIView):
             sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(id=sensor_id)
             for group in sensor_group_ids:
                 group_members: QuerySet[GroupMembers] = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                if user.pk in group_members:
+                group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                if user.pk in group_members or user.pk in group_admins:
                     if sensor:
                         serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(sensor)
                         return Response(serializer.data)
@@ -270,7 +273,8 @@ class EditSensorDetailsView(APIView):
                 sensor_group_ids: QuerySet[GroupLinkedSensors] = GroupLinkedSensors.objects.filter(sensor=sensor_id)
                 for group in sensor_group_ids:
                     group_members = GroupMembers.objects.filter(group=group.group_id).values_list('member', flat=True)
-                    if user.pk in group_members:
+                    group_admins: QuerySet[GroupAdmins] = GroupAdmins.objects.filter(group=group.group_id).values_list('admins', flat=True)
+                    if user.pk in group_members or user.pk in group_admins:
                         serializer: UserInteractionTemperatureHumiditySensorDetails = UserInteractionTemperatureHumiditySensorDetails(UserInteractionTemperatureHumiditySensorDetails().update(sensor, request.data))
                         return Response({'message': 'Sensor details updated', 'data': serializer.data}, status=201)
                 Response({'message': 'You are not allowed to view this sensor data'}, status=403)
