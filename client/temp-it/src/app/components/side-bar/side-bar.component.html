@@ -1,6 +1,6 @@
 <ion-split-pane contentId="main-content">
   <ion-menu contentId="main-content" type="overlay">
-    <ion-content>
+    <ion-content [fullscreen]="false">
       <ion-list>
         <ion-list-header class="main-header">Temp-it</ion-list-header>
         <ion-note>{{ email }}</ion-note>
@@ -110,7 +110,7 @@
       </ion-list>
     </ion-footer>
   </ion-menu>
-  <ion-content id="main-content">
+  <ion-content [scrollY]="false" id="main-content">
     <ng-content></ng-content>
   </ion-content>
 </ion-split-pane>

@@ -234,12 +234,13 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.addAdminFailure, (state): GroupState => {
+  on(GroupActionGroup.addAdminFailure, (state, { error }): GroupState => {
     return {
       ...state,
       adminActions: {
         addAdmin: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };
@@ -268,12 +269,13 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.removeAdminFailure, (state): GroupState => {
+  on(GroupActionGroup.removeAdminFailure, (state, { error }): GroupState => {
     return {
       ...state,
       adminActions: {
         removeAdmin: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };
@@ -299,12 +301,14 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.addMemberFailure, (state): GroupState => {
+  on(GroupActionGroup.addMemberFailure, (state, { error }): GroupState => {
+    console.log(error);
     return {
       ...state,
       memberActions: {
         addGroupMember: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };
@@ -333,12 +337,13 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.removeMemberFailure, (state): GroupState => {
+  on(GroupActionGroup.removeMemberFailure, (state, { error }): GroupState => {
     return {
       ...state,
       memberActions: {
         removeGroupMember: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };
@@ -365,12 +370,13 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.addSensorFailure, (state): GroupState => {
+  on(GroupActionGroup.addSensorFailure, (state, { error }): GroupState => {
     return {
       ...state,
       sensorActions: {
         addGroupSensor: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };
@@ -399,12 +405,13 @@ export const groupReducer = createReducer(
       },
     };
   }),
-  on(GroupActionGroup.removeSensorFailure, (state): GroupState => {
+  on(GroupActionGroup.removeSensorFailure, (state, { error }): GroupState => {
     return {
       ...state,
       sensorActions: {
         removeGroupSensor: {
           state: 'ERROR' as CacheContentState,
+          error,
         },
       },
     };

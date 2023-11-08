@@ -16,6 +16,12 @@ export class GroupEffects {
     private groupService: GroupService,
   ) {}
 
+  errorHandler(error: HttpErrorResponse) {
+    console.log(error.error.detail);
+    if (error.status === 400) return error.error.error;
+    else if (error.status === 404) return error.error.detail;
+  }
+
   getGroupsSummery$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GroupActionGroup.getGroups),
@@ -24,9 +30,10 @@ export class GroupEffects {
           map((groups: GroupsSummery) =>
             GroupActionGroup.getGroupsSuccess({ groups }),
           ),
-          catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.getGroupsFailure({ error })),
-          ),
+          catchError((error: HttpErrorResponse) => {
+            error = this.errorHandler(error);
+            return of(GroupActionGroup.getGroupsFailure({ error }));
+          }),
         ),
       ),
     ),
@@ -61,7 +68,11 @@ export class GroupEffects {
             return GroupActionGroup.createGroupSuccess({ group });
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.createGroupFailure(error)),
+            of(
+              GroupActionGroup.createGroupFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -78,7 +89,11 @@ export class GroupEffects {
             return GroupActionGroup.updateGroupSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.updateGroupFailure(error)),
+            of(
+              GroupActionGroup.updateGroupFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -95,7 +110,11 @@ export class GroupEffects {
             return GroupActionGroup.deleteGroupSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.deleteGroupFailure(error)),
+            of(
+              GroupActionGroup.deleteGroupFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -114,7 +133,11 @@ export class GroupEffects {
             return GroupActionGroup.addMemberSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.addMemberFailure(error)),
+            of(
+              GroupActionGroup.addMemberFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -133,7 +156,11 @@ export class GroupEffects {
             return GroupActionGroup.removeMemberSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.removeMemberFailure(error)),
+            of(
+              GroupActionGroup.removeMemberFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -152,7 +179,11 @@ export class GroupEffects {
             return GroupActionGroup.addAdminSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.addAdminFailure(error)),
+            of(
+              GroupActionGroup.addAdminFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -171,7 +202,11 @@ export class GroupEffects {
             return GroupActionGroup.removeAdminSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.removeAdminFailure(error)),
+            of(
+              GroupActionGroup.removeAdminFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -190,7 +225,11 @@ export class GroupEffects {
             return GroupActionGroup.addSensorSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.addSensorFailure(error)),
+            of(
+              GroupActionGroup.addSensorFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),
@@ -209,7 +248,11 @@ export class GroupEffects {
             return GroupActionGroup.removeSensorSuccess();
           }),
           catchError((error: HttpErrorResponse) =>
-            of(GroupActionGroup.removeSensorFailure(error)),
+            of(
+              GroupActionGroup.removeSensorFailure({
+                error: this.errorHandler(error),
+              }),
+            ),
           ),
         ),
       ),

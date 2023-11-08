@@ -76,8 +76,17 @@ export class GroupService {
   }
 
   deleteMember(groupId: string, username: string): Observable<BackendResponse> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        username: username,
+      },
+    };
     return this.http.delete<BackendResponse>(
-      this.url + 'remove-member/' + groupId + '/' + username + '/',
+      this.url + 'remove-member/' + groupId + '/',
+      options,
     );
   }
 
@@ -100,8 +109,17 @@ export class GroupService {
   }
 
   deleteAdmin(groupId: string, username: string): Observable<BackendResponse> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        username: username,
+      },
+    };
     return this.http.delete<BackendResponse>(
-      this.url + 'remove-admin/' + groupId + '/' + username + '/',
+      this.url + 'remove-admin/' + groupId,
+      options,
     );
   }
 
@@ -120,8 +138,17 @@ export class GroupService {
   }
 
   deleteSensor(groupId: string, sensorId: number): Observable<BackendResponse> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        sensor_id: sensorId,
+      },
+    };
     return this.http.delete<BackendResponse>(
-      this.url + 'remove-sensor/' + groupId + '/' + sensorId + '/',
+      this.url + 'remove-sensor/' + groupId,
+      options,
     );
   }
 }

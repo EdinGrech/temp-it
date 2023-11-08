@@ -13,21 +13,46 @@
   <div *ngIf="groupDetails$ | async as groupDetails">
     <div *ngFor="let member of groupDetails.data!.members">
       <ion-item>
-        <ion-label>{{ member.username }}</ion-label>
-        <p>{{ member.email }}</p>
-        <ion-icon
+        <ion-label>
+          <p>Username: {{ member.username }}</p>
+          <p>Email: {{ member.email }}</p>
+        </ion-label>
+        <ion-button
+          fill="clear"
           slot="end"
-          name="close-outline"
           (click)="removeMember(member.username)"
-        ></ion-icon>
+        >
+          <ion-icon
+            slot="icon-only"
+            name="close-outline"
+            color="danger"
+          ></ion-icon>
+        </ion-button>
       </ion-item>
     </div>
     <div>
       <ion-item>
-        <ion-label>Username</ion-label>
+        <ion-label>Username :</ion-label>
         <ion-input [(ngModel)]="usernameInForm"></ion-input>
       </ion-item>
-      <ion-button expand="block" (click)="submit()">Add member</ion-button>
+      <ion-progress-bar
+        *ngIf="state === 'LOADING'"
+        type="indeterminate"
+      ></ion-progress-bar>
+      <div *ngIf="state === 'ERROR'">
+        <ion-item>
+          <ion-label
+            ><h2 class="title-error">Error adding member</h2>
+            <p>Reason: {{ errorMessage ? errorMessage : "unknown" }}</p>
+          </ion-label>
+        </ion-item>
+      </div>
+      <ion-button
+        expand="block"
+        (click)="submit()"
+        [disabled]="state === 'LOADING'"
+        >Add member</ion-button
+      >
     </div>
   </div>
 </ion-content>
